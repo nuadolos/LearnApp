@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using LearnEF.DataInitializer;
 using LearnEF.Entities.IdentityModel;
+using LearnAPI.Validate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +27,15 @@ builder.Services.AddScoped<ISourceLoreRepo, SourceLoreRepo>();
 
 #region Добавление сервиса Identity
 
+//Добавление собственных валидаторов для аутентификации
+builder.Services.AddTransient<IUserValidator<User>, CustomUserValidator>();
+builder.Services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(
+    service => new CustomPasswordValidator(6));
+
+//Параметры проверки пароля
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
-        options.Password.RequiredLength = 3;
+        options.Password.RequiredLength = 0;
         options.Password.RequiredUniqueChars = 0;
         options.Password.RequireLowercase = false;
         options.Password.RequireUppercase = false;
@@ -54,6 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//Использование аутентификации и авторизации
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -64,11 +72,14 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    //Извлечение объекта ManufactureContext из контейнера
+    //Извлечение объекта LearnContext, UserManager и RoleManager из контейнера
     var context = services.GetRequiredService<LearnContext>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
+    //Вызов инициализатора данных
     Initializer.RecreateDatabase(context);
-    Initializer.InitializeData(context);
+    await Initializer.InitializeData(context, userManager, roleManager);
 }
 
 app.Run();

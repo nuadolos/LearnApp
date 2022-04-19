@@ -1,5 +1,7 @@
 ﻿using LearnEF.Context;
 using LearnEF.Entities;
+using LearnEF.Entities.IdentityModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,10 +11,29 @@ using System.Threading.Tasks;
 
 namespace LearnEF.DataInitializer
 {
+    /// <summary>
+    /// Удаляет, восстанавливает и заполняет начальными данными БД
+    /// </summary>
     static public class Initializer
     {
-        public static void InitializeData(LearnContext context)
+        public static async Task InitializeData(LearnContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
+            if (await roleManager.FindByNameAsync("tester") == null)
+                await roleManager.CreateAsync(new IdentityRole("tester"));
+
+            if (await roleManager.FindByNameAsync("admin") == null)
+                await roleManager.CreateAsync(new IdentityRole("admin"));
+
+            if (await userManager.FindByNameAsync("tester") == null)
+            {
+                User u = new User { Email = "tester@nuadolos.com", UserName = "tester" };
+                IdentityResult result = await userManager.CreateAsync(u, "tester");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(u, "tester");
+                }
+            }
+
             List<SourceLore> lores = new List<SourceLore>()
             {
                 new SourceLore() { Name = "Книга"},
@@ -26,33 +47,33 @@ namespace LearnEF.DataInitializer
             {
                 new Learn() 
                 { 
-                    Title = "Кидабро добро", 
-                    Link = "tudimsudim",
+                    Title = "test1", 
+                    Link = "test11",
                     CreateDate = DateTime.Now.ToShortDateString(), 
                     DateReading = DateTime.Now.ToShortDateString(),
-                    Image = "macbook", 
+                    Image = "test111", 
                     SourceLoreId = 1, 
                     IsStudying = false
                 },
 
                 new Learn()
                 {
-                    Title = "Прорез вашингтона",
-                    Link = "ululuul",
+                    Title = "test2",
+                    Link = "test22",
                     CreateDate = DateTime.Now.ToShortDateString(),
                     DateReading = DateTime.Now.ToShortDateString(),
-                    Image = "yes",
+                    Image = "test222",
                     SourceLoreId = 2,
                     IsStudying = true
                 },
 
                 new Learn()
                 {
-                    Title = "Вечером в снегу",
-                    Link = "kokoko",
+                    Title = "TEST3",
+                    Link = "test33",
                     CreateDate = DateTime.Now.ToShortDateString(),
                     DateReading = DateTime.Now.ToShortDateString(),
-                    Image = "no",
+                    Image = "test333",
                     SourceLoreId = 2,
                     IsStudying = false
                 },

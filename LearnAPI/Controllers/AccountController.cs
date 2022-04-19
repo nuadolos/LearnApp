@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearnAPI.Controllers
 {
-    [Route("api/AccountController")]
+    [Route("api/auth")]
     [ApiController]
     public class AccountController : Controller
     {
@@ -20,28 +20,42 @@ namespace LearnAPI.Controllers
             _signInManager = signInManager;
         }
 
-        #region Регистрация
-
+        /// <summary>
+        /// Запрос на регистрацию новой учетной записи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] UserRegister model)
+        [Route("regist")]
+        public async Task<IActionResult> Regist([FromBody] UserRegister model)
         {
             List<ValidateError>? errors = null;
 
+            //Проверяет на совпадение паролей
+            if (model.Password != model.PasswordConfirm)
+            {
+                errors = new List<ValidateError>();
+                errors.Add(new ValidateError { Message = "Пароли не совпадают" });
+                return BadRequest(errors);
+            }
+
+            //Проверяет на валидность данных
             if (ModelState.IsValid)
             {
                 User user = new User { Email = model.Email, UserName = model.Email };
 
+                //Создает новую запись о пользователе в БД
                 var result = await _userManager.CreateAsync(user, model.Password);
 
+                //В случае безошибочного создания записи, заходит в учетную запись
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
-                    //return RedirectToAction();
                     return Ok();
                 }
                 else
                 {
+                    //Получение ошибок при создании записи
                     errors = new List<ValidateError>();
 
                     foreach (var error in result.Errors)
@@ -51,27 +65,28 @@ namespace LearnAPI.Controllers
                 }
             }
 
+            //Возвращает ошибку 400, связанную с неправильным вводом данных
             return BadRequest(errors);
         }
 
-        #endregion
-
-        #region Авторизация
-
-        [HttpGet]
-        [Route("Login")]
-        public IActionResult Login(string? returnUrl = null) => View(new UserLogin { ReturnUrl = returnUrl });
-
+        /// <summary>
+        /// Запрос на вход в учетную запись
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserLogin model)
         {
             ValidateError? error = null;
 
+            //Проверяет на валидность данных
             if (ModelState.IsValid)
             {
+                //Входит в учетную записи
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
+                //В случае ввода верных данных, возвращает код 200
                 if (result.Succeeded)
                     //return !string.IsNullOrEmpty(model.ReturnUrl) ? Redirect(model.ReturnUrl) : RedirectToAction("", "");
                     return Ok();
@@ -79,17 +94,21 @@ namespace LearnAPI.Controllers
             else
                 error = new ValidateError { Message = "Неправельный логин или пароль" };
 
+            //Возвращает ошибку 400, связанную с неправильным вводом данных
             return BadRequest(error);
         }
 
+        /// <summary>
+        /// Запрос на ыыход из учетной записи
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
-        [Route("Logout")]
+        [Route("logout")]
         public async Task<IActionResult> Logout()
         {
+            //Производит выход из учетной записи
             await _signInManager.SignOutAsync();
             return Ok();
         }
-
-        #endregion
     }
 }

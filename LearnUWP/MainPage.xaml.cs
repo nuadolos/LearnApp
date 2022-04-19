@@ -53,7 +53,7 @@ namespace LearnUWP
         {
             var client = new HttpClient();
             string json = JsonConvert.SerializeObject(new { Email = EmailUserBox.Text, Password = PasswordUserBox.Text, PasswordConfirm = RePasswordUserBox.Text });
-            var response = await client.PostAsync("http://localhost:5243/api/AccountController/Register",
+            var response = await client.PostAsync("http://localhost:5243/api/Account/Register",
                 new StringContent(json, Encoding.UTF8, "application/json"));
 
             if (response.IsSuccessStatusCode)
@@ -79,7 +79,7 @@ namespace LearnUWP
         {
             var client = new HttpClient();
             string json = JsonConvert.SerializeObject(new { Email = EmailUserBox.Text, Password = PasswordUserBox.Text, RememberMe = true });
-            var response = await client.PostAsync("http://localhost:5243/api/AccountController/Login",
+            var response = await client.PostAsync("http://localhost:5243/api/Account/Login",
                 new StringContent(json, Encoding.UTF8, "application/json"));
 
             if (response.IsSuccessStatusCode)

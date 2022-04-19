@@ -8,7 +8,6 @@ namespace LearnEF.Entities.ErrorModel
 {
     public class ValidateError
     {
-        public string? Prop { get; set; }
         public string? Message { get; set; }
     }
 }

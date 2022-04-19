@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearnAPI.Controllers
 {
-    [Route("api/UsersController")]
+    [Route("api/Users")]
     [ApiController]
     public class UsersController : Controller
     {
@@ -15,11 +15,18 @@ namespace LearnAPI.Controllers
 
         public UsersController(UserManager<User> userManager) => _userManager = userManager;
 
-        #region Получение данных о пользователе(-ях)
-
+        /// <summary>
+        /// Запрос на получение всех пользователь
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<User> GetUsers() => _userManager.Users.ToList();
 
+        /// <summary>
+        /// Запрос на получение конкретного пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetUser([FromRoute] string id)
@@ -33,10 +40,8 @@ namespace LearnAPI.Controllers
 
         }
 
-        #endregion
-
         /// <summary>
-        /// Добавление нового пользователя
+        /// Запрос на добавление нового пользователя
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -66,7 +71,7 @@ namespace LearnAPI.Controllers
         }
 
         /// <summary>
-        /// Изменение данных о пользователе
+        /// Запрос на изменение данных о пользователе
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
@@ -107,11 +112,15 @@ namespace LearnAPI.Controllers
             return BadRequest(errors);
         }
         
-        #region Восстановление пароля
-
-        [HttpPost]
+        /// <summary>
+        /// Запрос на изменение пароля
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
         [Route("changed={id}")]
-        public async Task<IActionResult> ChangePassword([FromRoute] string id, [FromBody] UserData model)
+        public async Task<IActionResult> ChangePassword([FromRoute] string id, [FromBody] UserChangePassword model)
         {
             List<ValidateError>? errors = null;
 
@@ -160,7 +169,5 @@ namespace LearnAPI.Controllers
 
             return BadRequest(errors);
         }
-
-        #endregion
     }
 }
