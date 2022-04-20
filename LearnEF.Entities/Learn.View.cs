@@ -14,5 +14,20 @@ namespace LearnEF.Entities
         {
             get => IsStudying ?? false ? "Изучен" : "Не изучен";
         }
+
+        [NotMapped]
+        public string? LoreName
+        {
+            get
+            {
+                return SourceLoreId switch
+                {
+                    1 => "Тест1115",
+                    2 => "Тест2225",
+                    3 => "Тест3335",
+                    _ => "Неизвестно"
+                };
+            }
+        }
     }
 }

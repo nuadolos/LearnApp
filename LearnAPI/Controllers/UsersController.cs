@@ -27,8 +27,7 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetUser([FromRoute] string id)
         {
             User user = await _userManager.FindByIdAsync(id);
@@ -76,8 +75,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] UserData model)
         {
             List<ValidateError>? errors = null;
@@ -118,8 +116,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("changed={id}")]
+        [HttpPut("changed={id}")]
         public async Task<IActionResult> ChangePassword([FromRoute] string id, [FromBody] UserChangePassword model)
         {
             List<ValidateError>? errors = null;

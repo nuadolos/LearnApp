@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LearnAPI.Controllers
 {
     [Route("api/Roles")]
-    [ApiController]
+    [ApiController] 
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;
@@ -63,8 +63,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <param name="roles"></param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] List<string> roles)
         {
             User user = await _userManager.FindByIdAsync(id);
@@ -99,8 +98,7 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearnAPI.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/Auth")]
     [ApiController]
     public class AccountController : Controller
     {
@@ -25,8 +25,7 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("regist")]
+        [HttpPost("Regist")]
         public async Task<IActionResult> Regist([FromBody] UserRegister model)
         {
             List<ValidateError>? errors = null;
@@ -74,8 +73,7 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLogin model)
         {
             ValidateError? error = null;
@@ -102,8 +100,7 @@ namespace LearnAPI.Controllers
         /// Запрос на ыыход из учетной записи
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-        [Route("logout")]
+        [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
             //Производит выход из учетной записи

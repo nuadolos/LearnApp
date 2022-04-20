@@ -10,6 +10,6 @@ namespace LearnEF.Repos
 {
     public interface ISourceLoreRepo : IRepo<SourceLore>
     {
-
+        bool ContainedInLearn(int id);
     }
 }

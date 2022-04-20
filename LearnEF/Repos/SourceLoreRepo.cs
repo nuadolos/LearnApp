@@ -16,5 +16,16 @@ namespace LearnEF.Repos
         { }
         public SourceLoreRepo(LearnContext context) : base(context)
         { }
+
+        public bool ContainedInLearn(int id)
+        {
+            foreach (var learn in Context.Learn)
+            {
+                if (learn.SourceLoreId == id)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

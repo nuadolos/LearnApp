@@ -20,10 +20,10 @@ namespace LearnEF.Entities
         [StringLength(1000)]
         public string? Link { get; set; }
         [Required]
-        [StringLength(10)]
-        public string? CreateDate { get; set; }
-        [StringLength(10)]
-        public string? DateReading { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? CreateDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? DateReading { get; set; }
         public string? Image { get; set; }
         [ForeignKey(nameof(SourceLoreId))]
         public int? SourceLoreId { get; set; }

@@ -49,8 +49,8 @@ namespace LearnEF.DataInitializer
                 { 
                     Title = "test1", 
                     Link = "test11",
-                    CreateDate = DateTime.Now.ToShortDateString(), 
-                    DateReading = DateTime.Now.ToShortDateString(),
+                    CreateDate = DateTime.Now, 
+                    DateReading = DateTime.Now,
                     Image = "test111", 
                     SourceLoreId = 1, 
                     IsStudying = false
@@ -60,8 +60,8 @@ namespace LearnEF.DataInitializer
                 {
                     Title = "test2",
                     Link = "test22",
-                    CreateDate = DateTime.Now.ToShortDateString(),
-                    DateReading = DateTime.Now.ToShortDateString(),
+                    CreateDate = DateTime.Now,
+                    DateReading = DateTime.Now,
                     Image = "test222",
                     SourceLoreId = 2,
                     IsStudying = true
@@ -71,8 +71,8 @@ namespace LearnEF.DataInitializer
                 {
                     Title = "TEST3",
                     Link = "test33",
-                    CreateDate = DateTime.Now.ToShortDateString(),
-                    DateReading = DateTime.Now.ToShortDateString(),
+                    CreateDate = DateTime.Now,
+                    DateReading = DateTime.Now,
                     Image = "test333",
                     SourceLoreId = 2,
                     IsStudying = false

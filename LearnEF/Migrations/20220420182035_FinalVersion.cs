@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LearnEF.Migrations
 {
-    public partial class Initial : Migration
+    public partial class FinalVersion : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -176,8 +176,8 @@ namespace LearnEF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Link = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CreateDate = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    DateReading = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: false),
+                    DateReading = table.Column<DateTime>(type: "date", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SourceLoreId = table.Column<int>(type: "int", nullable: true),
                     IsStudying = table.Column<bool>(type: "bit", nullable: false),
