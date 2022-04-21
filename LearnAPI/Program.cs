@@ -19,6 +19,8 @@ builder.Services.AddDbContextPool<LearnContext>(options =>
         builder.Configuration.GetConnectionString("LearnConnection"),
         o => o.EnableRetryOnFailure()));
 
+builder.Services.AddControllersWithViews();
+
 //Добавление UserRepo и RoleRepo в контейнер DI
 builder.Services.AddScoped<ILearnRepo, LearnRepo>();
 builder.Services.AddScoped<ISourceLoreRepo, SourceLoreRepo>();
@@ -41,9 +43,23 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequireDigit = false;
         options.Password.RequireNonAlphanumeric = false;
+
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.AllowedForNewUsers = true;
     })
     .AddEntityFrameworkStores<LearnContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.Expiration = TimeSpan.FromMinutes(30);
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
 
 #endregion
 

@@ -1,13 +1,13 @@
-﻿using LearnEF.Entities.ErrorModel;
-using LearnEF.Entities.IdentityModel;
+﻿using LearnEF.Entities.IdentityModel;
 using LearnEF.Repos.Base;
+using LearnEF.Entities.ErrorModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnAPI.Controllers
 {
-    [Route("api/Auth")]
+    [Route("api/Account")]
     [ApiController]
     public class AccountController : Controller
     {
@@ -76,7 +76,7 @@ namespace LearnAPI.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLogin model)
         {
-            ValidateError? error = null;
+            List<ValidateError>? errors = null;
 
             //Проверяет на валидность данных
             if (ModelState.IsValid)
@@ -88,12 +88,16 @@ namespace LearnAPI.Controllers
                 if (result.Succeeded)
                     //return !string.IsNullOrEmpty(model.ReturnUrl) ? Redirect(model.ReturnUrl) : RedirectToAction("", "");
                     return Ok();
+                else
+                {
+                    errors = new List<ValidateError>();
+
+                    errors.Add(new ValidateError { Message = "Неправельный логин или пароль" });
+                }
             }
-            else
-                error = new ValidateError { Message = "Неправельный логин или пароль" };
 
             //Возвращает ошибку 400, связанную с неправильным вводом данных
-            return BadRequest(error);
+            return BadRequest(errors);
         }
 
         /// <summary>

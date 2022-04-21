@@ -1,5 +1,4 @@
-﻿using LearnEF.Entities.ErrorModel;
-using LearnEF.Entities.IdentityModel;
+﻿using LearnEF.Entities.IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using System.Text.RegularExpressions;
 
