@@ -1,0 +1,42 @@
+﻿@*Вкл. спец. функций дескрипторов (NameUser)*@
+@addTagHelper *, LearnMVC
+
+@*@functions
+{
+    public string GetUserName(string email) =>
+        email.Contains('@') ? email.Remove(email.IndexOf('@')) : email; 
+}*@
+
+@if (User.Identity.IsAuthenticated)
+{
+    @if (User.IsInRole("admin"))
+    {
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <a class="navbar-brand" href="~/">Начало</a>
+            <a class="navbar-brand" href="/Learn/Index">Материалы</a>
+            <a class="navbar-brand" href="/SourceLore/Index">Ресурсы</a>
+            <user-name class="navbar-brand" role="Администратор" name="@User.Identity.Name"></user-name>
+            <form method="post" asp-controller="Account" asp-action="Logout">
+            <input type="submit" value="Выход"/>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <a class="navbar-brand" href="~/">Начало</a>
+            <a class="navbar-brand" href="/Home/Privacy">Материалы</a>
+            <user-name class="navbar-brand" role="Тестировщик" name="@User.Identity.Name"></user-name>
+            <form method="post" asp-controller="Account" asp-action="Logout">
+            <input type="submit" value="Выход"/>
+            </form>
+        </div>
+    }
+}
+else
+{
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+        <a class="navbar-brand" href="/Account/Login">Вход</a>
+        <a class="navbar-brand" href="/Account/Register">Регистрация</a>
+    </div>
+}

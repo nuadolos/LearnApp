@@ -1,0 +1,24 @@
+﻿@using LearnEF.Entities
+@model Learn
+
+<tr>
+    <td>
+        @Html.DisplayFor(model => model.Title)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.CreateDate)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.LoreName)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.Studied)
+    </td>
+    <td>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a>
+        <label> | </label>
+        <a asp-action="Details" asp-route-id="@Model.Id">Подробно</a>
+        <label> | </label>
+        <a asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+    </td>
+</tr>

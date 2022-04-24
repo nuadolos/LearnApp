@@ -1,5 +1,7 @@
 ﻿using LearnEF.Context;
 using LearnEF.Entities.Base;
+using LearnEF.Entities.ErrorModel;
+using LearnHTTP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -107,19 +109,23 @@ namespace LearnEF.Repos.Base
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                throw new Exception(ex.Message, ex);
+                throw new DbMessageException(
+                    "Запись, которую вы пытаетесь сохранить, была изменена другим пользователем", ex);
             }
             catch (RetryLimitExceededException ex)
             {
-                throw new Exception(ex.Message, ex);
+                throw new DbMessageException(
+                    "Привышен лимит попыток внесения данных в базу данных", ex);
             }
             catch (DbUpdateException ex)
             {
-                throw new Exception(ex.Message, ex);
+                throw new DbMessageException(
+                    "Возникла ошибка при сохранении в базе данных", ex);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new DbMessageException(
+                    "Неизвестная ошибка. Мы пытаемся ее устранить", ex); 
             }
         }
 

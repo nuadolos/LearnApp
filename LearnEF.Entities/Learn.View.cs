@@ -12,22 +12,19 @@ namespace LearnEF.Entities
         [NotMapped]
         public string? Studied
         {
-            get => IsStudying ?? false ? "Изучен" : "Не изучен";
+            get => IsStudying ? "Изучен" : "Не изучен";
         }
 
         [NotMapped]
-        public string? LoreName
-        {
-            get
-            {
-                return SourceLoreId switch
-                {
-                    1 => "Тест1115",
-                    2 => "Тест2225",
-                    3 => "Тест3335",
-                    _ => "Неизвестно"
-                };
-            }
-        }
+        public string? LoreName { get; set; }
+
+        //Новый синтаксис оператора switch
+        //return SourceLoreId switch
+        //{
+        //    1 => "Тест1115",
+        //    2 => "Тест2225",
+        //    3 => "Тест3335",
+        //    _ => "Неизвестно"
+        //};
     }
 }

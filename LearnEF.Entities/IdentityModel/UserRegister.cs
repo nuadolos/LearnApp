@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,14 +11,18 @@ namespace LearnEF.Entities.IdentityModel
     public class UserRegister
     {
         [Display(Name = "Email")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
+        [Display(Name = "Фамилия")]
+        public string Surname { get; set; }
+        [Display(Name = "Имя")]
+        public string Name { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Подтверждение пароля")]
-        public string? PasswordConfirm { get; set; }
+        public string PasswordConfirm { get; set; }
     }
 }

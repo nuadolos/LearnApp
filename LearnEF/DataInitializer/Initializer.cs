@@ -26,11 +26,29 @@ namespace LearnEF.DataInitializer
 
             if (await userManager.FindByNameAsync("tester") == null)
             {
-                User u = new User { Email = "tester@nuadolos.com", UserName = "tester" };
-                IdentityResult result = await userManager.CreateAsync(u, "tester");
+                User u = new User { 
+                    Email = "tester@nuadolos.com", UserName = "tester@nuadolos.com",
+                    Surname = "Иванов", Name = "Андрей"
+                };
+
+                IdentityResult result = await userManager.CreateAsync(u, "tester1");
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(u, "tester");
+                }
+            }
+
+            if (await userManager.FindByNameAsync("2nuadolos1") == null)
+            {
+                User u = new User {
+                    Email = "2nuadolos1@gmail.com", UserName = "2nuadolos1@gmail.com",
+                    Surname = "Куракин", Name = "Владимир" 
+                };
+
+                IdentityResult result = await userManager.CreateAsync(u, "admin1");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(u, "admin");
                 }
             }
 

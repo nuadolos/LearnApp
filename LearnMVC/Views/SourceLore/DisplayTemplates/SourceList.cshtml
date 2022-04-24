@@ -1,0 +1,15 @@
+﻿@using LearnEF.Entities
+@model SourceLore
+
+<tr>
+    <td>
+        @Html.DisplayFor(model => model.Name)
+    </td>
+    <td>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a>
+        <label> | </label>
+        <a asp-action="Details" asp-route-id="@Model.Id">Подробно</a>
+        <label> | </label>
+        <a asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+    </td>
+</tr>

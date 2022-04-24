@@ -33,15 +33,20 @@ namespace LearnAPI.Validate
 
             if (string.IsNullOrEmpty(password) || password.Length < RequiredLength)
             {
-                errors.Add(new IdentityError { Description = $"Минимальная длина пароля равна {RequiredLength}" });
+                errors.Add(new IdentityError { Description = $"Минимальная длина пароля {RequiredLength} символов" });
             }
 
-            string pattern = @"[A-z0-9]";
+            if (password.Length > 20)
+            {
+                errors.Add(new IdentityError { Description = $"Максимальная длина пароля 20 символов" });
+            }
+
+            string pattern = @"[A-z0-9]+$";
 
             //Проверяет на присутствие символов, не являющиеся буквой или цифрой
             if (!Regex.IsMatch(password, pattern))
             {
-                errors.Add(new IdentityError { Description = "Пароль должен состоять из алфавитно-цифровому символу" });
+                errors.Add(new IdentityError { Description = "Пароль должен состоять из алфавитных или цифровых символов" });
             }
 
             //Возвращает результат в зависимости от кол-ва найденных ошибок

@@ -1,0 +1,26 @@
+﻿@model LearnEF.Entities.SourceLore
+
+@{
+    ViewData["Title"] = "Создание";
+}
+
+<h2>Создание</h2>
+
+<div class="row">
+    <div class="col-md-4 mt-5">
+        <form asp-action="Create">
+            @Html.EditorForModel("SourceLore")
+            <div class="form-group mt-4">
+                <input type="submit" value="Создать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Назад к списку</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

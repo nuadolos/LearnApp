@@ -41,7 +41,7 @@ namespace LearnUWP
         private async void RegistredBtn_Click(object sender, RoutedEventArgs e)
         {
             var obj = new { Email = EmailUserBox.Text, Password = PasswordUserBox.Text, PasswordConfirm = RePasswordUserBox.Text };
-            bool result = await HttpRequest.PostRequestAsync(obj, "http://localhost:5243/api/Account/Regist");
+            bool result = await HttpRequest.PostRequestAsync(obj, "http://localhost:5243/api/Acc/Regist");
 
             if (result)
             {
@@ -57,26 +57,30 @@ namespace LearnUWP
             {
                 StringBuilder errors = new StringBuilder();
 
-                foreach (var error in HttpRequest.Errors)
+                if (HttpRequest.Errors != null)
                 {
-                    errors.AppendLine(error.Message);
+                    foreach (var error in HttpRequest.Errors)
+                    {
+                        errors.AppendLine(error.Message);
+                    }
+
+                    ContentDialog contentDialog = new ContentDialog()
+                    {
+                        Title = "Ошибка",
+                        Content = errors.ToString(),
+                        CloseButtonText = "Ок"
+                    };
+
+                    await contentDialog.ShowAsync();
                 }
 
-                ContentDialog contentDialog = new ContentDialog()
-                {
-                    Title = "Ошибка",
-                    Content = errors.ToString(),
-                    CloseButtonText = "Ок"
-                };
-
-                await contentDialog.ShowAsync();
             }
         }
 
         private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
             var obj = new { Email = EmailUserBox.Text, Password = PasswordUserBox.Text };
-            bool result = await HttpRequest.PostRequestAsync(obj, "http://localhost:5243/api/Account/Login");
+            bool result = await HttpRequest.PostRequestAsync(obj, "http://localhost:5243/api/Acc/Login");
 
             if (result)
             {

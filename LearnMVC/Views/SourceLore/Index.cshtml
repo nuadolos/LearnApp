@@ -1,0 +1,29 @@
+﻿@using LearnEF.Entities
+@model IEnumerable<SourceLore>
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h1>Список ресурсов</h1>
+
+<p>
+    <a asp-action="Create">Создать</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Название</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {
+            @Html.DisplayFor(modelItem => item, "SourceList")
+        }   
+    </tbody>
+</table>
