@@ -75,7 +75,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit([FromBody] UserData model)
+        public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] UserData model)
         {
             List<ValidateError>? errors = null;
 
@@ -85,6 +85,8 @@ namespace LearnAPI.Controllers
             {
                 user.Email = model.Email;
                 user.UserName = model.Email;
+                user.Surname = model.Surname;
+                user.Name = model.Name;
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
@@ -115,11 +117,11 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromBody] UserData model)
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
             List<ValidateError>? errors = null;
 
-            User user = await _userManager.FindByIdAsync(model.Id);
+            User user = await _userManager.FindByIdAsync(id);
 
             if (user != null)
             {

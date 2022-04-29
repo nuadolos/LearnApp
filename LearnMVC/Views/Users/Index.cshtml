@@ -1,0 +1,41 @@
+﻿@using LearnEF.Entities.IdentityModel
+@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h1>Список пользователей</h1>
+
+<p>
+    <a asp-action="Create">Создать</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Email</label>
+            </th>
+            <th>
+                <label>Фамилия</label>
+            </th>
+            <th>
+                <label>Имя</label>
+            </th>
+            <th>
+                <label>Заблокирован?</label>
+            </th>
+            <th>
+                <label>Время блокировки</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {
+            @Html.DisplayFor(modelItem => item, "UsersList")
+        }   
+    </tbody>
+</table>

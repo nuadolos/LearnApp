@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using LearnEF.DataInitializer;
 using LearnEF.Entities.IdentityModel;
 using LearnAPI.Validate;
+using LearnHTTP.EmailService;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,14 +39,7 @@ builder.Services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>
 //Параметры проверки пароля
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
-        options.Password.RequiredLength = 0;
-        options.Password.RequiredUniqueChars = 0;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireDigit = false;
-        options.Password.RequireNonAlphanumeric = false;
-
-        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.MaxFailedAccessAttempts = 1;
         options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
         options.Lockout.AllowedForNewUsers = true;
     })
@@ -64,7 +59,23 @@ builder.Services.ConfigureApplicationCookie(options =>
 #endregion
 
 //Регистрация фильтра исключений и возвращение к стилю Pascal
-builder.Services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+builder.Services.AddMvc().AddJsonOptions(
+    options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+
+#region Добавление сервиса для отправки сообщений на эл. почту пользователя
+
+builder.Services.AddSingleton(
+    builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
+
+#endregion
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

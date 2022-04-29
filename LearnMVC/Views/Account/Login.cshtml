@@ -1,27 +1,34 @@
 ﻿@model LearnEF.Entities.IdentityModel.UserLogin
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Авторизация";
 }
 
 <h2>Вход в приложение</h2>
-<form method="post" asp-controller="Account" asp-action="Login"
-    asp-route-returnUrl="@Model.ReturnUrl">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+<div class="row">
+    <div class="col-md-4 mt-5">
+        <form method="post" asp-controller="Account" asp-action="Login"
+            asp-route-returnUrl="@Model.ReturnUrl">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="Email" class="control-label fs-4"></label><br />
+                <input asp-for="Email" class="form-control mt-2"/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Password" class="control-label fs-4"></label><br />
+                <input asp-for="Password" class="form-control mt-2"/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="RememberMe" class="control-label fs-4"></label><br />
+                <input asp-for="RememberMe" />
+            </div>
+            <div>
+                <a class="navbar-brand" href="/Account/ChangePassword">Забыли пароль?</a>
+            </div>
+            <div>
+                <input type="submit" value="Войти" class="btn btn-primary"/>
+            </div>
+        </form>
     </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="RememberMe"></label><br />
-        <input asp-for="RememberMe" />
-    </div>
-    <div>
-        <input type="submit" value="Войти" />
-    </div>
-</form>
+</div>

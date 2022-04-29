@@ -189,9 +189,9 @@ namespace LearnMVC.Controllers
             //Сериализация массива байтов в строку для вставки в маршрут
             var timeStampString = JsonConvert.SerializeObject(learn.Timestamp);
 
-            await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, learn.Id.ToString(), timeStampString);
-
-            return RedirectToAction(nameof(Index));
+            return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, learn.Id.ToString(), timeStampString) 
+                ? RedirectToAction(nameof(Index)) 
+                : BadRequest(HttpRequestClient.Errors);
         }
 
         #endregion

@@ -9,9 +9,11 @@ namespace LearnEF.Entities.IdentityModel
 {
     public class UserLogin
     {
+        [Required(ErrorMessage = "Поле \"Email\" пустое")]
         [Display(Name = "Email")]
         public string? Email { get; set; }
 
+        [Required(ErrorMessage = "Поле \"Пароль\" пустое")]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
         public string? Password { get; set; }

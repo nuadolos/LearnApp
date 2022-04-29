@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220424150557_Final")]
+    [Migration("20220429154242_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,13 @@ namespace LearnEF.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<DateTime?>("CodeTimeBlock")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

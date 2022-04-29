@@ -20,6 +20,7 @@
     </dl>
     
     <form asp-action="Delete">
+        <div asp-validation-summary="ModelOnly"></div>
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Timestamp" />
         <input type="submit" value="Удалить" class="btn btn-danger mt-3" /> |

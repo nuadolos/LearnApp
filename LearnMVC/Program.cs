@@ -19,19 +19,12 @@ builder.Services.AddControllersWithViews();
 
 //Параметры проверки пароля
 builder.Services.AddIdentity<User, IdentityRole>(
-//    options =>
-//{
-//    options.Password.RequiredLength = 10;
-//    options.Password.RequiredUniqueChars = 0;
-//    options.Password.RequireLowercase = false;
-//    options.Password.RequireUppercase = false;
-//    options.Password.RequireDigit = false;
-//    options.Password.RequireNonAlphanumeric = false;
-
-//    options.Lockout.MaxFailedAccessAttempts = 5;
-//    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-//    options.Lockout.AllowedForNewUsers = true;
-//}
+    options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.AllowedForNewUsers = true;
+}
 )
     .AddEntityFrameworkStores<LearnContext>()
     .AddDefaultTokenProviders();

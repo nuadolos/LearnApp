@@ -18,6 +18,7 @@ namespace LearnAPI.Validate
         public Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user)
         {
             List<IdentityError> errors = new List<IdentityError>();
+            byte countSameEmail = 0;
 
             //Проверяет формат введенной почты
             string pattern = @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
@@ -32,8 +33,11 @@ namespace LearnAPI.Validate
             {
                 if (user.Email.Contains(regUser.Email))
                 {
-                    errors.Add(new IdentityError { Description = $"Данная почта {user.Email} уже зарегистрирована" });
-                    break;
+                    if (user.Id != regUser.Id)
+                    {
+                        errors.Add(new IdentityError { Description = $"Данная почта {user.Email} уже зарегистрирована" });
+                        break;
+                    }
                 }
             }
 

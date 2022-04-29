@@ -1,0 +1,27 @@
+﻿@using LearnEF.Entities.IdentityModel
+@model User
+
+<tr>
+    <td>
+        @Html.DisplayFor(model => model.Email)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.Surname)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.LockoutEnabled)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.LockoutEnd)
+    </td>
+    <td>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a>
+        <label> | </label>
+        <a asp-action="Details" asp-route-id="@Model.Id">Подробно</a>
+        <label> | </label>
+        <a asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+    </td>
+</tr>

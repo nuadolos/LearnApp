@@ -30,6 +30,8 @@ namespace LearnEF.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
+                    CodeTimeBlock = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

@@ -1,5 +1,4 @@
-﻿#nullable disable
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,9 +12,12 @@ namespace LearnEF.Entities.IdentityModel
     {
         [Required]
         [StringLength(40)]
-        public string Surname { get; set; }
+        public string? Surname { get; set; }
         [Required]
         [StringLength(40)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
+        [StringLength(6)]
+        public string? Code { get; set; }
+        public DateTime? CodeTimeBlock { get; set; }
     }
 }

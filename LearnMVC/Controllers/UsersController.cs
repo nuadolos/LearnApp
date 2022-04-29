@@ -1,55 +1,60 @@
-﻿using LearnEF.Entities;
+﻿using LearnEF.Entities.IdentityModel;
 using LearnHTTP;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LearnMVC.Controllers
 {
-    [Authorize(Roles = "admin")]
-    public class SourceLoreController : Controller
+    public class UsersController : Controller
     {
         /// <summary>
         /// Базовая ссылка для обращения к LearnAPI
         /// </summary>
         private readonly string _baseUrl;
 
+        private readonly UserManager<User> _userManager;
+
         /// <summary>
-        /// Получает URL Api для отправки и получения запросов
+        /// Получает URL Api для отправки и получения запросов,
+        /// а также управление над всеми учетными записями пользователей
         /// </summary>
-        /// <param name="repo"></param>
-        public SourceLoreController(IConfiguration configuration) => 
-            _baseUrl = configuration.GetSection("SourceLoreAddress").Value;
+        /// <param name="configuration"></param>
+        /// <param name="userManager"></param>
+        public UsersController(IConfiguration configuration, UserManager<User> userManager)
+        {
+            _baseUrl = configuration.GetSection("UsersAddress").Value;
+            _userManager = userManager;
+        }
 
 
         /// <summary>
-        /// Получает запись о ресурсе.
+        /// Получает запись о пользователе.
         /// Метод используется с целью сокращение кода.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private async Task<SourceLore?> GetSourceRecord(int id) =>
-            await HttpRequestClient.GetRequestAsync<SourceLore>(_baseUrl, id.ToString());
+        private async Task<User?> GetUserRecord(string id) =>
+            await HttpRequestClient.GetRequestAsync<User>(_baseUrl, id);
 
         #region Index/Details
 
         public async Task<IActionResult> Index()
         {
-            var sources = await HttpRequestClient.GetRequestAsync<List<SourceLore>>(_baseUrl);
+            var users = await HttpRequestClient.GetRequestAsync<List<User>>(_baseUrl);
 
-            return sources != null ? View(sources) : NotFound(HttpRequestClient.Errors);
+            return users != null ? View(users) : NotFound(HttpRequestClient.Errors);
         }
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var source = await GetSourceRecord(id.Value);
-            return source != null ? View(source) : NotFound(HttpRequestClient.Errors);
+            var user = await GetUserRecord(id);
+            return user != null ? View(user) : NotFound(HttpRequestClient.Errors);
         }
 
         #endregion
@@ -63,11 +68,11 @@ namespace LearnMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SourceLore source)
+        public async Task<IActionResult> Create(UserData user)
         {
             if (ModelState.IsValid)
             {
-                bool result = await HttpRequestClient.PostRequestAsync(source, _baseUrl);
+                bool result = await HttpRequestClient.PostRequestAsync(user, _baseUrl);
 
                 if (result)
                     return RedirectToAction(nameof(Index));
@@ -83,37 +88,53 @@ namespace LearnMVC.Controllers
                 }
             }
 
-            return View(source);
+            return View(user);
         }
 
         #endregion
 
         #region Edit
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var source = await GetSourceRecord(id.Value);
+            var currentUser = await GetUserRecord(id);
 
-            return source != null ? View(source) : NotFound(HttpRequestClient.Errors);
+            if (currentUser == null)
+            {
+                return NotFound(HttpRequestClient.Errors);
+            }
+            else
+            {
+                UserData user = new UserData
+                {
+                    Email = currentUser.Email,
+                    Id = currentUser.Id,
+                    Name = currentUser.Name,
+                    Surname = currentUser.Surname,
+                    Password = "123123"
+                };
+
+                return View(user);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, SourceLore source)
+        public async Task<IActionResult> Edit(string id, UserData user)
         {
-            if (id != source.Id)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
 
             if (ModelState.IsValid)
             {
-                bool result = await HttpRequestClient.PutRequestAsync(source, _baseUrl, id.ToString());
+                bool result = await HttpRequestClient.PutRequestAsync(user, _baseUrl, id);
 
                 if (result)
                     return RedirectToAction(nameof(Index));
@@ -129,33 +150,30 @@ namespace LearnMVC.Controllers
                 }
             }
 
-            return View(source);
+            return View(user);
         }
 
         #endregion
 
         #region Delete
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
 
-            var source = await GetSourceRecord(id.Value);
+            var user = await GetUserRecord(id);
 
-            return source != null ? View(source) : NotFound(HttpRequestClient.Errors);
+            return user != null ? View(user) : NotFound(HttpRequestClient.Errors);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([Bind("Id, Timestamp")] SourceLore source)
+        public async Task<IActionResult> Delete(User user)
         {
-            //Сериализация массива байтов в строку для вставки в маршрут
-            var timeStampString = JsonConvert.SerializeObject(source.Timestamp);
-
-            return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, source.Id.ToString(), timeStampString) 
+            return await HttpRequestClient.DeleteRequestAsync<User>(_baseUrl, user.Id) 
                 ? RedirectToAction(nameof(Index)) 
                 : BadRequest(HttpRequestClient.Errors);
         }

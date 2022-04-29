@@ -1,0 +1,25 @@
+﻿@using LearnEF.Entities.IdentityModel
+@model UserData
+
+<h4>Пользователь</h4>
+<hr/>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="form-group mt-3">
+    <label asp-for="Email" class="control-label fs-4"></label>
+    <input asp-for="Email" class="form-control mt-2"/>
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+
+<div class="form-group mt-3">
+    <label asp-for="Surname" class="control-label fs-4"></label>
+    <input asp-for="Surname" class="form-control mt-2"/>
+    <span asp-validation-for="Surname" class="text-danger"></span>
+</div>
+
+<div class="form-group mt-3">
+    <label asp-for="Name" class="control-label fs-4"></label>
+    <input asp-for="Name" class="form-control mt-2"/>
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>

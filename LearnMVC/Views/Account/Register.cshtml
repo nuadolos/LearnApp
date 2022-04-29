@@ -1,34 +1,38 @@
 ﻿@model LearnEF.Entities.IdentityModel.UserRegister
 
 <h2>Регистрация нового пользователя</h2>
-<form method="post" asp-controller="Account" asp-action="Register">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div>
-        <label asp-for="Email"></label><br/>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
+<div class="row">
+    <div class="col-md-4 mt-5">
+        <form method="post" asp-controller="Account" asp-action="Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="Email" class="control-label fs-4"></label><br/>
+                <input asp-for="Email" class="form-control mt-2"/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Surname" class="control-label fs-4"></label><br/>
+                <input asp-for="Surname" class="form-control mt-2"/>
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Name" class="control-label fs-4"></label>
+                <input asp-for="Name" class="form-control mt-2"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="Password" class="control-label fs-4"></label>
+                <input asp-for="Password" class="form-control mt-2"/>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div>
+                <label asp-for="PasswordConfirm" class="control-label fs-4"></label>
+                <input asp-for="PasswordConfirm" class="form-control mt-2"/>
+                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+            </div>
+            <div>
+                <input type="submit" value="Регистрация" class="btn btn-primary"/>
+            </div>
+        </form>
     </div>
-    <div>
-        <label asp-for="Surname"></label><br/>
-        <input asp-for="Surname" />
-        <span asp-validation-for="Surname"></span>
-    </div>
-    <div>
-        <label asp-for="Name"></label><br/>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
-    </div>
-    <div>
-        <label asp-for="Password"></label><br/>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="PasswordConfirm"></label><br />
-        <input asp-for="PasswordConfirm" />
-        <span asp-validation-for="PasswordConfirm"></span>
-    </div>
-    <div>
-        <input type="submit" value="Регистрация" />
-    </div>
-</form>
+</div>
