@@ -29,5 +29,8 @@ namespace LearnEF.Entities.IdentityModel
         [StringLength(40, ErrorMessage = "Имя не должно быть больше 40 символов")]
         [Display(Name = "Имя")]
         public string? Name { get; set; }
+
+        [Display(Name = "Имеет доступ?")]
+        public bool Enabled { get; set; }
     }
 }

@@ -12,11 +12,6 @@ builder.Services.AddDbContextPool<LearnContext>(options =>
 
 builder.Services.AddControllersWithViews();
 
-//Добавление собственных валидаторов для аутентификации
-//builder.Services.AddTransient<IUserValidator<User>, CustomUserValidator>();
-//builder.Services.AddTransient<IPasswordValidator<User>, CustomPasswordValidator>(
-//    service => new CustomPasswordValidator(6));
-
 //Параметры проверки пароля
 builder.Services.AddIdentity<User, IdentityRole>(
     options =>
@@ -41,7 +36,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

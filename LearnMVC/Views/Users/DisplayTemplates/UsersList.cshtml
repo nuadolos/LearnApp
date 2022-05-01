@@ -1,6 +1,15 @@
 ﻿@using LearnEF.Entities.IdentityModel
 @model User
 
+@functions
+{
+    public string UserEnabled(bool enable) =>
+            enable ? "Нет" : "Да";
+
+    public DateTime? UserBlockTime(DateTime? timeBlock) =>
+        timeBlock.HasValue ? timeBlock.Value.AddHours(3) : null;
+}
+
 <tr>
     <td>
         @Html.DisplayFor(model => model.Email)
@@ -12,10 +21,10 @@
         @Html.DisplayFor(model => model.Name)
     </td>
     <td>
-        @Html.DisplayFor(model => model.LockoutEnabled)
+        @UserEnabled(Model.LockoutEnabled)
     </td>
     <td>
-        @Html.DisplayFor(model => model.LockoutEnd)
+        @UserBlockTime(Model.CodeTimeBlock)
     </td>
     <td>
         <a asp-action="Edit" asp-route-id="@Model.Id">Редактировать</a>
@@ -23,5 +32,7 @@
         <a asp-action="Details" asp-route-id="@Model.Id">Подробно</a>
         <label> | </label>
         <a asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+        <label> | </label>
+        <a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.Id">Права доступа</a>
     </td>
 </tr>

@@ -24,20 +24,37 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<IdentityRole> GetRoles() => _roleManager.Roles.ToList();
+        public IEnumerable<IdentityRole> GetRoles() =>
+            _roleManager.Roles.ToList();
+
+        /// <summary>
+        /// Запрос на получение роли из БД
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IdentityRole>> GetRole([FromRoute] string id)
+        {
+            IdentityRole role = await _roleManager.FindByIdAsync(id);
+
+            if (role != null)
+                return Ok(role);
+
+            return NotFound(new List<ValidateError> { new ValidateError("Роль не найдена") });
+        }
 
         /// <summary>
         /// Запрос на создание новой роли
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="role"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] string name)
+        public async Task<IActionResult> Create([FromBody] Role role)
         {
             List<ValidateError>? errors = null;
 
             //Создает роль в БД
-            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
+            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(role.Name));
             if (result.Succeeded)
                 return Ok();
             else
@@ -55,13 +72,40 @@ namespace LearnAPI.Controllers
         }
 
         /// <summary>
+        /// Запрос на заполнение данных модели UserRoles
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("User/{id}")]
+        public async Task<IActionResult> Edit([FromRoute] string id)
+        {
+            User user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                // получем список ролей пользователя
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var allRoles = _roleManager.Roles.ToList();
+                UserRoles model = new UserRoles
+                {
+                    UserId = user.Id,
+                    UserEmail = user.Email,
+                    UsRoles = userRoles,
+                    AllRoles = allRoles
+                };
+                return Ok(model);
+            }
+
+            return NotFound();
+        }
+
+        /// <summary>
         /// Запрос на изменение ролей конкретного пользователя
         /// </summary>
         /// <param name="id"></param>
         /// <param name="roles"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] List<string> roles)
+        public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] IList<string> roles)
         {
             User user = await _userManager.FindByIdAsync(id);
 
@@ -96,9 +140,9 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        public async Task<IActionResult> Delete([FromRoute] IdentityRole model)
         {
-            IdentityRole role = await _roleManager.FindByIdAsync(id);
+            IdentityRole role = await _roleManager.FindByIdAsync(model.Id);
 
             if (role != null)
             {

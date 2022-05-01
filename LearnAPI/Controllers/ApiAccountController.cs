@@ -33,7 +33,7 @@ namespace LearnAPI.Controllers
         {
             List<ValidateError>? errors = null;
 
-            //Проверяет на наличие пустых полей
+            // Проверяет на наличие пустых полей
             if (string.IsNullOrEmpty(model.Email) ||
                 string.IsNullOrEmpty(model.Surname) ||
                 string.IsNullOrEmpty(model.Name) ||
@@ -45,7 +45,7 @@ namespace LearnAPI.Controllers
                 return BadRequest(errors);
             }
 
-            //Проверяет совпадение паролей
+            // Проверяет совпадение паролей
             if (model.Password != model.PasswordConfirm)
             {
                 errors = new List<ValidateError>();
@@ -53,20 +53,20 @@ namespace LearnAPI.Controllers
                 return BadRequest(errors);
             }
 
-            //Создание нового пользователя
+            // Создание нового пользователя
             User user = new User { Email = model.Email, UserName = model.Email, Surname = model.Surname, Name = model.Name };
 
-            //Создает новую запись о пользователе в БД
+            // Создает новую запись о пользователе в БД
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                //Возвращает код 200, означающий что учетная запись успешно создана
+                // Возвращает код 200, означающий что учетная запись успешно создана
                 return Ok();
             }
             else
             {
-                //Получение ошибок при создании записи
+                // Получение ошибок при создании записи
                 errors = new List<ValidateError>();
 
                 foreach (var error in result.Errors)
@@ -75,7 +75,7 @@ namespace LearnAPI.Controllers
                 }
             }
 
-            //Возвращает ошибку 400, связанную с неправильным вводом данных
+            // Возвращает ошибку 400, связанную с неправильным вводом данных
             return BadRequest(errors);
         }
 
@@ -97,26 +97,26 @@ namespace LearnAPI.Controllers
                 return BadRequest(errors);
             }
 
-            if ((await _userManager.FindByEmailAsync(model.Email)).LockoutEnabled)
-            {
-                //Входит в учетную записи
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+            // Входит в учетную записи
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-                //В случае ввода верных данных, возвращает код 200
-                if (result.Succeeded)
+            // В случае ввода верных данных, возвращает код 200
+            if (result.Succeeded)
+            {
+                if ((await _userManager.FindByEmailAsync(model.Email)).LockoutEnabled)
                     return Ok();
                 else
                 {
                     errors = new List<ValidateError>();
 
-                    errors.Add(new ValidateError("Неправильный логин или пароль"));
+                    errors.Add(new ValidateError("Аккаунт заблокирован"));
                 }
             }
             else
             {
                 errors = new List<ValidateError>();
 
-                errors.Add(new ValidateError("Аккаунт заблокирован"));
+                errors.Add(new ValidateError("Неправильный логин или пароль"));
             }
 
             //Возвращает ошибку 400, связанную с неправильным вводом данных

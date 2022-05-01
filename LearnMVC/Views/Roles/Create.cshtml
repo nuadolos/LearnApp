@@ -1,4 +1,4 @@
-﻿@model LearnEF.Entities.IdentityModel.UserData
+﻿@model LearnEF.Entities.IdentityModel.Role
 
 @{
     ViewData["Title"] = "Создание";
@@ -9,14 +9,7 @@
 <div class="row">
     <div class="col-md-4 mt-5">
         <form asp-action="Create">
-            <input asp-for="Id" type="hidden" value="0"/>
-            <input type="hidden" asp-for="Enabled" value="true"/>
-            @Html.EditorForModel("Users")
-            <div class="form-group mt-3">
-                <label asp-for="Password" class="control-label fs-4"></label>
-                <input asp-for="Password" class="form-control mt-2"/>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+            @Html.EditorForModel("Roles")
             <div class="form-group mt-4">
                 <input type="submit" value="Создать" class="btn btn-primary" />
             </div>

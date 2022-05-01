@@ -9,15 +9,9 @@ namespace LearnEF.Entities.IdentityModel
 {
     public class UserRoles
     {
-        public string? Id { get; set; }
-        public string? Email { get; set; }
+        public string? UserId { get; set; }
+        public string? UserEmail { get; set; }
         public List<IdentityRole>? AllRoles { get; set; }
-        public IList<string>? Roles { get; set; }
-
-        public UserRoles()
-        {
-            AllRoles = new List<IdentityRole>();
-            Roles = new List<string>();
-        }
+        public IList<string>? UsRoles { get; set; }
     }
 }

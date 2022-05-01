@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220429154242_Final")]
+    [Migration("20220430140307_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

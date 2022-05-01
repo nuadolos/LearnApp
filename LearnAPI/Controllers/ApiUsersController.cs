@@ -11,14 +11,16 @@ namespace LearnAPI.Controllers
     {
         private readonly UserManager<User> _userManager;
 
-        public ApiUsersController(UserManager<User> userManager) => _userManager = userManager;
+        public ApiUsersController(UserManager<User> userManager) => 
+            _userManager = userManager;
 
         /// <summary>
         /// Запрос на получение всех пользователь
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<User> GetUsers() => _userManager.Users.ToList();
+        public IEnumerable<User> GetUsers() => 
+            _userManager.Users.ToList();
 
         /// <summary>
         /// Запрос на получение конкретного пользователя
@@ -34,7 +36,6 @@ namespace LearnAPI.Controllers
                 return Ok(user);
 
             return NotFound(new List<ValidateError> { new ValidateError("Пользователь не найден") });
-
         }
 
         /// <summary>
@@ -47,16 +48,20 @@ namespace LearnAPI.Controllers
         {
             List<ValidateError>? errors = null;
 
+            // Создание экземляра класса User
             User user = new User { 
                 Email = model.Email, UserName = model.Email,
-                Surname = model.Surname, Name = model.Name
+                Surname = model.Surname, Name = model.Name, 
+                LockoutEnabled = model.Enabled
             };
 
+            // Создание нового пользователя
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
                 return Ok();
             else
             {
+                // Отправляет ошибки, вызванные отрицательным результатом создания пользователя
                 errors = new List<ValidateError>();
 
                 foreach (var error in result.Errors)
@@ -79,20 +84,25 @@ namespace LearnAPI.Controllers
         {
             List<ValidateError>? errors = null;
 
+            // Поиск пользователя по уникальному идентификатору
             User user = await _userManager.FindByIdAsync(model.Id);
 
             if (user != null)
             {
+                // Обновляет все возможные поля
                 user.Email = model.Email;
                 user.UserName = model.Email;
                 user.Surname = model.Surname;
                 user.Name = model.Name;
+                user.LockoutEnabled = model.Enabled;
 
+                // Сохраняет изменения в базе данных
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                     return Ok();
                 else
                 {
+                    // Отправляет ошибки, вызванные отрицательным результатом обновления пользователя
                     errors = new List<ValidateError>();
 
                     foreach (var error in result.Errors)
@@ -121,15 +131,18 @@ namespace LearnAPI.Controllers
         {
             List<ValidateError>? errors = null;
 
+            // Поиск пользователя по уникальному идентификатору
             User user = await _userManager.FindByIdAsync(id);
 
             if (user != null)
             {
+                // Удаляет учетную запись пользователя
                 var result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)
                     return Ok();
                 else
                 {
+                    // Отправляет ошибки, вызванные отрицательным результатом удаления пользователя
                     errors = new List<ValidateError>();
 
                     foreach (var error in result.Errors)

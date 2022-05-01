@@ -46,6 +46,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<LearnContext>()
     .AddDefaultTokenProviders();
 
+//ֿאנאלוענû הכÿ cookie פאיכמג
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;

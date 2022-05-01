@@ -1,11 +1,13 @@
 ﻿using LearnEF.Entities.IdentityModel;
 using LearnHTTP;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMVC.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         /// <summary>
@@ -13,19 +15,12 @@ namespace LearnMVC.Controllers
         /// </summary>
         private readonly string _baseUrl;
 
-        private readonly UserManager<User> _userManager;
-
         /// <summary>
-        /// Получает URL Api для отправки и получения запросов,
-        /// а также управление над всеми учетными записями пользователей
+        /// Получает URL Api для отправки и получения запросов
         /// </summary>
         /// <param name="configuration"></param>
-        /// <param name="userManager"></param>
-        public UsersController(IConfiguration configuration, UserManager<User> userManager)
-        {
+        public UsersController(IConfiguration configuration) =>
             _baseUrl = configuration.GetSection("UsersAddress").Value;
-            _userManager = userManager;
-        }
 
 
         /// <summary>
@@ -116,6 +111,7 @@ namespace LearnMVC.Controllers
                     Id = currentUser.Id,
                     Name = currentUser.Name,
                     Surname = currentUser.Surname,
+                    Enabled = currentUser.LockoutEnabled,
                     Password = "123123"
                 };
 

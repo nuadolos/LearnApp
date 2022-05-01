@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IdentityRole
+
+<tr>
+    <td>
+        @Html.DisplayFor(model => model.Name)
+    </td>
+    <td>
+        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Удалить</a>
+    </td>
+</tr>

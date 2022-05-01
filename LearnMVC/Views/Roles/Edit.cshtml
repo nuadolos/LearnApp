@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model LearnEF.Entities.IdentityModel.UserRoles
+
+@{
+    ViewData["Title"] = "Редактирование";
+}
+
+<h4>Изменение ролей пользователя @Model.UserEmail</h4>
+
+<div class="row">
+    <div class="col-md-4 mt-5">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="UserId"/>
+            @foreach(IdentityRole role in Model.AllRoles)
+            {
+                <input type="checkbox" name="roles" value="@role.Name"
+                @(Model.UsRoles.Contains(role.Name) ? "checked=\"checked\"" : "")/>@role.Name<br/>
+            }
+            <div class="form-group mt-4">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Users" asp-action="Index">Назад к списку</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
