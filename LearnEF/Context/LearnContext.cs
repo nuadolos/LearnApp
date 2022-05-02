@@ -20,6 +20,7 @@ namespace LearnEF.Context
         { }
 
         public DbSet<Entities.SourceLore> SourceLore { get; set; }
+        public DbSet<Entities.ShareLearn> ShareLearn { get; set; }
         public DbSet<Entities.Learn> Learn { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -43,6 +44,11 @@ namespace LearnEF.Context
 
             modelBuilder.Entity<Entities.Learn>()
                 .HasOne(e => e.SourceLore)
+                .WithMany(e => e.Learn)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Entities.Learn>()
+                .HasOne(e => e.User)
                 .WithMany(e => e.Learn)
                 .OnDelete(DeleteBehavior.Cascade);
         }

@@ -24,6 +24,12 @@ namespace LearnEF.DataInitializer
             if (await roleManager.FindByNameAsync("admin") == null)
                 await roleManager.CreateAsync(new IdentityRole("admin"));
 
+            if (await roleManager.FindByNameAsync("student") == null)
+                await roleManager.CreateAsync(new IdentityRole("student"));
+
+            if (await roleManager.FindByNameAsync("teacher") == null)
+                await roleManager.CreateAsync(new IdentityRole("teacher"));
+
             if (await userManager.FindByNameAsync("tester") == null)
             {
                 User u = new User { 
@@ -61,16 +67,19 @@ namespace LearnEF.DataInitializer
             lores.ForEach(lore => context.SourceLore.Add(lore));
             context.SaveChanges();
 
+            User newUser = await userManager.FindByNameAsync("2nuadolos1@gmail.com");
+
             List<Learn> learns = new List<Learn>()
             {
-                new Learn() 
-                { 
-                    Title = "test1", 
+                new Learn()
+                {
+                    Title = "test1",
                     Link = "test11",
-                    CreateDate = DateTime.Now, 
+                    CreateDate = DateTime.Now,
                     DateReading = DateTime.Now,
-                    Image = "test111", 
-                    SourceLoreId = 1, 
+                    Image = "test111",
+                    SourceLoreId = 1,
+                    UserId = newUser.Id,
                     IsStudying = false
                 },
 
@@ -82,6 +91,7 @@ namespace LearnEF.DataInitializer
                     DateReading = DateTime.Now,
                     Image = "test222",
                     SourceLoreId = 2,
+                    UserId = newUser.Id,
                     IsStudying = true
                 },
 
@@ -93,6 +103,7 @@ namespace LearnEF.DataInitializer
                     DateReading = DateTime.Now,
                     Image = "test333",
                     SourceLoreId = 2,
+                    UserId = newUser.Id,
                     IsStudying = false
                 },
             };

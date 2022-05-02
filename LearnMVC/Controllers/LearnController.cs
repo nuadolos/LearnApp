@@ -41,14 +41,21 @@ namespace LearnMVC.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private async Task<Learn?> GetLearnRecord(int id) => 
-            await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, id.ToString());
+        private async Task<Learn?> GetLearnRecord(string email, int id, string action) => 
+            await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, email, id.ToString(), action);
 
         #region Index/Details
 
         public async Task<IActionResult> Index()
         {
-            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl);
+            string? userName = User?.Identity?.Name;
+
+            if (userName == null)
+            {
+                return BadRequest();
+            }
+
+            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, userName);
 
             if (learns != null)
             {
@@ -72,12 +79,15 @@ namespace LearnMVC.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            string? userName = User?.Identity?.Name;
+
+            if (id == null || userName == null)
             {
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(id.Value);
+            var learn = await GetLearnRecord(userName, id.Value, nameof(Details));
+
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Errors);
         }
 
@@ -95,9 +105,11 @@ namespace LearnMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Learn learn)
         {
-            if (ModelState.IsValid)
+            string? userName = User?.Identity?.Name;
+
+            if (ModelState.IsValid && userName != null)
             {
-                bool result = await HttpRequestClient.PostRequestAsync(learn, _baseUrl);
+                bool result = await HttpRequestClient.PostRequestAsync(learn, _baseUrl, userName);
 
                 if (result)
                     return RedirectToAction(nameof(Index));
@@ -123,12 +135,14 @@ namespace LearnMVC.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            string? userName = User?.Identity?.Name;
+
+            if (id == null || userName == null)
             {
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(id.Value);
+            var learn = await GetLearnRecord(userName, id.Value, nameof(Edit));
 
             ViewData["SourceLoreId"] = SourceLoreList;
 
@@ -172,12 +186,14 @@ namespace LearnMVC.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            string? userName = User?.Identity?.Name;
+
+            if (id == null || userName == null)
             {
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(id.Value);
+            var learn = await GetLearnRecord(userName, id.Value, nameof(Delete));
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Errors);
         }

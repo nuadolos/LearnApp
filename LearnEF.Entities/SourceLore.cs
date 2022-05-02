@@ -12,9 +12,10 @@ namespace LearnEF.Entities
     [Table("SourceLore")]
     public partial class SourceLore : EntityBase
     {
-        [Required]
-        [StringLength(50)]
+        [Required(ErrorMessage = "Поле \"Наименование\" пустое")]
+        [Display(Name = "Наименование")]
         public string? Name { get; set; }
+
         [InverseProperty(nameof(SourceLore))]
         public List<Learn>? Learn { get; set; } = new List<Learn>();
     }

@@ -1,4 +1,5 @@
 ﻿using LearnEF.Entities.Base;
+using LearnEF.Entities.IdentityModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,28 +15,41 @@ namespace LearnEF.Entities
     public partial class Learn : EntityBase
     {
         [Display(Name = "Название")]
-        [Required]
+        [Required(ErrorMessage = "Поле \"Название\" пустое")]
         [StringLength(100)]
         public string? Title { get; set; }
+
         [Display(Name = "URL материала")]
-        [Required]
+        [Required(ErrorMessage = "Поле \"URL материала\" пустое")]
         [StringLength(1000)]
         public string? Link { get; set; }
+
         [Display(Name = "Дата создания")]
-        [Required]
+        [Required(ErrorMessage = "Поле \"Дата создания\" пустое")]
         [DataType(DataType.Date)]
         public DateTime? CreateDate { get; set; }
+
         [Display(Name = "Дата прочтения")]
         [DataType(DataType.Date)]
         public DateTime? DateReading { get; set; }
+
         [Display(Name = "URL картинки")]
         public string? Image { get; set; }
+
         [Display(Name = "Ресурс")]
         [ForeignKey(nameof(SourceLoreId))]
         public int? SourceLoreId { get; set; }
+
+        [Display(Name = "Принадлежит")]
+        [ForeignKey(nameof(UserId))]
+        public string? UserId { get; set; }
+
         [Display(Name = "Изучен?")]
-        [Required]
+        [Required(ErrorMessage = "Поле \"Изучен?\" пустое")]
         public bool IsStudying { get; set; }
+
+        public User? User { get; set; }
+
         public SourceLore? SourceLore { get; set; }
     }
 }

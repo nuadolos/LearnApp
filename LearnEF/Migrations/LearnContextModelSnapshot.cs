@@ -143,14 +143,50 @@ namespace LearnEF.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SourceLoreId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("Title", "Link")
                         .IsUnique();
 
                     b.ToTable("Learn");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.ShareLearn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("CanChange")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("LearnId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShareLearn");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.SourceLore", b =>
@@ -163,8 +199,7 @@ namespace LearnEF.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -316,7 +351,29 @@ namespace LearnEF.Migrations
                         .HasForeignKey("SourceLoreId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
+                        .WithMany("Learn")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.Navigation("SourceLore");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.ShareLearn", b =>
+                {
+                    b.HasOne("LearnEF.Entities.Learn", "Learn")
+                        .WithMany()
+                        .HasForeignKey("LearnId");
+
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Learn");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -368,6 +425,11 @@ namespace LearnEF.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.IdentityModel.User", b =>
+                {
+                    b.Navigation("Learn");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.SourceLore", b =>

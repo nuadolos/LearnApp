@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace LearnEF.Entities
     public partial class Learn
     {
         [NotMapped]
+        [Display(Name = "Статус")]
         public string? Studied
         {
             get => IsStudying ? "Изучен" : "Не изучен";
@@ -17,6 +19,9 @@ namespace LearnEF.Entities
 
         [NotMapped]
         public string? LoreName { get; set; }
+
+        [NotMapped]
+        public string? UserName { get; set; }
 
         //Новый синтаксис оператора switch
         //return SourceLoreId switch

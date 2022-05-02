@@ -58,7 +58,12 @@ namespace LearnAPI.Controllers
             // Создание нового пользователя
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
+            {
+                // Присваение роли новому пользователю
+                await _userManager.AddToRoleAsync(user, "student");
+
                 return Ok();
+            }
             else
             {
                 // Отправляет ошибки, вызванные отрицательным результатом создания пользователя

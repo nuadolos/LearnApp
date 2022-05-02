@@ -58,7 +58,7 @@ namespace LearnEF.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -184,6 +184,7 @@ namespace LearnEF.Migrations
                     DateReading = table.Column<DateTime>(type: "date", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SourceLoreId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsStudying = table.Column<bool>(type: "bit", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
@@ -191,11 +192,43 @@ namespace LearnEF.Migrations
                 {
                     table.PrimaryKey("PK_Learn", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Learn_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Learn_SourceLore_SourceLoreId",
                         column: x => x.SourceLoreId,
                         principalTable: "SourceLore",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShareLearn",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LearnId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CanChange = table.Column<bool>(type: "bit", nullable: false),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShareLearn", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShareLearn_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShareLearn_Learn_LearnId",
+                        column: x => x.LearnId,
+                        principalTable: "Learn",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -247,6 +280,21 @@ namespace LearnEF.Migrations
                 table: "Learn",
                 columns: new[] { "Title", "Link" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Learn_UserId",
+                table: "Learn",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShareLearn_LearnId",
+                table: "ShareLearn",
+                column: "LearnId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShareLearn_UserId",
+                table: "ShareLearn",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -267,10 +315,13 @@ namespace LearnEF.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Learn");
+                name: "ShareLearn");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Learn");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

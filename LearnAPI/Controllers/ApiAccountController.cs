@@ -61,6 +61,9 @@ namespace LearnAPI.Controllers
 
             if (result.Succeeded)
             {
+                // Присваение роли новому пользователю
+                await _userManager.AddToRoleAsync(user, "student");
+
                 // Возвращает код 200, означающий что учетная запись успешно создана
                 return Ok();
             }
