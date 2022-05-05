@@ -51,5 +51,14 @@ namespace LearnEF.Entities
         public User? User { get; set; }
 
         public SourceLore? SourceLore { get; set; }
+
+        [InverseProperty(nameof(Learn))]
+        public List<ShareLearn>? ShareLearn { get; } = new List<ShareLearn>();
+
+        [InverseProperty(nameof(Learn))]
+        public List<GroupLearn>? GroupLearn { get; } = new List<GroupLearn>();
+
+        [InverseProperty(nameof(Learn))]
+        public List<LearnDocuments>? LearnDocuments { get; } = new List<LearnDocuments>();
     }
 }

@@ -23,5 +23,17 @@ namespace LearnEF.Entities.IdentityModel
 
         [InverseProperty(nameof(User))]
         public List<Learn>? Learn { get; set; } = new List<Learn>();
+
+        [InverseProperty(nameof(User))]
+        public List<ShareLearn>? ShareLearn { get; set; } = new List<ShareLearn>();
+
+        [InverseProperty(nameof(User))]
+        public List<GroupUser>? GroupUser { get; set; } = new List<GroupUser>();
+
+        [InverseProperty("SentUser")]
+        public List<Friend>? SentUser { get; set; } = new List<Friend>();
+
+        [InverseProperty("AcceptedUser")]
+        public List<Friend>? AcceptedUser { get; set; } = new List<Friend>();
     }
 }

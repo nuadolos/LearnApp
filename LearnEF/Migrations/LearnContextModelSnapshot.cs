@@ -22,6 +22,196 @@ namespace LearnEF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("LearnEF.Entities.Friend", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AcceptedUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("MakeFriend")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SentUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AcceptedUserId");
+
+                    b.HasIndex("SentUserId");
+
+                    b.ToTable("Friend");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("GroupTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int?>("TypeId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Group");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupLearn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("LearnId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("LearnId");
+
+                    b.ToTable("GroupLearn");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupRole");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GroupType");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GroupRoleId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("bit");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("GroupRoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GroupUser");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.IdentityModel.User", b =>
                 {
                     b.Property<string>("Id")
@@ -158,6 +348,32 @@ namespace LearnEF.Migrations
                     b.ToTable("Learn");
                 });
 
+            modelBuilder.Entity("LearnEF.Entities.LearnDocuments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<byte[]>("Document")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int?>("LearnId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnId");
+
+                    b.ToTable("LearnDocuments");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.ShareLearn", b =>
                 {
                     b.Property<int>("Id")
@@ -199,7 +415,8 @@ namespace LearnEF.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -344,6 +561,74 @@ namespace LearnEF.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LearnEF.Entities.Friend", b =>
+                {
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "AcceptedUser")
+                        .WithMany("AcceptedUser")
+                        .HasForeignKey("AcceptedUserId");
+
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "SentUser")
+                        .WithMany("SentUser")
+                        .HasForeignKey("SentUserId");
+
+                    b.Navigation("AcceptedUser");
+
+                    b.Navigation("SentUser");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.Group", b =>
+                {
+                    b.HasOne("LearnEF.Entities.GroupType", "GroupType")
+                        .WithMany("Group")
+                        .HasForeignKey("GroupTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("GroupType");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupLearn", b =>
+                {
+                    b.HasOne("LearnEF.Entities.Group", "Group")
+                        .WithMany("GroupLearn")
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("LearnEF.Entities.Learn", "Learn")
+                        .WithMany("GroupLearn")
+                        .HasForeignKey("LearnId");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Learn");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupUser", b =>
+                {
+                    b.HasOne("LearnEF.Entities.Group", "Group")
+                        .WithMany("GroupUser")
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("LearnEF.Entities.GroupRole", "GroupRole")
+                        .WithMany("GroupUser")
+                        .HasForeignKey("GroupRoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
+                        .WithMany("GroupUser")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("GroupRole");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.Learn", b =>
                 {
                     b.HasOne("LearnEF.Entities.SourceLore", "SourceLore")
@@ -353,22 +638,30 @@ namespace LearnEF.Migrations
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany("Learn")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("SourceLore");
 
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LearnEF.Entities.LearnDocuments", b =>
+                {
+                    b.HasOne("LearnEF.Entities.Learn", "Learn")
+                        .WithMany("LearnDocuments")
+                        .HasForeignKey("LearnId");
+
+                    b.Navigation("Learn");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.ShareLearn", b =>
                 {
                     b.HasOne("LearnEF.Entities.Learn", "Learn")
-                        .WithMany()
+                        .WithMany("ShareLearn")
                         .HasForeignKey("LearnId");
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
-                        .WithMany()
+                        .WithMany("ShareLearn")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Learn");
@@ -427,9 +720,43 @@ namespace LearnEF.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("LearnEF.Entities.Group", b =>
+                {
+                    b.Navigation("GroupLearn");
+
+                    b.Navigation("GroupUser");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupRole", b =>
+                {
+                    b.Navigation("GroupUser");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.GroupType", b =>
+                {
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.IdentityModel.User", b =>
                 {
+                    b.Navigation("AcceptedUser");
+
+                    b.Navigation("GroupUser");
+
                     b.Navigation("Learn");
+
+                    b.Navigation("SentUser");
+
+                    b.Navigation("ShareLearn");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.Learn", b =>
+                {
+                    b.Navigation("GroupLearn");
+
+                    b.Navigation("LearnDocuments");
+
+                    b.Navigation("ShareLearn");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.SourceLore", b =>

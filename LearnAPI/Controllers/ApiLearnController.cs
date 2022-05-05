@@ -22,7 +22,7 @@ namespace LearnAPI.Controllers
             _repo = repo;
             _userManager = userManager;
 
-            //Игнорирование поля SourceLore в объекте Learn
+            //Игнорирование поля SourceLore и User в объекте Learn
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<Learn, Learn>()
                 .ForMember(x => x.SourceLore, opt => opt.Ignore())

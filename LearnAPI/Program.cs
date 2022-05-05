@@ -23,9 +23,10 @@ builder.Services.AddDbContextPool<LearnContext>(options =>
 
 builder.Services.AddControllersWithViews();
 
-//ƒобавление UserRepo и RoleRepo в контейнер DI
+//ƒобавление репозиториев дл€ работы с данными в контейнер DI
 builder.Services.AddScoped<ILearnRepo, LearnRepo>();
 builder.Services.AddScoped<ISourceLoreRepo, SourceLoreRepo>();
+builder.Services.AddScoped<IShareLearn, ShareLearnRepo>();
 
 #endregion
 

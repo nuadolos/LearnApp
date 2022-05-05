@@ -47,9 +47,14 @@ namespace LearnEF.Context
                 .WithMany(e => e.Learn)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Entities.Learn>()
-                .HasOne(e => e.User)
-                .WithMany(e => e.Learn)
+            modelBuilder.Entity<Entities.Group>()
+                .HasOne(e => e.GroupType)
+                .WithMany(e => e.Group)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Entities.GroupUser>()
+                .HasOne(e => e.GroupRole)
+                .WithMany(e => e.GroupUser)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

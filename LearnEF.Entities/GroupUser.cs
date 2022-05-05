@@ -10,21 +10,26 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Entities
 {
-    [Table("ShareLearn")]
-    public class ShareLearn : EntityBase
+    [Table("GroupUser")]
+    public class GroupUser : EntityBase
     {
-        [Display(Name = "Материал")]
-        [ForeignKey(nameof(Learn))]
-        public int? LearnId { get; set; }
+        [Display(Name = "Группа")]
+        [ForeignKey(nameof(GroupId))]
+        public int? GroupId { get; set; }
 
         [Display(Name = "Пользователь")]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
-        [Display(Name = "Имеет доступ к изменению?")]
-        public bool CanChange { get; set; }
+        [Display(Name = "Роль")]
+        [ForeignKey(nameof(GroupRoleId))]
+        public int? GroupRoleId { get; set; }
 
+        [Display(Name = "Заблокирован?")]
+        public bool IsBlocked { get; set; }
+
+        public Group? Group { get; set; }
         public User? User { get; set; }
-        public Learn? Learn { get; set; }
+        public GroupRole? GroupRole { get; set; }
     }
 }

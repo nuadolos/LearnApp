@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Entities
 {
-    [Table("SourceLore")]
-    public partial class SourceLore : EntityBase
+    [Table("GroupType")]
+    public class GroupType : EntityBase
     {
-        [Required(ErrorMessage = "Поле \"Наименование\" пустое")]
         [Display(Name = "Наименование")]
+        [Required(ErrorMessage = "Поле \"Наименование\" пустое")]
         [StringLength(20)]
         public string? Name { get; set; }
 
-        [InverseProperty(nameof(SourceLore))]
-        public List<Learn>? Learn { get; } = new List<Learn>();
+        [InverseProperty(nameof(GroupType))]
+        public List<Group>? Group { get; } = new List<Group>();
     }
 }
