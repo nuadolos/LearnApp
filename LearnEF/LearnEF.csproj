@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LearnEF.Entities\LearnEF.Entities.csproj" />
-    <ProjectReference Include="..\LearnHTTP\LearnHTTP.csproj" />
   </ItemGroup>
 
   <ItemGroup>

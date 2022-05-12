@@ -1,7 +1,6 @@
 ﻿using LearnEF.Context;
 using LearnEF.Entities.Base;
 using LearnEF.Entities.ErrorModel;
-using LearnHTTP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;

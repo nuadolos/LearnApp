@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using LearnEF.Entities;
 using LearnEF.Entities.ErrorModel;
-using LearnEF.Entities.IdentityModel;
 using LearnEF.Repos;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -12,65 +10,60 @@ namespace LearnAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiFriendController : ControllerBase
+    public class ApiGroupLearnController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        private readonly IFriendRepo _repo;
+        private readonly IGroupLearnRepo _repo;
 
-        public ApiFriendController(IFriendRepo repo, UserManager<User> userManager)
+        public ApiGroupLearnController(IGroupLearnRepo repo)
         {
             _repo = repo;
-            _userManager = userManager;
 
-            //Игнорирование поля SentUser и AcceptedUser в объекте Friend
+            //Игнорирование поля GroupLearn в объекте Learn
             var config = new MapperConfiguration(
-                cfg => cfg.CreateMap<User, User>()
-                .ForMember(x => x.SentUser, opt => opt.Ignore())
-                .ForMember(x => x.AcceptedUser, opt => opt.Ignore()));
+                cfg => cfg.CreateMap<Learn, Learn>()
+                .ForMember(x => x.GroupLearn, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
 
         /// <summary>
-        /// Запрос на получение всех друзей конкретного пользователя
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        [HttpGet("Friends/{email}")]
-        public async Task<IEnumerable<User>> GetFriends([FromRoute] string email)
-        {
-            User user = await _userManager.FindByNameAsync(email);
-            var friends = _repo.GetFriends(user.Id);
-            return _mapper.Map<List<User>, List<User>>(friends);
-        }
-
-        /// <summary>
-        /// Запрос на получение конкретной дружбы
+        /// Запрос на получение всех материалов, принадлежащих конкретной группе
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("Friend/{id}")]
-        public ActionResult<Friend> GetFriend([FromRoute] int id)
+        [HttpGet("Group/{id}")]
+        public IEnumerable<Learn> GetGroupLearns([FromRoute] int id) =>
+            _mapper.Map<List<Learn>, List<Learn>>(_repo.GetGroupLearns(id));
+
+        /// <summary>
+        /// Запрос на получение конкретной записи материала группы
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public ActionResult<GroupLearn> GetGroupLearn([FromRoute] int id)
         {
-            var friend = _repo.GetRecord(id);
+            var groupLearn = _repo.GetRecord(id);
 
-            if (friend != null)
-                return Ok(friend);
+            if (groupLearn != null)
+                return Ok(groupLearn);
 
-            return NotFound(new List<ValidateError> { new ValidateError("Нет данных о дружбе") });
+            return NotFound(new List<ValidateError> { 
+                new ValidateError("Нет данных о материале, принадлежащий конкретной группе") 
+            });
         }
 
         /// <summary>
-        /// Запрос на создание дружбы
+        /// Запрос на добавление материала в конкретную группу
         /// </summary>
-        /// <param name="friend"></param>
+        /// <param name="groupLearn"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateFriend([FromBody] Friend friend)
+        public IActionResult CreateGroupLearn([FromBody] GroupLearn groupLearn)
         {
             try
             {
-                _repo.Add(friend);
+                _repo.Add(groupLearn);
             }
             catch (DbMessageException ex)
             {
@@ -86,13 +79,13 @@ namespace LearnAPI.Controllers
         }
 
         /// <summary>
-        /// Запрос на удаление дружбы
+        /// Запрос на удаление материала из конкретной группы
         /// </summary>
         /// <param name="id"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveFriend([FromRoute] int id, [FromRoute] string timestamp)
+        public IActionResult RemoveGroupLearn([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";

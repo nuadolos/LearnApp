@@ -126,6 +126,9 @@ namespace LearnAPI.Controllers
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";
 
+            if (timestamp.Contains("%2F"))
+                timestamp = timestamp.Replace("%2F", "/");
+
             var ts = JsonConvert.DeserializeObject<byte[]>(timestamp);
 
             try
