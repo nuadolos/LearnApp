@@ -22,6 +22,13 @@ namespace LearnEF.Context
         public DbSet<Entities.SourceLore> SourceLore { get; set; }
         public DbSet<Entities.ShareLearn> ShareLearn { get; set; }
         public DbSet<Entities.Learn> Learn { get; set; }
+        public DbSet<Entities.LearnDocuments> LearnDocuments { get; set; }
+        public DbSet<Entities.Friend> Friend { get; set; }
+        public DbSet<Entities.Group> Group { get; set; }
+        public DbSet<Entities.GroupLearn> GroupLearn { get; set; }
+        public DbSet<Entities.GroupUser> GroupUser { get; set; }
+        public DbSet<Entities.GroupRole> GroupRole { get; set; }
+        public DbSet<Entities.GroupType> GroupType { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

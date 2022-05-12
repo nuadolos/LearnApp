@@ -18,7 +18,6 @@ namespace LearnAPI.Validate
         public Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user)
         {
             List<IdentityError> errors = new List<IdentityError>();
-            byte countSameEmail = 0;
 
             //Проверяет формат введенной почты
             string pattern = @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +

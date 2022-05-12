@@ -20,9 +20,6 @@ namespace LearnEF.Entities
         [ForeignKey(nameof(LearnId))]
         public int? LearnId { get; set; }
 
-        [Display(Name = "Материал в открытом доступе?")]
-        public bool IsVisible { get; set; }
-
         public Group? Group { get; set; }
         public Learn? Learn { get; set; }
     }

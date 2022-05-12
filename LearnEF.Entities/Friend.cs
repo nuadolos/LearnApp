@@ -22,6 +22,7 @@ namespace LearnEF.Entities
         public string? AcceptedUserId { get; set; }
 
         [Display(Name = "Подружились")]
+        [Column(TypeName = "date")]
         public DateTime? MakeFriend { get; set; }
 
         public User? SentUser { get; set; }

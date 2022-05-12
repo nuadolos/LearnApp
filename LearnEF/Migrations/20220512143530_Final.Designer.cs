@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220505124348_Final")]
+    [Migration("20220512143530_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("MakeFriend")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("SentUserId")
                         .HasColumnType("nvarchar(450)");
@@ -68,11 +68,15 @@ namespace LearnEF.Migrations
                         .HasMaxLength(8)
                         .HasColumnType("nvarchar(8)");
 
+                    b.Property<DateTime?>("CreateDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<int?>("GroupTypeId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -84,10 +88,6 @@ namespace LearnEF.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<int?>("TypeId")
-                        .IsRequired()
-                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -111,9 +111,6 @@ namespace LearnEF.Migrations
 
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsVisible")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("LearnId")
                         .HasColumnType("int");
@@ -191,9 +188,6 @@ namespace LearnEF.Migrations
 
                     b.Property<int?>("GroupRoleId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsBlocked")
-                        .HasColumnType("bit");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -306,10 +300,10 @@ namespace LearnEF.Migrations
 
                     b.Property<DateTime?>("CreateDate")
                         .IsRequired()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime?>("DateReading")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -358,7 +352,7 @@ namespace LearnEF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<byte[]>("Document")
+                    b.Property<byte[]>("FileDoc")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("LearnId")
@@ -583,7 +577,8 @@ namespace LearnEF.Migrations
                     b.HasOne("LearnEF.Entities.GroupType", "GroupType")
                         .WithMany("Group")
                         .HasForeignKey("GroupTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany()

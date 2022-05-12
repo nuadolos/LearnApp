@@ -10,7 +10,7 @@ namespace LearnAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiAccountController : Controller
+    public class ApiAccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;

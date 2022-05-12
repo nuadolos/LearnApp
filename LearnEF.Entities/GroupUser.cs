@@ -25,9 +25,6 @@ namespace LearnEF.Entities
         [ForeignKey(nameof(GroupRoleId))]
         public int? GroupRoleId { get; set; }
 
-        [Display(Name = "Заблокирован?")]
-        public bool IsBlocked { get; set; }
-
         public Group? Group { get; set; }
         public User? User { get; set; }
         public GroupRole? GroupRole { get; set; }

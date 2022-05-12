@@ -27,10 +27,12 @@ namespace LearnEF.Entities
         [Display(Name = "Дата создания")]
         [Required(ErrorMessage = "Поле \"Дата создания\" пустое")]
         [DataType(DataType.Date)]
+        [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }
 
         [Display(Name = "Дата прочтения")]
         [DataType(DataType.Date)]
+        [Column(TypeName = "date")]
         public DateTime? DateReading { get; set; }
 
         [Display(Name = "URL картинки")]

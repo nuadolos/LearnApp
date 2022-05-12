@@ -8,7 +8,7 @@ namespace LearnAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController] 
-    public class ApiRolesController : Controller
+    public class ApiRolesController : ControllerBase
     {
         RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;

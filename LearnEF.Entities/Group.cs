@@ -27,10 +27,15 @@ namespace LearnEF.Entities
         [StringLength(8, MinimumLength = 4, ErrorMessage = "Код доступа должен содержать от 4 до 8 символов")]
         public string? Code { get; set; }
 
+        [Display(Name = "Дата создания")]
+        [DataType(DataType.Date)]
+        [Column(TypeName = "date")]
+        public DateTime? CreateDate { get; set; }
+
         [Display(Name = "Тип группы")]
         [Required(ErrorMessage = "Поле \"Тип группы\" пустое")]
-        [ForeignKey(nameof(TypeId))]
-        public int? TypeId { get; set; }
+        [ForeignKey(nameof(GroupTypeId))]
+        public int? GroupTypeId { get; set; }
 
         [Display(Name = "Принадлежит")]
         [ForeignKey(nameof(UserId))]

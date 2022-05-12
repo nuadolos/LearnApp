@@ -26,7 +26,9 @@ builder.Services.AddControllersWithViews();
 //Добавление репозиториев для работы с данными в контейнер DI
 builder.Services.AddScoped<ILearnRepo, LearnRepo>();
 builder.Services.AddScoped<ISourceLoreRepo, SourceLoreRepo>();
-builder.Services.AddScoped<IShareLearn, ShareLearnRepo>();
+builder.Services.AddScoped<IShareLearnRepo, ShareLearnRepo>();
+builder.Services.AddScoped<IGroupRepo, GroupRepo>();
+builder.Services.AddScoped<IFriendRepo, FriendRepo>();
 
 #endregion
 
