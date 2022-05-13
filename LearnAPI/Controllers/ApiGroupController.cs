@@ -38,24 +38,31 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<Group> GetGroups()
+        public async Task<IEnumerable<Group>> GetGroupsAsync()
         {
-            var groups = _repo.GetAll();
+            var groups = await _repo.GetVisibleGroupsAsync();
             return _mapper.Map<List<Group>, List<Group>>(groups);
         }
 
         /// <summary>
-        /// Запрос на получение конкретной группы
+        /// Запрос на получение группы конкретным пользователем
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public ActionResult<Group> GetGroup([FromRoute] int id)
+        [HttpGet("{id}/{email}")]
+        public async Task<ActionResult<Group>> GetGroupAsync([FromRoute] int id, [FromRoute] string email)
         {
-            var group = _repo.GetRecord(id);
+            User user = await _userManager.FindByEmailAsync(email);
+            var group = await _repo.GetRecordAsync(id);
 
             if (group == null)
                 return NotFound(new List<ValidateError> { new ValidateError("Группа не найдена") });
+
+            if (!group.IsVisible)
+            {
+                if (!await _repo.IsMemberAsync(group.Id, user.Id))
+                    return BadRequest(new List<ValidateError> { new ValidateError("Вы не являетесь участником данной группы") });
+            }
 
             return Ok(_mapper.Map<Group, Group>(group));
         }
@@ -67,14 +74,14 @@ namespace LearnAPI.Controllers
         /// <param name="group"></param>
         /// <returns></returns>
         [HttpPost("{email}")]
-        public async Task<IActionResult> CreateGroup([FromRoute] string email, [FromBody] Group group)
+        public async Task<IActionResult> CreateGroupAsync([FromRoute] string email, [FromBody] Group group)
         {
             try
             {
                 User user = await _userManager.FindByNameAsync(email);
                 group.UserId = user.Id;
                 group.CreateDate = DateTime.Now;
-                _repo.Add(group);
+                await _repo.AddAsync(group);
             }
             catch (DbMessageException ex)
             {
@@ -95,11 +102,11 @@ namespace LearnAPI.Controllers
         /// <param name="group"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult UpdateGroup([FromBody] Group group)
+        public async Task<IActionResult> UpdateGroupAsync([FromBody] Group group)
         {
             try
             {
-                _repo.Update(group);
+                await _repo.UpdateAsync(group);
             }
             catch (DbMessageException ex)
             {
@@ -121,7 +128,7 @@ namespace LearnAPI.Controllers
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveGroup([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveGroupAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";
@@ -133,7 +140,7 @@ namespace LearnAPI.Controllers
 
             try
             {
-                _repo.Delete(id, ts);
+                await _repo.DeleteAsync(id, ts);
             }
             catch (DbMessageException ex)
             {

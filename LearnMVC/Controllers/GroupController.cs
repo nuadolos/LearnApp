@@ -1,16 +1,15 @@
-﻿using LearnHTTP;
-using LearnEF.Entities;
+﻿using LearnEF.Entities;
+using LearnHTTP;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using LearnEF.Entities.ErrorModel;
 
 namespace LearnMVC.Controllers
 {
     [Authorize]
-    public class LearnController : Controller
+    public class GroupController : Controller
     {
         /// <summary>
         /// Базовая ссылка для обращения к LearnAPI
@@ -20,58 +19,40 @@ namespace LearnMVC.Controllers
         /// <summary>
         /// Хранит список ролей
         /// </summary>
-        private SelectList SourceLoreList { get; }
+        private SelectList GroupTypeList { get; }
 
-        /// <summary>
-        /// Получает URL Api для отправки и получения запросов.
-        /// Также заполняет SourceLoreList данными из БД.
-        /// </summary>
-        /// <param name="configuration"></param>
-        public LearnController(IConfiguration configuration)
+        public GroupController(IConfiguration configuration)
         {
             _baseUrl = configuration.GetSection("LearnAddress").Value;
 
-            SourceLoreList = new SelectList(
-                HttpRequestClient.GetRequestAsync<List<SourceLore>>(_baseUrl, "sources").Result, "Id", "Name", new Learn().SourceLoreId);
+            GroupTypeList = new SelectList(
+                new[] { "Равноправный", "Класс"}, "Id", "Name", new Group().GroupTypeId);
         }
 
-        /// <summary>
-        /// Получает запись о материале.
-        /// Метод используется с целью сокращение кода.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private async Task<Learn?> GetLearnRecord(string email, int id, string action) => 
-            await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, email, id.ToString(), action);
+        private async Task<Group?> GetGroupRecord(string email, int id, string action) =>
+            await HttpRequestClient.GetRequestAsync<Group>(_baseUrl, email, id.ToString(), action);
 
         #region Index/Details
 
         public async Task<IActionResult> Index()
         {
-            string? userName = User?.Identity?.Name;
+            var groups = await HttpRequestClient.GetRequestAsync<List<Group>>(_baseUrl);
 
-            if (userName == null)
+            if (groups != null)
             {
-                return BadRequest();
-            }
-
-            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, "User", userName);
-
-            if (learns != null)
-            {
-                foreach (var learn in learns)
+                foreach (var group in groups)
                 {
-                    foreach (var source in SourceLoreList.ToArray())
+                    foreach (var source in GroupTypeList.ToArray())
                     {
-                        if (learn.SourceLoreId.ToString() == source.Value)
+                        if (group.GroupTypeId.ToString() == source.Value)
                         {
-                            learn.LoreName = source.Text;
+                            group.TypeName = source.Text;
                             break;
                         }
                     }
                 }
 
-                return View(learns);
+                return View(groups);
             }
 
             return BadRequest(HttpRequestClient.Errors);
@@ -86,7 +67,7 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(userName, id.Value, nameof(Details));
+            var learn = await GetGroupRecord(userName, id.Value, nameof(Details));
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Errors);
         }
@@ -97,7 +78,7 @@ namespace LearnMVC.Controllers
 
         public IActionResult Create()
         {
-            ViewData["SourceLoreId"] = SourceLoreList;
+            ViewData["SourceLoreId"] = GroupTypeList;
             return View();
         }
 
@@ -125,7 +106,7 @@ namespace LearnMVC.Controllers
                 }
             }
 
-            ViewData["SourceLoreId"] = SourceLoreList;
+            ViewData["SourceLoreId"] = GroupTypeList;
             return View(learn);
         }
 
@@ -142,9 +123,9 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(userName, id.Value, nameof(Edit));
+            var learn = await GetGroupRecord(userName, id.Value, nameof(Edit));
 
-            ViewData["SourceLoreId"] = SourceLoreList;
+            ViewData["SourceLoreId"] = GroupTypeList;
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Errors);
         }
@@ -176,7 +157,7 @@ namespace LearnMVC.Controllers
                 }
             }
 
-            ViewData["SourceLoreId"] = SourceLoreList;
+            ViewData["SourceLoreId"] = GroupTypeList;
             return View(learn);
         }
 
@@ -193,7 +174,7 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(userName, id.Value, nameof(Delete));
+            var learn = await GetGroupRecord(userName, id.Value, nameof(Delete));
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Errors);
         }
@@ -205,11 +186,17 @@ namespace LearnMVC.Controllers
             //Сериализация массива байтов в строку для вставки в маршрут
             var timeStampString = JsonConvert.SerializeObject(learn.Timestamp);
 
-            return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, learn.Id.ToString(), timeStampString) 
-                ? RedirectToAction(nameof(Index)) 
+            return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, learn.Id.ToString(), timeStampString)
+                ? RedirectToAction(nameof(Index))
                 : BadRequest(HttpRequestClient.Errors);
         }
 
         #endregion
+
+        [HttpPost]
+        public IActionResult Invite(int groupId)
+        {
+            return View();
+        }
     }
 }

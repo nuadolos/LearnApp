@@ -33,8 +33,8 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Group/{id}")]
-        public IEnumerable<User> GetGroupUsers([FromRoute] int id) =>
-            _mapper.Map<List<User>, List<User>>(_repo.GetGroupUsers(id));
+        public async Task<IEnumerable<User>> GetGroupUsersAsync([FromRoute] int id) =>
+            _mapper.Map<List<User>, List<User>>(await _repo.GetGroupUsers(id));
 
         /// <summary>
         /// Запрос на получение конкретной записи пользователя группы
@@ -42,9 +42,9 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<GroupUser> GetGroupUser([FromRoute] int id)
+        public async Task<ActionResult<GroupUser>> GetGroupUserAsync([FromRoute] int id)
         {
-            var groupUser = _repo.GetRecord(id);
+            var groupUser = await _repo.GetRecordAsync(id);
 
             if (groupUser != null)
                 return Ok(groupUser);
@@ -56,15 +56,38 @@ namespace LearnAPI.Controllers
 
         /// <summary>
         /// Запрос на добавление пользователя в конкретную группу
+        /// с помощью приглашающего кода
+        /// </summary>
+        /// <param name="inviteId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost("g/{groupId}/u/{userId}")]
+        public async Task<IActionResult> InviteGroupUserAsync([FromRoute] string inviteId, [FromRoute] string userId)
+        {
+            if (!await _repo.AcceptedInviteAsync(inviteId, userId))
+            {
+                //Получение ошибок при создании записи
+                List<ValidateError> errors = new List<ValidateError>();
+
+                errors.Add(new ValidateError("Ссылка оказалась недействительной"));
+
+                return BadRequest(errors);
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Запрос на добавление пользователя в конкретную группу
         /// </summary>
         /// <param name="groupUser"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateGroupUser([FromBody] GroupUser groupUser)
+        public async Task<IActionResult> CreateGroupUserAsync([FromBody] GroupUser groupUser)
         {
             try
             {
-                _repo.Add(groupUser);
+                await _repo.AddAsync(groupUser);
             }
             catch (DbMessageException ex)
             {
@@ -86,7 +109,7 @@ namespace LearnAPI.Controllers
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveGroupUser([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveGroupUserAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";
@@ -98,7 +121,7 @@ namespace LearnAPI.Controllers
 
             try
             {
-                _repo.Delete(id, ts);
+                await _repo.DeleteAsync(id, ts);
             }
             catch (DbMessageException ex)
             {

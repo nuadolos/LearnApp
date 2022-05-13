@@ -2,6 +2,7 @@
 using LearnEF.Entities.IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnAPI.Controllers
 {
@@ -19,8 +20,8 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<User> GetUsers() => 
-            _userManager.Users.ToList();
+        public async Task<IEnumerable<User>> GetUsersAsync() => 
+            await _userManager.Users.ToListAsync();
 
         /// <summary>
         /// Запрос на получение конкретного пользователя
@@ -28,7 +29,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser([FromRoute] string id)
+        public async Task<ActionResult<User>> GetUserAsync([FromRoute] string id)
         {
             User user = await _userManager.FindByIdAsync(id);
 
@@ -44,7 +45,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] UserData model)
+        public async Task<IActionResult> CreateAsync([FromBody] UserData model)
         {
             List<ValidateError>? errors = null;
 
@@ -85,7 +86,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] UserData model)
+        public async Task<IActionResult> EditAsync([FromRoute] string id, [FromBody] UserData model)
         {
             List<ValidateError>? errors = null;
 
@@ -132,7 +133,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
             List<ValidateError>? errors = null;
 

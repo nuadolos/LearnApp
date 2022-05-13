@@ -205,18 +205,27 @@ namespace LearnEF.DataInitializer
             {
                 new Group {
                     Name = "TestGroup1",
-                    Code = "563255",
                     CreateDate = DateTime.Now,
+                    IsVisible = true,
                     GroupTypeId = 1,
                     UserId = newUser4.Id
                 },
 
                 new Group {
                     Name = "TestGroup2",
-                    Code = "781251",
                     CreateDate = DateTime.Now,
+                    IsVisible = true,
                     GroupTypeId = 2,
                     UserId = newUser1.Id
+                },
+
+                new Group {
+                    Name = "TestGroup3",
+                    CodeInvite = Guid.NewGuid().ToString(),
+                    CreateDate = DateTime.Now,
+                    IsVisible = false,
+                    GroupTypeId = 1,
+                    UserId = newUser3.Id
                 }
             };
 

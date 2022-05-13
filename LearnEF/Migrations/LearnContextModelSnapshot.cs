@@ -61,12 +61,12 @@ namespace LearnEF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                    b.Property<string>("CodeInvite")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("CreateDate")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -76,6 +76,9 @@ namespace LearnEF.Migrations
                     b.Property<int?>("GroupTypeId")
                         .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -350,11 +353,15 @@ namespace LearnEF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<byte[]>("FileDoc")
+                    b.Property<byte[]>("Content")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("LearnId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()

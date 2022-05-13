@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace LearnEF.Entities
 {
     [Table("Group")]
-    public class Group : EntityBase
+    public partial class Group : EntityBase
     {
         [Display(Name = "Название")]
         [Required(ErrorMessage = "Поле \"Название\" пустое")]
@@ -23,14 +23,18 @@ namespace LearnEF.Entities
         public string? Description { get; set; }
 
         [Display(Name = "Код доступа")]
-        [Required(ErrorMessage = "Поле \"Код доступа\" пустое")]
-        [StringLength(8, MinimumLength = 4, ErrorMessage = "Код доступа должен содержать от 4 до 8 символов")]
-        public string? Code { get; set; }
+        [StringLength(200)]
+        public string? CodeInvite { get; set; }
 
         [Display(Name = "Дата создания")]
+        [Required]
         [DataType(DataType.Date)]
         [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }
+
+        [Display(Name = "Открытый?")]
+        [Required]
+        public bool IsVisible { get; set; }
 
         [Display(Name = "Тип группы")]
         [Required(ErrorMessage = "Поле \"Тип группы\" пустое")]

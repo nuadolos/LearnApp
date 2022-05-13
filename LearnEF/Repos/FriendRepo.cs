@@ -12,21 +12,19 @@ namespace LearnEF.Repos
 {
     public class FriendRepo : BaseRepo<Friend>, IFriendRepo
     {
-        public List<User> GetFriends(string userId)
+        public async Task<List<User>> GetFriendsAsync(string userId)
         {
             List<User> friends = new List<User>();
 
-            Context.Friend
+            await Context.Friend
                 .Include(f => f.AcceptedUser)
                 .Where(f => f.SentUserId == userId)
-                .ForEachAsync(f => friends.Add(f.AcceptedUser))
-                .Wait();
+                .ForEachAsync(f => friends.Add(f.AcceptedUser));
 
-            Context.Friend
+            await Context.Friend
                 .Include(f => f.SentUser)
                 .Where(f => f.AcceptedUserId == userId)
-                .ForEachAsync(f => friends.Add(f.SentUser))
-                .Wait();
+                .ForEachAsync(f => friends.Add(f.SentUser));
 
             return friends;
         }

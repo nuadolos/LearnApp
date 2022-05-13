@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Repos
 {
-    public interface IGroupRepo : IRepo<Group>
-    { 
-        Task<List<Group>> GetVisibleGroupsAsync();
-        Task<bool> IsMemberAsync(int groupId, string userId);
+    public interface ILearnDocumentsRepo : IRepo<LearnDocuments>
+    {
+        Task<List<LearnDocuments>> GetDocumentsAsync(int learnId);
     }
 }

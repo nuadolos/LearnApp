@@ -20,9 +20,6 @@ namespace LearnEF.Entities
         [NotMapped]
         public string? LoreName { get; set; }
 
-        [NotMapped]
-        public string? UserName { get; set; }
-
         //Новый синтаксис оператора switch
         //return SourceLoreId switch
         //{

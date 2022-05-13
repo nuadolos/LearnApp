@@ -9,17 +9,13 @@ namespace LearnEF.Repos.Base
 {
     public interface IRepo<T>
     {
-        int Add(T entity);
-        int Add(IList<T> entities);
-        int Update(T entity);
-        int Update(IList<T> entities);
-        int Delete(int id, byte[] timestamp);
-        int Delete(T entity);
-        T GetRecord(int? id);
-        List<T> GetWhere(Expression<Func<T, bool>> where);
-        List<T> GetAll();
-        List<T> GetAll(Expression<Func<T, dynamic>> orderby, bool ascending);
-        List<T> ExecuteQuery(string sql);
-        List<T> ExecuteQuery(string sql, object[] sqlParametersObjects);
+        Task<int> AddAsync(T entity);
+        Task<int> AddAsync(IList<T> entities);
+        Task<int> UpdateAsync(T entity);
+        Task<int> UpdateAsync(IList<T> entities);
+        Task<int> DeleteAsync(int id, byte[] timestamp);
+        Task<int> DeleteAsync(T entity);
+        Task<T?> GetRecordAsync(int? id);
+        Task<List<T>> GetAllAsync();
     }
 }

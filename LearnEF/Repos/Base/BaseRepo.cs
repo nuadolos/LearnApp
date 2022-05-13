@@ -30,81 +30,69 @@ namespace LearnEF.Repos.Base
 
         #region Добавление
 
-        public int Add(T entity)
+        public async Task<int> AddAsync(T entity)
         {
-            _table.Add(entity);
-            return SaveChanges();
+            await _table.AddAsync(entity);
+            return await SaveChangesAsync();
         }
 
-        public int Add(IList<T> entities)
+        public async Task<int> AddAsync(IList<T> entities)
         {
-            _table.AddRange(entities);
-            return SaveChanges();
+            await _table.AddRangeAsync(entities);
+            return await SaveChangesAsync();
         }
 
         #endregion
 
         #region Обновление
 
-        public int Update(T entity)
+        public async Task<int> UpdateAsync(T entity)
         {
             _table.Update(entity);
-            return SaveChanges();
+            return await SaveChangesAsync();
         }
 
-        public int Update(IList<T> entities)
+        public async Task<int> UpdateAsync(IList<T> entities)
         {
             _table.UpdateRange(entities);
-            return SaveChanges();
+            return await SaveChangesAsync();
         }
 
         #endregion
 
         #region Удаление
 
-        public int Delete(int id, byte[] timestamp)
+        public async Task<int> DeleteAsync(int id, byte[] timestamp)
         {
             _db.Entry(new T() { Id = id, Timestamp = timestamp }).State = EntityState.Deleted;
-            return SaveChanges();
+            return await SaveChangesAsync();
         }
 
-        public int Delete(T entity)
+        public async Task<int> DeleteAsync(T entity)
         {
             _table.Remove(entity);
-            return SaveChanges();
+            return await SaveChangesAsync();
         }
 
         #endregion
 
         #region Выборка
 
-        public List<T> GetAll() => 
-            _table.ToList();
+        public async Task<List<T>> GetAllAsync() => 
+            await _table.ToListAsync();
 
-        public List<T> GetAll(Expression<Func<T, dynamic>> orderby, bool ascending)
-            => ascending ? _table.OrderBy(orderby).ToList() : _table.OrderByDescending(orderby).ToList();
-
-        public T GetRecord(int? id)
-            => _table.Find(id);
-
-        public List<T> GetWhere(Expression<Func<T, bool>> where)
-            => _table.Where(where).ToList();
-
-        public List<T> ExecuteQuery(string sql)
-            => _table.FromSqlRaw(sql).ToList();
-
-        public List<T> ExecuteQuery(string sql, object[] sqlParametersObjects)
-            => _table.FromSqlRaw(sql, sqlParametersObjects).ToList();
+        public async Task<T?> GetRecordAsync(int? id)
+            => await _table.FindAsync(id);
 
         #endregion
 
         #region Сохранение изменений
 
-        protected int SaveChanges()
+        protected async Task<int> SaveChangesAsync()
         {
             try
             {
-                return _db.SaveChanges();
+                return await _db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -132,7 +120,8 @@ namespace LearnEF.Repos.Base
 
         #region Освобождение ресурсов
 
-        public void Dispose() => _db.Dispose();
+        public void Dispose() => 
+            _db.Dispose();
 
         #endregion
     }

@@ -29,7 +29,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Regist")]
-        public async Task<IActionResult> Regist([FromBody] UserRegister model)
+        public async Task<IActionResult> RegistAsync([FromBody] UserRegister model)
         {
             List<ValidateError>? errors = null;
 
@@ -88,7 +88,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLogin model)
+        public async Task<IActionResult> LoginAsync([FromBody] UserLogin model)
         {
             List<ValidateError>? errors = null;
 
@@ -132,7 +132,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("SendSecretCode")]
-        public async Task<IActionResult> SendSecretCode([FromBody] OnlyEmail model)
+        public async Task<IActionResult> SendSecretCodeAsync([FromBody] OnlyEmail model)
         {
             List<ValidateError>? errors = null;
 
@@ -179,7 +179,7 @@ namespace LearnAPI.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("ChangePassword")]
-        public async Task<IActionResult> ChangePassword([FromBody] UserChangePassword model)
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword model)
         {
             List<ValidateError>? errors = null;
 

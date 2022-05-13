@@ -10,60 +10,64 @@ namespace LearnAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiGroupLearnController : ControllerBase
+    public class ApiLearnDocumentsController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IGroupLearnRepo _repo;
+        // Статья о работе с файлами в ASP.NET Core
+        // https://docs.microsoft.com/ru-ru/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
 
-        public ApiGroupLearnController(IGroupLearnRepo repo)
+        // Передача файлов на строну клиента
+        // https://www.interestprograms.ru/source-codes-asp-net-download-files
+
+        private readonly IMapper _mapper;
+        private readonly ILearnDocumentsRepo _repo;
+
+        public ApiLearnDocumentsController(ILearnDocumentsRepo repo)
         {
             _repo = repo;
 
-            //Игнорирование поля GroupLearn в объекте Learn
+            //Игнорирование поля SentUser и AcceptedUser в объекте Friend
             var config = new MapperConfiguration(
-                cfg => cfg.CreateMap<Learn, Learn>()
-                .ForMember(x => x.GroupLearn, opt => opt.Ignore()));
+                cfg => cfg.CreateMap<LearnDocuments, LearnDocuments>()
+                .ForMember(x => x.Learn, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
 
         /// <summary>
-        /// Запрос на получение всех материалов, принадлежащих конкретной группе
+        /// Запрос на получение всех документов конкретного материала
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="email"></param>
         /// <returns></returns>
-        [HttpGet("Group/{id}")]
-        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int id) =>
-            _mapper.Map<List<Learn>, List<Learn>>(await _repo.GetGroupLearnsAsync(id));
+        [HttpGet("Learn/{id}")]
+        public async Task<IEnumerable<LearnDocuments>> GetDocumentsAsync([FromRoute] int id) =>
+            _mapper.Map<List<LearnDocuments>, List<LearnDocuments>>(await _repo.GetDocumentsAsync(id));
 
         /// <summary>
-        /// Запрос на получение конкретной записи материала группы
+        /// Запрос на получение конкретного документа
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<GroupLearn>> GetGroupLearnAsync([FromRoute] int id)
+        public async Task<ActionResult<Friend>> GetDocumentAsync([FromRoute] int id)
         {
-            var groupLearn = await _repo.GetRecordAsync(id);
+            var learnDoc = await _repo.GetRecordAsync(id);
 
-            if (groupLearn != null)
-                return Ok(groupLearn);
+            if (learnDoc != null)
+                return Ok(learnDoc);
 
-            return NotFound(new List<ValidateError> { 
-                new ValidateError("Нет данных о материале, принадлежащий конкретной группе") 
-            });
+            return NotFound(new List<ValidateError> { new ValidateError("Нет данных о документе") });
         }
 
         /// <summary>
-        /// Запрос на добавление материала в конкретную группу
+        /// Запрос на прикрепление документа к материалу
         /// </summary>
-        /// <param name="groupLearn"></param>
+        /// <param name="learnDoc"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateGroupLearnAsync([FromBody] GroupLearn groupLearn)
+        public async Task<IActionResult> CreateDocumentAsync([FromBody] LearnDocuments learnDoc)
         {
             try
             {
-                await _repo.AddAsync(groupLearn);
+                await _repo.AddAsync(learnDoc);
             }
             catch (DbMessageException ex)
             {
@@ -79,13 +83,13 @@ namespace LearnAPI.Controllers
         }
 
         /// <summary>
-        /// Запрос на удаление материала из конкретной группы
+        /// Запрос на удаление документа
         /// </summary>
         /// <param name="id"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public async Task<IActionResult> RemoveGroupLearnAsync([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveFriendAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";

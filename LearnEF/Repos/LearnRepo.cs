@@ -19,50 +19,48 @@ namespace LearnEF.Repos
         public LearnRepo(LearnContext context) : base(context)
         { }
 
-        public List<SourceLore> GetSourceLores() =>
-            Context.SourceLore.ToList();
+        public async Task<List<SourceLore>> GetSourceLoresAsync() =>
+            await Context.SourceLore.ToListAsync();
 
-        public List<Learn> UserLearns(string userId) =>
-            Context.Learn.Where(u => u.UserId == userId).ToList();
+        public async Task<List<Learn>> UserLearnsAsync(string userId) =>
+            await Context.Learn.Where(u => u.UserId == userId).ToListAsync();
 
-        public List<User> SharedUsers(int learnId)
+        public async Task<List<User>> SharedUsersAsync(int learnId)
         {
             List<User> users = new List<User>();
 
-            Context.ShareLearn
+            await Context.ShareLearn
                 .Include(u => u.User)
                 .Where(u => u.LearnId == learnId)
-                .ForEachAsync(u => users.Add(u.User))
-                .Wait();
+                .ForEachAsync(u => users.Add(u.User));
 
             return users;
         }
 
-        public List<Learn> GroupLearns(int groupId)
+        public async Task<List<Learn>> GroupLearnsAsync(int groupId)
         {
             List<Learn> learns = new List<Learn>();
 
-            Context.GroupLearn
+            await Context.GroupLearn
                 .Include(l => l.Learn)
                 .Where(l => l.GroupId == groupId)
-                .ForEachAsync(l => learns.Add(l.Learn))
-                .Wait();
+                .ForEachAsync(l => learns.Add(l.Learn));
 
             return learns;
         }
 
-        public bool GroupIsNull(int groupId) =>
-            Context.Group.FirstOrDefault(g => g.Id == groupId) == null ? true : false;
+        public async Task<bool> GroupIsNullAsync(int groupId) =>
+            await Context.Group.FirstAsync(g => g.Id == groupId) == null ? true : false;
 
-        public bool IsMemberGroup(int learnId, int groupId, string userId)
+        public async Task<bool> IsMemberGroupAsync(int learnId, int groupId, string userId)
         {
-            var groupLearn = Context.GroupLearn.FirstOrDefault(
+            var groupLearn = await Context.GroupLearn.FirstOrDefaultAsync(
                 gu => gu.GroupId == groupId && gu.LearnId == learnId);
 
             if (groupLearn != null)
             {
-                var groupUser = Context.GroupUser.FirstOrDefault(
-                gu => gu.GroupId == groupId && gu.UserId == userId);
+                var groupUser = await Context.GroupUser.FirstOrDefaultAsync(
+                    gu => gu.GroupId == groupId && gu.UserId == userId);
 
                 if (groupUser != null)
                 {
@@ -73,15 +71,15 @@ namespace LearnEF.Repos
             return false;
         }
 
-        public bool IsAuthor(int learnId, string userId) =>
-            Context.Learn.FirstOrDefault(u => u.UserId == userId && u.Id == learnId) != null ? true : false;
+        public async Task<bool> IsAuthorAsync(int learnId, string userId) =>
+            await Context.Learn.FirstOrDefaultAsync(u => u.UserId == userId && u.Id == learnId) != null ? true : false;
 
-        public bool SharedWith(int learnId, string userId) =>
-            Context.ShareLearn.FirstOrDefault(u => u.UserId == userId && u.LearnId == learnId) != null ? true : false;
+        public async Task<bool> SharedWithAsync(int learnId, string userId) =>
+            await Context.ShareLearn.FirstOrDefaultAsync(u => u.UserId == userId && u.LearnId == learnId) != null ? true : false;
 
-        public bool CanChangeLearn(int learnId, string userId)
+        public async Task<bool> CanChangeLearnAsync(int learnId, string userId)
         {
-            var shareLearn = Context.ShareLearn.FirstOrDefault(u => u.UserId == userId && u.LearnId == learnId);
+            var shareLearn = await Context.ShareLearn.FirstOrDefaultAsync(u => u.UserId == userId && u.LearnId == learnId);
 
             if (shareLearn?.CanChange == true)
                 return true;
@@ -89,14 +87,14 @@ namespace LearnEF.Repos
             return false;
         }
 
-        public bool CanChangeLearn(int learnId, int groupId, string userId)
+        public async Task<bool> CanChangeLearnAsync(int learnId, int groupId, string userId)
         {
-            var groupLearn = Context.GroupLearn.FirstOrDefault(
+            var groupLearn = await Context.GroupLearn.FirstOrDefaultAsync(
                 gu => gu.GroupId == groupId && gu.LearnId == learnId);
 
             if (groupLearn != null)
             {
-                var groupUser = Context.GroupUser.FirstOrDefault(
+                var groupUser = await Context.GroupUser.FirstOrDefaultAsync(
                     gu => gu.GroupId == groupId && gu.UserId == userId && gu.GroupRoleId != 1);
 
                 if (groupUser != null)
@@ -108,7 +106,7 @@ namespace LearnEF.Repos
             return false;
         }
 
-        public bool IsCreater(int groupId, string userId) =>
-            Context.Group.FirstOrDefault(u => u.Id == groupId && u.UserId == userId) != null ? true : false;
+        public async Task<bool> IsCreaterAsync(int groupId, string userId) =>
+            await Context.Group.FirstOrDefaultAsync(u => u.Id == groupId && u.UserId == userId) != null ? true : false;
     }
 }

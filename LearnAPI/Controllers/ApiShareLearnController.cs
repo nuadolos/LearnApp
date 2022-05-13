@@ -51,10 +51,10 @@ namespace LearnAPI.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet("User/{email}")]
-        public async Task<IEnumerable<Learn>> GetLearns([FromRoute] string email)
+        public async Task<IEnumerable<Learn>> GetLearnsAsync([FromRoute] string email)
         {
             User user = await _userManager.FindByNameAsync(email);
-            var learns = _repo.GetLearns(user.Id);
+            var learns = await _repo.GetLearnsAsync(user.Id);
             return _mapperLearn.Map<List<Learn>, List<Learn>>(learns);
         }
 
@@ -65,8 +65,8 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Learn/{id}")]
-        public IEnumerable<User> GetUsers([FromRoute] int id) =>
-            _mapperUser.Map<List<User>, List<User>>(_repo.GetUsers(id));
+        public async Task<IEnumerable<User>> GetUsersAsync([FromRoute] int id) =>
+            _mapperUser.Map<List<User>, List<User>>(await _repo.GetUsersAsync(id));
 
         /// <summary>
         /// Запрос на получение конкретной записи открытния доступа к материалу
@@ -74,9 +74,9 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<ShareLearn> GetShare([FromRoute] int id)
+        public async Task<ActionResult<ShareLearn>> GetShareAsync([FromRoute] int id)
         {
-            var share = _repo.GetRecord(id);
+            var share = await _repo.GetRecordAsync(id);
 
             if (share != null)
                 return Ok(share);
@@ -90,11 +90,11 @@ namespace LearnAPI.Controllers
         /// <param name="shapeLearn"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateShare([FromBody] ShareLearn shapeLearn)
+        public async Task<IActionResult> CreateShareAsync([FromBody] ShareLearn shapeLearn)
         {
             try
             {
-                _repo.Add(shapeLearn);
+                await _repo.AddAsync(shapeLearn);
             }
             catch (DbMessageException ex)
             {
@@ -116,7 +116,7 @@ namespace LearnAPI.Controllers
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveShare([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveShareAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";
@@ -128,7 +128,7 @@ namespace LearnAPI.Controllers
 
             try
             {
-                _repo.Delete(id, ts);
+                await _repo.DeleteAsync(id, ts);
             }
             catch (DbMessageException ex)
             {

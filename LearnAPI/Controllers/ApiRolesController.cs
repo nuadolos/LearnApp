@@ -3,6 +3,7 @@ using LearnEF.Entities.IdentityModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnAPI.Controllers
 {
@@ -24,8 +25,8 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<IdentityRole> GetRoles() =>
-            _roleManager.Roles.ToList();
+        public async Task<IEnumerable<IdentityRole>> GetRolesAsync() =>
+            await _roleManager.Roles.ToListAsync();
 
         /// <summary>
         /// Запрос на получение роли из БД
@@ -33,7 +34,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<IdentityRole>> GetRole([FromRoute] string id)
+        public async Task<ActionResult<IdentityRole>> GetRoleAsync([FromRoute] string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);
 
@@ -49,7 +50,7 @@ namespace LearnAPI.Controllers
         /// <param name="role"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Role role)
+        public async Task<IActionResult> CreateAsync([FromBody] Role role)
         {
             List<ValidateError>? errors = null;
 
@@ -77,7 +78,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("User/{id}")]
-        public async Task<IActionResult> Edit([FromRoute] string id)
+        public async Task<IActionResult> EditAsync([FromRoute] string id)
         {
             User user = await _userManager.FindByIdAsync(id);
             if (user != null)
@@ -105,7 +106,7 @@ namespace LearnAPI.Controllers
         /// <param name="roles"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Edit([FromRoute] string id, [FromBody] IList<string> roles)
+        public async Task<IActionResult> EditAsync([FromRoute] string id, [FromBody] IList<string> roles)
         {
             User user = await _userManager.FindByIdAsync(id);
 
@@ -140,7 +141,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] IdentityRole model)
+        public async Task<IActionResult> DeleteAsync([FromRoute] IdentityRole model)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(model.Id);
 

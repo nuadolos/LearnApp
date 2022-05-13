@@ -30,9 +30,9 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<SourceLore> GetSources()
+        public async Task<IEnumerable<SourceLore>> GetSourcesAsync()
         {
-            var source = _repo.GetAll();
+            var source = await _repo.GetAllAsync();
             return _mapper.Map<List<SourceLore>, List<SourceLore>>(source);
         }
 
@@ -42,9 +42,9 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<SourceLore> GetSource([FromRoute] int id)
+        public async Task<ActionResult<SourceLore>> GetSourceAsync([FromRoute] int id)
         {
-            var source = _repo.GetRecord(id);
+            var source = await _repo.GetRecordAsync(id);
 
             if (source == null)
                 return NotFound(new List<ValidateError> { new ValidateError("Ресурс не найден") });
@@ -55,14 +55,14 @@ namespace LearnAPI.Controllers
         /// <summary>
         /// Запрос на добавление нового источника
         /// </summary>
-        /// <param name="learn"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateSource([FromBody] SourceLore source)
+        public async Task<IActionResult> CreateSourceAsync([FromBody] SourceLore source)
         {
             try
             {
-                _repo.Add(source);
+                await _repo.AddAsync(source);
             }
             catch (DbMessageException ex)
             {
@@ -81,14 +81,14 @@ namespace LearnAPI.Controllers
         /// Запрос на изменение источника
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="learn"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult UpdateSource([FromRoute] int id, [FromBody] SourceLore source)
+        public async Task<IActionResult> UpdateSourceAsync([FromRoute] int id, [FromBody] SourceLore source)
         {
             try
             {
-                _repo.Update(source);
+                await _repo.UpdateAsync(source);
             }
             catch (DbMessageException ex)
             {
@@ -110,10 +110,10 @@ namespace LearnAPI.Controllers
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveSource([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveSourceAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
-            //Если у источника есть ссылка хотя бы на один материал
-            //то удаление невозможно
+            // Если у источника есть ссылка хотя бы на один материал,
+            // то удаление невозможно
             if (_repo.ContainedInLearn(id))
             {
                 return BadRequest(new List<ValidateError> {
@@ -131,7 +131,7 @@ namespace LearnAPI.Controllers
 
             try
             {
-                _repo.Delete(id, ts);
+                await _repo.DeleteAsync(id, ts);
             }
             catch (DbMessageException ex)
             {

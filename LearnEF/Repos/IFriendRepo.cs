@@ -11,6 +11,6 @@ namespace LearnEF.Repos
 {
     public interface IFriendRepo : IRepo<Friend>
     {
-        List<User> GetFriends(string userId);
+        Task<List<User>> GetFriendsAsync(string userId);
     }
 }

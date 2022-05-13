@@ -19,29 +19,27 @@ namespace LearnEF.Repos
         public ShareLearnRepo(LearnContext context) : base(context)
         { }
 
-        public List<Learn> GetLearns(string userId)
+        public async Task<List<Learn>> GetLearnsAsync(string userId)
         {
             List<Learn> userLearns = new List<Learn>();
 
-            Context.ShareLearn
+            await Context.ShareLearn
                 .Include(sl => sl.Learn)
                 .Where(sl => sl.UserId == userId)
-                .ForEachAsync(sl => userLearns.Add(sl.Learn))
-                .Wait();
+                .ForEachAsync(sl => userLearns.Add(sl.Learn));
 
             return userLearns;
         }
 
-        public List<User> GetUsers(int learnId)
+        public async Task<List<User>> GetUsersAsync(int learnId)
         {
             List<User> learnUsers
                 = new List<User>();
 
-            Context.ShareLearn
+            await Context.ShareLearn
                 .Include(sl => sl.User)
                 .Where(sl => sl.LearnId == learnId)
-                .ForEachAsync(sl => learnUsers.Add(sl.User))
-                .Wait();
+                .ForEachAsync(sl => learnUsers.Add(sl.User));
 
             return learnUsers;
         }

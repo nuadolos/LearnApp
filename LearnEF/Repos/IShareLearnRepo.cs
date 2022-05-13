@@ -11,7 +11,7 @@ namespace LearnEF.Repos
 {
     public interface IShareLearnRepo : IRepo<ShareLearn>
     {
-        List<User> GetUsers(int learnId);
-        List<Learn> GetLearns(string userId);
+        Task<List<User>> GetUsersAsync(int learnId);
+        Task<List<Learn>> GetLearnsAsync(string userId);
     }
 }

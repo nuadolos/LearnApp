@@ -234,8 +234,9 @@ namespace LearnEF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "date", nullable: true),
+                    CodeInvite = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: false),
+                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     GroupTypeId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -351,8 +352,9 @@ namespace LearnEF.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     LearnId = table.Column<int>(type: "int", nullable: true),
-                    FileDoc = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>

@@ -37,10 +37,10 @@ namespace LearnAPI.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet("Friends/{email}")]
-        public async Task<IEnumerable<User>> GetFriends([FromRoute] string email)
+        public async Task<IEnumerable<User>> GetFriendsAsync([FromRoute] string email)
         {
             User user = await _userManager.FindByNameAsync(email);
-            var friends = _repo.GetFriends(user.Id);
+            var friends = await _repo.GetFriendsAsync(user.Id);
             return _mapper.Map<List<User>, List<User>>(friends);
         }
 
@@ -50,9 +50,9 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Friend/{id}")]
-        public ActionResult<Friend> GetFriend([FromRoute] int id)
+        public async Task<ActionResult<Friend>> GetFriendAsync([FromRoute] int id)
         {
-            var friend = _repo.GetRecord(id);
+            var friend = await _repo.GetRecordAsync(id);
 
             if (friend != null)
                 return Ok(friend);
@@ -66,11 +66,11 @@ namespace LearnAPI.Controllers
         /// <param name="friend"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateFriend([FromBody] Friend friend)
+        public async Task<IActionResult> CreateFriendAsync([FromBody] Friend friend)
         {
             try
             {
-                _repo.Add(friend);
+                await _repo.AddAsync(friend);
             }
             catch (DbMessageException ex)
             {
@@ -92,7 +92,7 @@ namespace LearnAPI.Controllers
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveFriend([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveFriendAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";
@@ -104,7 +104,7 @@ namespace LearnAPI.Controllers
 
             try
             {
-                _repo.Delete(id, ts);
+                await _repo.DeleteAsync(id, ts);
             }
             catch (DbMessageException ex)
             {

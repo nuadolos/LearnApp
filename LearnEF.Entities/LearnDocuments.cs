@@ -12,12 +12,16 @@ namespace LearnEF.Entities
     [Table("LearnDocuments")]
     public class LearnDocuments : EntityBase
     {
+        [Display(Name = "Название")]
+        [StringLength(50)]
+        public string? Name { get; set; }
+
+        [Display(Name = "Документ")]
+        public byte[]? Content { get; set; }
+
         [Display(Name = "Материал")]
         [ForeignKey(nameof(LearnId))]
         public int? LearnId { get; set; }
-
-        [Display(Name = "Документ")]
-        public byte[]? FileDoc { get; set; }
 
         public Learn? Learn { get; set; }
     }

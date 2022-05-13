@@ -11,16 +11,16 @@ namespace LearnEF.Repos
 {
     public interface ILearnRepo : IRepo<Learn>
     {
-        bool GroupIsNull(int groupId);
-        bool CanChangeLearn(int learnId, string userId);
-        bool CanChangeLearn(int learnId, int groupId, string userId);
-        bool IsAuthor(int learnId, string userId);
-        bool IsCreater(int groupId, string userId);
-        bool IsMemberGroup(int learnId, int groupId, string userId);
-        bool SharedWith(int learnId, string userId);
-        List<Learn> UserLearns(string userId);
-        List<Learn> GroupLearns(int groupId);
-        List<User> SharedUsers(int learnId);
-        List<SourceLore> GetSourceLores();
+        Task<bool> GroupIsNullAsync(int groupId);
+        Task<bool> CanChangeLearnAsync(int learnId, string userId);
+        Task<bool> CanChangeLearnAsync(int learnId, int groupId, string userId);
+        Task<bool> IsAuthorAsync(int learnId, string userId);
+        Task<bool> IsCreaterAsync(int groupId, string userId);
+        Task<bool> IsMemberGroupAsync(int learnId, int groupId, string userId);
+        Task<bool> SharedWithAsync(int learnId, string userId);
+        Task<List<Learn>> UserLearnsAsync(string userId);
+        Task<List<Learn>> GroupLearnsAsync(int groupId);
+        Task<List<User>> SharedUsersAsync(int learnId);
+        Task<List<SourceLore>> GetSourceLoresAsync();
     }
 }

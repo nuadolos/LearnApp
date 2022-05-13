@@ -40,10 +40,10 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("User/{email}")]
-        public async Task<IEnumerable<Learn>> GetUserLearns([FromRoute] string email)
+        public async Task<IEnumerable<Learn>> GetUserLearnsAsync([FromRoute] string email)
         {
             User user = await _userManager.FindByNameAsync(email);
-            var learns = _repo.UserLearns(user.Id);
+            var learns = await _repo.UserLearnsAsync(user.Id);
             return _mapper.Map<List<Learn>, List<Learn>>(learns);
         }
 
@@ -56,11 +56,11 @@ namespace LearnAPI.Controllers
         /// <param name="act"></param>
         /// <returns></returns>
         [HttpGet("{email}/{id}/{act}")]
-        public async Task<ActionResult<Learn>> GetUserLearn([FromRoute] string email, [FromRoute] int id, [FromRoute] string act)
+        public async Task<ActionResult<Learn>> GetUserLearnAsync([FromRoute] string email, [FromRoute] int id, [FromRoute] string act)
         {
             // Поиск пользователя и материала
             User user = await _userManager.FindByNameAsync(email);
-            var learn = _repo.GetRecord(id);
+            var learn = await _repo.GetRecordAsync(id);
 
             if (learn == null)
                 return NotFound(new List<ValidateError> { new ValidateError("Материал не найден") });
@@ -72,7 +72,7 @@ namespace LearnAPI.Controllers
                     {
                         // Проверяет, кто пытается запросить данные,
                         // автор или другой пользователь, с кем поделились записью
-                        if (!_repo.IsAuthor(learn.Id, user.Id) && !_repo.SharedWith(learn.Id, user.Id))
+                        if (!await _repo.IsAuthorAsync(learn.Id, user.Id) && !await _repo.SharedWithAsync(learn.Id, user.Id))
                             return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к данному материалу") });
 
                         break;
@@ -80,11 +80,11 @@ namespace LearnAPI.Controllers
                 case "Edit":
                     {
                         // Проверяет, запрашивает ли автор запись
-                        if (!_repo.IsAuthor(learn.Id, user.Id))
+                        if (!await _repo.IsAuthorAsync(learn.Id, user.Id))
                         {
                             // Проверяет, имеет ли доступ к редактированию
                             // данной записи пользователь, с кем ею поделились
-                            if (!_repo.CanChangeLearn(learn.Id, user.Id))
+                            if (!await _repo.CanChangeLearnAsync(learn.Id, user.Id))
                                 return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к редактированию данного материала") });
                         }    
 
@@ -93,7 +93,7 @@ namespace LearnAPI.Controllers
                 case "Delete":
                     {
                         // Проверяет, запрашивает ли автор запись
-                        if (!_repo.IsAuthor(learn.Id, user.Id))
+                        if (!await _repo.IsAuthorAsync(learn.Id, user.Id))
                             return BadRequest(new List<ValidateError> { new ValidateError("Доступ к удалению данного материала имеет только автор") });
 
                         break;
@@ -115,9 +115,9 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Group/{id}")]
-        public IEnumerable<Learn> GetGroupLearns([FromRoute] int id)
+        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int id)
         {
-            var learns = _repo.GroupLearns(id);
+            var learns = await _repo.GroupLearnsAsync(id);
             return _mapper.Map<List<Learn>, List<Learn>>(learns);
         }
 
@@ -132,13 +132,13 @@ namespace LearnAPI.Controllers
         /// <param name="act"></param>
         /// <returns></returns>
         [HttpGet("{groupId}/{email}/{learnId}/{act}")]
-        public async Task<ActionResult<Learn>> GetGroupLearn([FromRoute] int groupId, [FromRoute] string email, [FromRoute] int learnId, [FromRoute] string act)
+        public async Task<ActionResult<Learn>> GetGroupLearnAsync([FromRoute] int groupId, [FromRoute] string email, [FromRoute] int learnId, [FromRoute] string act)
         {
             // Поиск пользователя и материала
             User user = await _userManager.FindByNameAsync(email);
-            var learn = _repo.GetRecord(learnId);
+            var learn = await _repo.GetRecordAsync(learnId);
 
-            if (learn == null || _repo.GroupIsNull(groupId))
+            if (learn == null || await _repo.GroupIsNullAsync(groupId))
                 return NotFound(new List<ValidateError> { new ValidateError("Материал не найден") });
 
             // Определяет, какое действие было вызвано
@@ -147,7 +147,7 @@ namespace LearnAPI.Controllers
                 case "Details":
                     {
                         // Проверяет, участник ли группы пытается запросить данные
-                        if (!_repo.IsCreater(groupId, user.Id) && !_repo.IsMemberGroup(learn.Id, groupId, user.Id))
+                        if (!await _repo.IsCreaterAsync(groupId, user.Id) && !await _repo.IsMemberGroupAsync(learn.Id, groupId, user.Id))
                             return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к данному материалу") });
 
                         break;
@@ -155,11 +155,11 @@ namespace LearnAPI.Controllers
                 case "Edit":
                     {
                         // Проверяет, запрашивает ли создатель группы
-                        if (!_repo.IsCreater(groupId, user.Id))
+                        if (!await _repo.IsCreaterAsync(groupId, user.Id))
                         {
                             // Проверяет, имеет ли доступ к редактированию
                             // данной записи участник группы
-                            if (!_repo.CanChangeLearn(learn.Id, groupId, user.Id))
+                            if (!await _repo.CanChangeLearnAsync(learn.Id, groupId, user.Id))
                                 return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к редактированию данного материала") });
                         }
 
@@ -168,7 +168,7 @@ namespace LearnAPI.Controllers
                 case "Delete":
                     {
                         // Проверяет, запрашивает ли автор запись
-                        if (!_repo.IsCreater(groupId, user.Id) && !_repo.IsAuthor(learn.Id, user.Id))
+                        if (!await _repo.IsCreaterAsync(groupId, user.Id) && !await _repo.IsAuthorAsync(learn.Id, user.Id))
                             return BadRequest(new List<ValidateError> { 
                                 new ValidateError("Доступ к удалению данного материала имеет только автор или создатель группы") 
                             });
@@ -188,10 +188,10 @@ namespace LearnAPI.Controllers
         /// Запрос на получение всех ресурсов
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public ActionResult<SourceLore> GetSources()
+        [HttpGet("sources")]
+        public async Task<ActionResult<SourceLore>> GetSourcesAsync()
         {
-            var sources = _repo.GetSourceLores();
+            var sources = await _repo.GetSourceLoresAsync();
 
             return Ok(_mapper.Map<List<SourceLore>, List<SourceLore>>(sources));
         }
@@ -204,13 +204,13 @@ namespace LearnAPI.Controllers
         /// <param name="learn"></param>
         /// <returns></returns>
         [HttpPost("{email}")]
-        public async Task<IActionResult> CreateLearn([FromRoute] string email, [FromBody] Learn learn)
+        public async Task<IActionResult> CreateLearnAsync([FromRoute] string email, [FromBody] Learn learn)
         {
             try
             {
                 User user = await _userManager.FindByNameAsync(email);
                 learn.UserId = user.Id;
-                _repo.Add(learn);
+                await _repo.AddAsync(learn);
             }
             catch (DbMessageException ex)
             {
@@ -232,11 +232,11 @@ namespace LearnAPI.Controllers
         /// <param name="learn"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult UpdateLearn([FromBody] Learn learn)
+        public async Task<IActionResult> UpdateLearnAsync([FromBody] Learn learn)
         {
             try
             {
-                _repo.Update(learn);
+                await _repo.UpdateAsync(learn);
             }
             catch (DbMessageException ex)
             {
@@ -258,7 +258,7 @@ namespace LearnAPI.Controllers
         /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}/{timestamp}")]
-        public IActionResult RemoveLearn([FromRoute] int id, [FromRoute] string timestamp)
+        public async Task<IActionResult> RemoveLearnAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             if (!timestamp.StartsWith("\""))
                 timestamp = $"\"{timestamp}\"";
@@ -270,7 +270,7 @@ namespace LearnAPI.Controllers
 
             try
             {
-                _repo.Delete(id, ts);
+                await _repo.DeleteAsync(id, ts);
             }
             catch (DbMessageException ex)
             {

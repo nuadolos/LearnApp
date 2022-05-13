@@ -10,6 +10,6 @@ namespace LearnEF.Repos
 {
     public interface IGroupLearnRepo : IRepo<GroupLearn>
     {
-        List<Learn> GetGroupLearns(int groupId);
+        Task<List<Learn>> GetGroupLearnsAsync(int groupId);
     }
 }
