@@ -57,7 +57,7 @@ namespace LearnAPI.Controllers
             if (friend != null)
                 return Ok(friend);
 
-            return NotFound(new List<ValidateError> { new ValidateError("Нет данных о дружбе") });
+            return NotFound(new ValidateError("Нет данных о дружбе"));
         }
 
         /// <summary>
@@ -74,12 +74,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -108,12 +103,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

@@ -16,7 +16,6 @@ namespace LearnEF.Entities.IdentityModel
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Поле \"Пароль\" пустое")]
-        [StringLength(50, MinimumLength = 6, ErrorMessage = "Пароль должен состоять минимум из 6 символов и не превышать 50 символов")]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
         public string? Password { get; set; }

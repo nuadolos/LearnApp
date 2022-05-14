@@ -30,11 +30,8 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<SourceLore>> GetSourcesAsync()
-        {
-            var source = await _repo.GetAllAsync();
-            return _mapper.Map<List<SourceLore>, List<SourceLore>>(source);
-        }
+        public async Task<IEnumerable<SourceLore>> GetSourcesAsync() =>
+            _mapper.Map<List<SourceLore>, List<SourceLore>>(await _repo.GetAllAsync());
 
         /// <summary>
         /// Запрос на получение конкретного источника
@@ -47,9 +44,9 @@ namespace LearnAPI.Controllers
             var source = await _repo.GetRecordAsync(id);
 
             if (source == null)
-                return NotFound(new List<ValidateError> { new ValidateError("Ресурс не найден") });
+                return NotFound(new ValidateError("Ресурс не найден"));
 
-            return Ok(_mapper.Map<SourceLore, SourceLore>(source));
+            return Ok(source);
         }
 
         /// <summary>
@@ -66,38 +63,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
-            }
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Запрос на изменение источника
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSourceAsync([FromRoute] int id, [FromBody] SourceLore source)
-        {
-            try
-            {
-                await _repo.UpdateAsync(source);
-            }
-            catch (DbMessageException ex)
-            {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -113,12 +79,11 @@ namespace LearnAPI.Controllers
         public async Task<IActionResult> RemoveSourceAsync([FromRoute] int id, [FromRoute] string timestamp)
         {
             // Если у источника есть ссылка хотя бы на один материал,
-            // то удаление невозможно
+            //   то удаление невозможно
             if (_repo.ContainedInLearn(id))
             {
-                return BadRequest(new List<ValidateError> {
-                    new ValidateError("Удаление невозможно, пока не будут удалены все записи с данным ресурсом") 
-                });
+                return BadRequest(new ValidateError(
+                    "Удаление невозможно, пока не будут удалены все записи с данным ресурсом"));
             }    
 
             if (!timestamp.StartsWith("\""))
@@ -135,12 +100,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

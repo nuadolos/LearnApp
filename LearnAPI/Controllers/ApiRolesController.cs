@@ -41,7 +41,7 @@ namespace LearnAPI.Controllers
             if (role != null)
                 return Ok(role);
 
-            return NotFound(new List<ValidateError> { new ValidateError("Роль не найдена") });
+            return NotFound(new ValidateError("Роль не найдена"));
         }
 
         /// <summary>
@@ -52,24 +52,13 @@ namespace LearnAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Role role)
         {
-            List<ValidateError>? errors = null;
-
-            //Создает роль в БД
             IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(role.Name));
-            if (result.Succeeded)
-                return Ok();
-            else
-            {
-                //Получение ошибок, вызванных с неправильно введенными данными
-                errors = new List<ValidateError>();
 
-                foreach (var error in result.Errors)
-                {
-                    errors.Add(new ValidateError(error.Description));
-                }
-            }
+            // Проверяет, создалась ли роль
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError(result.Errors.ToArray()[0].Description));
 
-            return BadRequest(errors);
+            return Ok();
         }
 
         /// <summary>
@@ -81,22 +70,21 @@ namespace LearnAPI.Controllers
         public async Task<IActionResult> EditAsync([FromRoute] string id)
         {
             User user = await _userManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                // получем список ролей пользователя
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var allRoles = _roleManager.Roles.ToList();
-                UserRoles model = new UserRoles
-                {
-                    UserId = user.Id,
-                    UserEmail = user.Email,
-                    UsRoles = userRoles,
-                    AllRoles = allRoles
-                };
-                return Ok(model);
-            }
 
-            return NotFound();
+            if (user == null)
+                return NotFound(new ValidateError("Пользователь не найден"));
+
+            // Получение списка всех ролей и ролей пользователя
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var allRoles = _roleManager.Roles.ToList();
+            UserRoles model = new UserRoles
+            {
+                UserId = user.Id,
+                UserEmail = user.Email,
+                UsRoles = userRoles,
+                AllRoles = allRoles
+            };
+            return Ok(model);
         }
 
         /// <summary>
@@ -110,29 +98,26 @@ namespace LearnAPI.Controllers
         {
             User user = await _userManager.FindByIdAsync(id);
 
-            if (user != null)
-            {
-                //Текущий список ролей у пользователя
-                var userRoles = await _userManager.GetRolesAsync(user);
-                
-                //Все доступные роли
-                var allRoles = _roleManager.Roles.ToList();
+            if (user == null)
+                return NotFound(new ValidateError("Пользователь не найден"));
 
-                //Роли, которые отмечены флажком
-                var addedRoles = roles.Except(userRoles);
+            //Текущий список ролей у пользователя
+            var userRoles = await _userManager.GetRolesAsync(user);
 
-                //Роли, которые не отмечены флажком
-                var removedRoles = userRoles.Except(roles);
+            //Все доступные роли
+            var allRoles = _roleManager.Roles.ToList();
 
-                //Добавление и удаление ролей
-                await _userManager.AddToRolesAsync(user, addedRoles);
-                await _userManager.RemoveFromRolesAsync(user, removedRoles);
+            //Роли, которые отмечены флажком
+            var addedRoles = roles.Except(userRoles);
 
-                return Ok();
-            }
+            //Роли, которые не отмечены флажком
+            var removedRoles = userRoles.Except(roles);
 
-            //Возвращает ошибку 404
-            return NotFound(new List<ValidateError> { new ValidateError("Пользователь не найден") });
+            //Добавление и удаление ролей
+            await _userManager.AddToRolesAsync(user, addedRoles);
+            await _userManager.RemoveFromRolesAsync(user, removedRoles);
+
+            return Ok();
         }
 
         /// <summary>
@@ -145,13 +130,11 @@ namespace LearnAPI.Controllers
         {
             IdentityRole role = await _roleManager.FindByIdAsync(model.Id);
 
-            if (role != null)
-            {
-                await _roleManager.DeleteAsync(role);
-                return Ok();
-            }
+            if (role == null)
+                return BadRequest(new ValidateError("Данные о роли отсутствуют"));
 
-            return BadRequest(new List<ValidateError> { new ValidateError("Данные о роли отсутствуют") });
+            await _roleManager.DeleteAsync(role);
+            return Ok();
         }
     }
 }

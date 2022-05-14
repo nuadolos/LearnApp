@@ -36,7 +36,7 @@ namespace LearnAPI.Controllers
             if (user != null)
                 return Ok(user);
 
-            return NotFound(new List<ValidateError> { new ValidateError("Пользователь не найден") });
+            return NotFound(new ValidateError("Пользователь не найден"));
         }
 
         /// <summary>
@@ -47,8 +47,6 @@ namespace LearnAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] UserData model)
         {
-            List<ValidateError>? errors = null;
-
             // Создание экземляра класса User
             User user = new User { 
                 Email = model.Email, UserName = model.Email,
@@ -58,25 +56,14 @@ namespace LearnAPI.Controllers
 
             // Создание нового пользователя
             var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                // Присваение роли новому пользователю
-                await _userManager.AddToRoleAsync(user, "student");
 
-                return Ok();
-            }
-            else
-            {
-                // Отправляет ошибки, вызванные отрицательным результатом создания пользователя
-                errors = new List<ValidateError>();
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError(result.Errors.ToArray()[0].Description));
 
-                foreach (var error in result.Errors)
-                {
-                    errors.Add(new ValidateError(error.Description));
-                }
-            }
+            // Присваение роли новому пользователю
+            await _userManager.AddToRoleAsync(user, "common");
 
-            return BadRequest(errors);
+            return Ok();
         }
 
         /// <summary>
@@ -88,42 +75,27 @@ namespace LearnAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditAsync([FromRoute] string id, [FromBody] UserData model)
         {
-            List<ValidateError>? errors = null;
-
             // Поиск пользователя по уникальному идентификатору
             User user = await _userManager.FindByIdAsync(model.Id);
 
-            if (user != null)
-            {
-                // Обновляет все возможные поля
-                user.Email = model.Email;
-                user.UserName = model.Email;
-                user.Surname = model.Surname;
-                user.Name = model.Name;
-                user.LockoutEnabled = model.Enabled;
+            if (user == null)
+                return BadRequest(new ValidateError("Пользователь не найден"));
 
-                // Сохраняет изменения в базе данных
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                    return Ok();
-                else
-                {
-                    // Отправляет ошибки, вызванные отрицательным результатом обновления пользователя
-                    errors = new List<ValidateError>();
+            // Обновляет все возможные поля
+            user.Email = model.Email;
+            user.UserName = model.Email;
+            user.Surname = model.Surname;
+            user.Name = model.Name;
+            user.LockoutEnabled = model.Enabled;
 
-                    foreach (var error in result.Errors)
-                    {
-                        errors.Add(new ValidateError(error.Description));
-                    }
-                }
-            }
-            else
-            {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError("Пользователь не найден"));
-            }
+            // Сохраняет изменения в базе данных
+            var result = await _userManager.UpdateAsync(user);
 
-            return BadRequest(errors);
+            // Проверяет, вступили ли в силу изменения данных учетной записи
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError(result.Errors.ToArray()[0].Description));
+
+            return Ok();
         }
 
         /// <summary>
@@ -135,35 +107,20 @@ namespace LearnAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
-            List<ValidateError>? errors = null;
-
             // Поиск пользователя по уникальному идентификатору
             User user = await _userManager.FindByIdAsync(id);
 
-            if (user != null)
-            {
-                // Удаляет учетную запись пользователя
-                var result = await _userManager.DeleteAsync(user);
-                if (result.Succeeded)
-                    return Ok();
-                else
-                {
-                    // Отправляет ошибки, вызванные отрицательным результатом удаления пользователя
-                    errors = new List<ValidateError>();
+            if (user == null)
+                return BadRequest(new ValidateError("Пользователь не найден"));
 
-                    foreach (var error in result.Errors)
-                    {
-                        errors.Add(new ValidateError(error.Description));
-                    }
-                }
-            }
-            else
-            {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError("Пользователь не найден"));
-            }
+            // Удаляет учетную запись пользователя
+            var result = await _userManager.DeleteAsync(user);
 
-            return BadRequest(errors);
+            // Проверяет, удалена ли учетная запись
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError(result.Errors.ToArray()[0].Description));
+
+            return Ok();
         }
     }
 }

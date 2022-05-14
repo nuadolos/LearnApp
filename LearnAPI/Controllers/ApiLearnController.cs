@@ -63,7 +63,7 @@ namespace LearnAPI.Controllers
             var learn = await _repo.GetRecordAsync(id);
 
             if (learn == null)
-                return NotFound(new List<ValidateError> { new ValidateError("Материал не найден") });
+                return NotFound(new ValidateError("Материал не найден"));
 
             // Определяет, какое действие было вызвано
             switch (act)
@@ -73,7 +73,7 @@ namespace LearnAPI.Controllers
                         // Проверяет, кто пытается запросить данные,
                         // автор или другой пользователь, с кем поделились записью
                         if (!await _repo.IsAuthorAsync(learn.Id, user.Id) && !await _repo.SharedWithAsync(learn.Id, user.Id))
-                            return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к данному материалу") });
+                            return BadRequest(new ValidateError("Вы не имеете доступ к данному материалу"));
 
                         break;
                     }
@@ -85,7 +85,7 @@ namespace LearnAPI.Controllers
                             // Проверяет, имеет ли доступ к редактированию
                             // данной записи пользователь, с кем ею поделились
                             if (!await _repo.CanChangeLearnAsync(learn.Id, user.Id))
-                                return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к редактированию данного материала") });
+                                return BadRequest(new ValidateError("Вы не имеете доступ к редактированию данного материала"));
                         }    
 
                         break;
@@ -94,12 +94,12 @@ namespace LearnAPI.Controllers
                     {
                         // Проверяет, запрашивает ли автор запись
                         if (!await _repo.IsAuthorAsync(learn.Id, user.Id))
-                            return BadRequest(new List<ValidateError> { new ValidateError("Доступ к удалению данного материала имеет только автор") });
+                            return BadRequest(new ValidateError("Доступ к удалению данного материала имеет только автор"));
 
                         break;
                     }
                 default:
-                    return BadRequest(new List<ValidateError> { new ValidateError("Запрос не имеет действия") });
+                    return BadRequest(new ValidateError("Запрос не имеет действия"));
             }
 
             return Ok(_mapper.Map<Learn, Learn>(learn));
@@ -115,11 +115,8 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Group/{id}")]
-        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int id)
-        {
-            var learns = await _repo.GroupLearnsAsync(id);
-            return _mapper.Map<List<Learn>, List<Learn>>(learns);
-        }
+        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int id) =>
+            _mapper.Map<List<Learn>, List<Learn>>(await _repo.GroupLearnsAsync(id));
 
         /// <summary>
         /// Запрос на получение конкретного материала
@@ -132,14 +129,15 @@ namespace LearnAPI.Controllers
         /// <param name="act"></param>
         /// <returns></returns>
         [HttpGet("{groupId}/{email}/{learnId}/{act}")]
-        public async Task<ActionResult<Learn>> GetGroupLearnAsync([FromRoute] int groupId, [FromRoute] string email, [FromRoute] int learnId, [FromRoute] string act)
+        public async Task<ActionResult<Learn>> GetGroupLearnAsync([FromRoute] int groupId, [FromRoute] string email, 
+            [FromRoute] int learnId, [FromRoute] string act)
         {
             // Поиск пользователя и материала
             User user = await _userManager.FindByNameAsync(email);
             var learn = await _repo.GetRecordAsync(learnId);
 
             if (learn == null || await _repo.GroupIsNullAsync(groupId))
-                return NotFound(new List<ValidateError> { new ValidateError("Материал не найден") });
+                return NotFound(new ValidateError("Материал не найден"));
 
             // Определяет, какое действие было вызвано
             switch (act)
@@ -148,7 +146,7 @@ namespace LearnAPI.Controllers
                     {
                         // Проверяет, участник ли группы пытается запросить данные
                         if (!await _repo.IsCreaterAsync(groupId, user.Id) && !await _repo.IsMemberGroupAsync(learn.Id, groupId, user.Id))
-                            return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к данному материалу") });
+                            return BadRequest(new ValidateError("Вы не имеете доступ к данному материалу"));
 
                         break;
                     }
@@ -160,7 +158,7 @@ namespace LearnAPI.Controllers
                             // Проверяет, имеет ли доступ к редактированию
                             // данной записи участник группы
                             if (!await _repo.CanChangeLearnAsync(learn.Id, groupId, user.Id))
-                                return BadRequest(new List<ValidateError> { new ValidateError("Вы не имеете доступ к редактированию данного материала") });
+                                return BadRequest(new ValidateError("Вы не имеете доступ к редактированию данного материала"));
                         }
 
                         break;
@@ -169,14 +167,12 @@ namespace LearnAPI.Controllers
                     {
                         // Проверяет, запрашивает ли автор запись
                         if (!await _repo.IsCreaterAsync(groupId, user.Id) && !await _repo.IsAuthorAsync(learn.Id, user.Id))
-                            return BadRequest(new List<ValidateError> { 
-                                new ValidateError("Доступ к удалению данного материала имеет только автор или создатель группы") 
-                            });
+                            return BadRequest(new ValidateError("Доступ к удалению данного материала имеет только автор или создатель группы"));
 
                         break;
                     }
                 default:
-                    return BadRequest(new List<ValidateError> { new ValidateError("Запрос не имеет действия") });
+                    return BadRequest(new ValidateError("Запрос не имеет действия"));
             }
 
             return Ok(_mapper.Map<Learn, Learn>(learn));
@@ -189,12 +185,8 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("sources")]
-        public async Task<ActionResult<SourceLore>> GetSourcesAsync()
-        {
-            var sources = await _repo.GetSourceLoresAsync();
-
-            return Ok(_mapper.Map<List<SourceLore>, List<SourceLore>>(sources));
-        }
+        public async Task<IEnumerable<SourceLore>> GetSourcesAsync() =>
+            _mapper.Map<List<SourceLore>, List<SourceLore>>(await _repo.GetSourceLoresAsync());
 
         /// <summary>
         /// Запрос на добавление нового материала
@@ -214,12 +206,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -228,7 +215,6 @@ namespace LearnAPI.Controllers
         /// <summary>
         /// Запрос на изменение материала
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="learn"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
@@ -240,12 +226,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -274,12 +255,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

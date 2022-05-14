@@ -38,7 +38,7 @@ namespace LearnMVC.Controllers
         {
             var users = await HttpRequestClient.GetRequestAsync<List<User>>(_baseUrl);
 
-            return users != null ? View(users) : NotFound(HttpRequestClient.Errors);
+            return users != null ? View(users) : NotFound(HttpRequestClient.Error);
         }
 
         public async Task<IActionResult> Details(string? id)
@@ -49,7 +49,7 @@ namespace LearnMVC.Controllers
             }
 
             var user = await GetUserRecord(id);
-            return user != null ? View(user) : NotFound(HttpRequestClient.Errors);
+            return user != null ? View(user) : NotFound(HttpRequestClient.Error);
         }
 
         #endregion
@@ -73,13 +73,7 @@ namespace LearnMVC.Controllers
                     return RedirectToAction(nameof(Index));
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -101,7 +95,7 @@ namespace LearnMVC.Controllers
 
             if (currentUser == null)
             {
-                return NotFound(HttpRequestClient.Errors);
+                return NotFound(HttpRequestClient.Error);
             }
             else
             {
@@ -136,13 +130,7 @@ namespace LearnMVC.Controllers
                     return RedirectToAction(nameof(Index));
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -162,7 +150,7 @@ namespace LearnMVC.Controllers
 
             var user = await GetUserRecord(id);
 
-            return user != null ? View(user) : NotFound(HttpRequestClient.Errors);
+            return user != null ? View(user) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
@@ -171,7 +159,7 @@ namespace LearnMVC.Controllers
         {
             return await HttpRequestClient.DeleteRequestAsync<User>(_baseUrl, user.Id) 
                 ? RedirectToAction(nameof(Index)) 
-                : BadRequest(HttpRequestClient.Errors);
+                : BadRequest(HttpRequestClient.Error);
         }
 
         #endregion

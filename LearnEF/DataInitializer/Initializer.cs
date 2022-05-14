@@ -27,7 +27,7 @@ namespace LearnEF.DataInitializer
             if (await userManager.FindByNameAsync("tester") == null)
             {
                 User u = new User { 
-                    Email = "tester@nuadolos.com", UserName = "tester@mail.ru",
+                    Email = "tester@gmail.com", UserName = "tester@gmail.com",
                     Surname = "Иванов", Name = "Андрей"
                 };
 
@@ -113,7 +113,7 @@ namespace LearnEF.DataInitializer
             context.SaveChanges();
 
             User newUser1 = await userManager.FindByNameAsync("2nuadolos1@gmail.com");
-            User newUser2 = await userManager.FindByNameAsync("tester@mail.ru");
+            User newUser2 = await userManager.FindByNameAsync("tester@gmail.com");
             User newUser3 = await userManager.FindByNameAsync("qwerty@gmail.com");
             User newUser4 = await userManager.FindByNameAsync("wasd@gmail.com");
             User newUser5 = await userManager.FindByNameAsync("zxc@gmail.com");

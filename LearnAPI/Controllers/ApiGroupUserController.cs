@@ -49,9 +49,7 @@ namespace LearnAPI.Controllers
             if (groupUser != null)
                 return Ok(groupUser);
 
-            return NotFound(new List<ValidateError> {
-                new ValidateError("Нет данных о пользователе, находящийся в конкретной группе")
-            });
+            return NotFound(new ValidateError("Нет данных о пользователе, находящийся в конкретной группе"));
         }
 
         /// <summary>
@@ -61,18 +59,13 @@ namespace LearnAPI.Controllers
         /// <param name="inviteId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpPost("g/{groupId}/u/{userId}")]
+        [HttpPost("i/{inviteId}/u/{userId}")]
         public async Task<IActionResult> InviteGroupUserAsync([FromRoute] string inviteId, [FromRoute] string userId)
         {
-            if (!await _repo.AcceptedInviteAsync(inviteId, userId))
-            {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
+            string result = await _repo.AcceptedInviteAsync(inviteId, userId);
 
-                errors.Add(new ValidateError("Ссылка оказалась недействительной"));
-
-                return BadRequest(errors);
-            }
+            if (result != string.Empty)
+                return BadRequest(new ValidateError(result));
 
             return Ok();
         }
@@ -91,12 +84,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -125,12 +113,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

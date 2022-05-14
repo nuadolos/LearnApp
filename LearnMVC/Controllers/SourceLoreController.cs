@@ -32,24 +32,13 @@ namespace LearnMVC.Controllers
         private async Task<SourceLore?> GetSourceRecord(int id) =>
             await HttpRequestClient.GetRequestAsync<SourceLore>(_baseUrl, id.ToString());
 
-        #region Index/Details
+        #region Index
 
         public async Task<IActionResult> Index()
         {
             var sources = await HttpRequestClient.GetRequestAsync<List<SourceLore>>(_baseUrl);
 
-            return sources != null ? View(sources) : NotFound(HttpRequestClient.Errors);
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-
-            var source = await GetSourceRecord(id.Value);
-            return source != null ? View(source) : NotFound(HttpRequestClient.Errors);
+            return sources != null ? View(sources) : NotFound(HttpRequestClient.Error);
         }
 
         #endregion
@@ -73,59 +62,7 @@ namespace LearnMVC.Controllers
                     return RedirectToAction(nameof(Index));
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
-                }
-            }
-
-            return View(source);
-        }
-
-        #endregion
-
-        #region Edit
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-
-            var source = await GetSourceRecord(id.Value);
-
-            return source != null ? View(source) : NotFound(HttpRequestClient.Errors);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, SourceLore source)
-        {
-            if (id != source.Id)
-            {
-                return BadRequest();
-            }
-
-            if (ModelState.IsValid)
-            {
-                bool result = await HttpRequestClient.PutRequestAsync(source, _baseUrl, id.ToString());
-
-                if (result)
-                    return RedirectToAction(nameof(Index));
-                else
-                {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -145,7 +82,7 @@ namespace LearnMVC.Controllers
 
             var source = await GetSourceRecord(id.Value);
 
-            return source != null ? View(source) : NotFound(HttpRequestClient.Errors);
+            return source != null ? View(source) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
@@ -157,7 +94,7 @@ namespace LearnMVC.Controllers
 
             return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, source.Id.ToString(), timeStampString) 
                 ? RedirectToAction(nameof(Index)) 
-                : BadRequest(HttpRequestClient.Errors);
+                : BadRequest(HttpRequestClient.Error);
         }
 
         #endregion

@@ -8,9 +8,11 @@ namespace LearnEF.Entities.ErrorModel
 {
     public class ValidateError
     {
-        public string? Message { get; set; }
+        public string Message { get; set; }
 
         public ValidateError(string message) =>
             Message = message;
+
+        public override string ToString() => Message;
     }
 }

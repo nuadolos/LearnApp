@@ -11,6 +11,7 @@ namespace LearnEF.Repos
     public interface IGroupRepo : IRepo<Group>
     { 
         Task<List<Group>> GetVisibleGroupsAsync();
+        Task<bool> IsCreatorAsync(int groupId, string userId);
         Task<bool> IsMemberAsync(int groupId, string userId);
     }
 }

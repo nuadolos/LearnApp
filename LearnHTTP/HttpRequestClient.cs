@@ -11,12 +11,14 @@ namespace LearnHTTP
     /// <typeparam name="T"></typeparam>
     static public class HttpRequestClient
     {
+        private static ValidateError _error;
+
         /// <summary>
         /// Сохраняет в себе ошибки последнего вызванного запроса
         /// </summary>
-        public static List<ValidateError>? Errors { get; private set; }
+        public static ValidateError Error { get => _error; }
 
-        static HttpRequestClient() => Errors = new List<ValidateError>();
+        static HttpRequestClient() => _error = new ValidateError("Ошибка отсутствует. Повторите действие заново");
 
         /// <summary>
         /// Выполнение запроса на получение данных
@@ -37,7 +39,7 @@ namespace LearnHTTP
             }
             else
             {
-                Errors = JsonConvert.DeserializeObject<List<ValidateError>>(
+                _error = JsonConvert.DeserializeObject<ValidateError>(
                     await response.Content.ReadAsStringAsync());
             }
 
@@ -64,7 +66,7 @@ namespace LearnHTTP
                 return true;
             else
             {
-                Errors = JsonConvert.DeserializeObject<List<ValidateError>>(
+                _error = JsonConvert.DeserializeObject<ValidateError>(
                     await response.Content.ReadAsStringAsync());
             }
 
@@ -91,7 +93,7 @@ namespace LearnHTTP
                 return true;
             else
             {
-                Errors = JsonConvert.DeserializeObject<List<ValidateError>>(
+                _error = JsonConvert.DeserializeObject<ValidateError>(
                     await response.Content.ReadAsStringAsync());
             }
 
@@ -117,7 +119,7 @@ namespace LearnHTTP
                 return true;
             else
             {
-                Errors = JsonConvert.DeserializeObject<List<ValidateError>>(
+                _error = JsonConvert.DeserializeObject<ValidateError>(
                     await response.Content.ReadAsStringAsync());
             }
 

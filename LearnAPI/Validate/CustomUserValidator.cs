@@ -34,7 +34,7 @@ namespace LearnAPI.Validate
                 {
                     if (user.Id != regUser.Id)
                     {
-                        errors.Add(new IdentityError { Description = $"Данная почта {user.Email} уже зарегистрирована" });
+                        errors.Add(new IdentityError { Description = $"Почта {user.Email} уже зарегистрирована" });
                         break;
                     }
                 }

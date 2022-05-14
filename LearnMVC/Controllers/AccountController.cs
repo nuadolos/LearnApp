@@ -50,13 +50,7 @@ namespace LearnMVC.Controllers
                 }
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -98,13 +92,7 @@ namespace LearnMVC.Controllers
                 }
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -150,13 +138,7 @@ namespace LearnMVC.Controllers
                     return View("CodeChangePassword", new UserChangePassword { Email = model.Email, CountAttempts = 3 });
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -186,13 +168,7 @@ namespace LearnMVC.Controllers
                         model.CountAttempts--;
                     }
 
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 

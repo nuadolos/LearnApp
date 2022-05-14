@@ -31,8 +31,6 @@ namespace LearnAPI.Controllers
         [HttpPost("Regist")]
         public async Task<IActionResult> RegistAsync([FromBody] UserRegister model)
         {
-            List<ValidateError>? errors = null;
-
             // Проверяет на наличие пустых полей
             if (string.IsNullOrEmpty(model.Email) ||
                 string.IsNullOrEmpty(model.Surname) ||
@@ -40,18 +38,12 @@ namespace LearnAPI.Controllers
                 string.IsNullOrEmpty(model.Password) ||
                 string.IsNullOrEmpty(model.PasswordConfirm))
             {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError("Все поля должны быть заполнены"));
-                return BadRequest(errors);
+                return BadRequest(new ValidateError("Все поля должны быть заполнены"));
             }
 
             // Проверяет совпадение паролей
             if (model.Password != model.PasswordConfirm)
-            {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError("Пароли не совпадают"));
-                return BadRequest(errors);
-            }
+                return BadRequest(new ValidateError("Пароли не совпадают"));
 
             // Создание нового пользователя
             User user = new User { Email = model.Email, UserName = model.Email, Surname = model.Surname, Name = model.Name };
@@ -59,27 +51,15 @@ namespace LearnAPI.Controllers
             // Создает новую запись о пользователе в БД
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
-            {
-                // Присваение роли новому пользователю
-                await _userManager.AddToRoleAsync(user, "student");
+            // Проверяет, создалась ли учетная запись
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError(result.Errors.ToArray()[0].Description));
 
-                // Возвращает код 200, означающий что учетная запись успешно создана
-                return Ok();
-            }
-            else
-            {
-                // Получение ошибок при создании записи
-                errors = new List<ValidateError>();
+            // Присваение роли новому пользователю
+            await _userManager.AddToRoleAsync(user, "common");
 
-                foreach (var error in result.Errors)
-                {
-                    errors.Add(new ValidateError(error.Description));
-                }
-            }
-
-            // Возвращает ошибку 400, связанную с неправильным вводом данных
-            return BadRequest(errors);
+            // Возвращает код 200, означающий что учетная запись успешно создана
+            return Ok();
         }
 
         /// <summary>
@@ -90,40 +70,24 @@ namespace LearnAPI.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserLogin model)
         {
-            List<ValidateError>? errors = null;
-
             if (string.IsNullOrEmpty(model.Email) ||
                 string.IsNullOrEmpty(model.Password))
             {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError("Все поля должны быть заполнены"));
-                return BadRequest(errors);
+                return BadRequest(new ValidateError("Все поля должны быть заполнены"));
             }
 
             // Входит в учетную записи
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-            // В случае ввода верных данных, возвращает код 200
-            if (result.Succeeded)
-            {
-                if ((await _userManager.FindByEmailAsync(model.Email)).LockoutEnabled)
-                    return Ok();
-                else
-                {
-                    errors = new List<ValidateError>();
+            // Проверяет, вошел ли пользователь в учетную запись
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError("Неправильный логин или пароль"));
 
-                    errors.Add(new ValidateError("Аккаунт заблокирован"));
-                }
-            }
-            else
-            {
-                errors = new List<ValidateError>();
+            // Проверяет, заблокирова ли учетная запись
+            if (!(await _userManager.FindByEmailAsync(model.Email)).LockoutEnabled)
+                return BadRequest(new ValidateError("Аккаунт заблокирован"));
 
-                errors.Add(new ValidateError("Неправильный логин или пароль"));
-            }
-
-            //Возвращает ошибку 400, связанную с неправильным вводом данных
-            return BadRequest(errors);
+            return Ok();
         }
 
         /// <summary>
@@ -134,43 +98,33 @@ namespace LearnAPI.Controllers
         [HttpPost("SendSecretCode")]
         public async Task<IActionResult> SendSecretCodeAsync([FromBody] OnlyEmail model)
         {
-            List<ValidateError>? errors = null;
-
             // Поиск пользователя по почте
             User user = await _userManager.FindByNameAsync(model.Email);
 
-            if (user != null)
+            if (user == null)
+                return BadRequest(new ValidateError($"Пользователя с почтой {model.Email} не существует"));
+
+            // Проверяет наличие блокировки и ее просроченность
+            if (user.CodeTimeBlock == null || user.CodeTimeBlock < DateTime.UtcNow)
             {
-                // Проверяет наличие блокировки и ее просроченность
-                if (user.CodeTimeBlock == null || user.CodeTimeBlock < DateTime.UtcNow)
-                {
-                    // Создает секретный код и сохраняет в базе данных
-                    Random rnd = new Random();
-                    user.Code = rnd.Next(100_000, 1_000_000).ToString();
+                // Создает секретный код и сохраняет в базе данных
+                Random rnd = new Random();
+                user.Code = rnd.Next(100_000, 1_000_000).ToString();
 
-                    // Обновляет данные пользователя
-                    await _userManager.UpdateAsync(user);
+                // Обновляет данные пользователя
+                await _userManager.UpdateAsync(user);
 
-                    // Создает сообщение с секретным кодом и отравляет пользователю на почту
-                    var message = new Message(new string[] { model.Email }, "Код подтвеждения личности",
-                        $"Ваш код подтверждения для восстановления пароля: {user.Code}\nЕсли код был выслан не вами, то проигнорируйте сообщение.", null);
-                    await _emailSender.SendEmailAsync(message);
+                // Создает сообщение с секретным кодом и отравляет пользователю на почту
+                var message = new Message(new string[] { model.Email }, "Код подтвеждения личности",
+                    $"Ваш код подтверждения для восстановления пароля: {user.Code}\nЕсли код был выслан не вами, то проигнорируйте сообщение.", null);
+                await _emailSender.SendEmailAsync(message);
 
-                    return Ok();
-                }
-                else
-                {
-                    errors = new List<ValidateError>();
-                    errors.Add(new ValidateError("Исчерпан лимит попыток ввода секретного кода"));
-                }
+                return Ok();
             }
             else
             {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError($"Пользователя с почтой {model.Email} не существует"));
+                return BadRequest(new ValidateError("Исчерпан лимит попыток ввода секретного кода"));
             }
-
-            return BadRequest(errors);
         }
 
         /// <summary>
@@ -181,79 +135,54 @@ namespace LearnAPI.Controllers
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] UserChangePassword model)
         {
-            List<ValidateError>? errors = null;
-
             // Поиск пользователя по почте
             User user = await _userManager.FindByNameAsync(model.Email);
 
-            if (user != null)
+            if (user == null)
+                return BadRequest(new ValidateError("Пользователь не найден"));
+
+            // Проверяет кол-во попыток смены пароля
+            if (model.CountAttempts <= 0)
             {
-                // Проверяет кол-во попыток смены пароля
-                if (model.CountAttempts > 0)
+                if (user.CodeTimeBlock == null)
                 {
-                    // Проверяет совпадение двух секретных кодов 
-                    if (model.CodeInMessage == user.Code)
-                    {
-                        var passwordValidator =
-                        HttpContext.RequestServices.GetService(typeof(IPasswordValidator<User>)) as IPasswordValidator<User>;
-                        var passwordHasher =
-                            HttpContext.RequestServices.GetService(typeof(IPasswordHasher<User>)) as IPasswordHasher<User>;
+                    // Блокировка смены пароля на час
+                    user.CodeTimeBlock = DateTime.UtcNow.AddHours(1);
 
-                        // Проверяет корректность пароля
-                        IdentityResult result = await passwordValidator.ValidateAsync(_userManager, user, model.Password);
-
-                        if (result.Succeeded)
-                        {
-                            // Удаляет секретный код и блокировку смены пароля
-                            user.Code = null;
-                            user.CodeTimeBlock = null;
-
-                            // Использование хэш-функции для пароля
-                            user.PasswordHash = passwordHasher?.HashPassword(user, model.Password);
-
-                            // Обновляет данные пользователя
-                            await _userManager.UpdateAsync(user);
-
-                            return Ok();
-                        }
-                        else
-                        {
-                            errors = new List<ValidateError>();
-
-                            foreach (var error in result.Errors)
-                            {
-                                errors.Add(new ValidateError(error.Description));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        errors = new List<ValidateError>();
-                        errors.Add(new ValidateError($"Код подтверждения указан неверно. Кол-во попыток: {--model.CountAttempts}"));
-                    }
+                    // Обновляет данные пользователя
+                    await _userManager.UpdateAsync(user);
                 }
-                else
-                {
-                    if (user.CodeTimeBlock == null)
-                    {
-                        // Блокировка смены пароля на час
-                        user.CodeTimeBlock = DateTime.UtcNow.AddHours(1);
 
-                        // Обновляет данные пользователя
-                        await _userManager.UpdateAsync(user);
-                    }
-
-                    errors = new List<ValidateError>();
-                    errors.Add(new ValidateError($"Исчерпан лимит попыток. Повторите попытку через час"));
-                }
-            }
-            else
-            {
-                errors = new List<ValidateError>();
-                errors.Add(new ValidateError("Пользователь не найден"));
+                return BadRequest(new ValidateError($"Исчерпан лимит попыток. Повторите попытку через час"));
             }
 
-            return BadRequest(errors);
+            // Проверяет совпадение двух секретных кодов 
+            if (model.CodeInMessage != user.Code)
+                return BadRequest(new ValidateError($"Код подтверждения указан неверно. Кол-во попыток: {--model.CountAttempts}"));
+
+            var passwordValidator =
+                HttpContext.RequestServices.GetService(typeof(IPasswordValidator<User>)) as IPasswordValidator<User>;
+            var passwordHasher =
+                HttpContext.RequestServices.GetService(typeof(IPasswordHasher<User>)) as IPasswordHasher<User>;
+
+            // Проверяет корректность пароля
+            IdentityResult result = await passwordValidator.ValidateAsync(_userManager, user, model.Password);
+
+            // Проверяет, изменен ли пароль пользователя
+            if (!result.Succeeded)
+                return BadRequest(new ValidateError(result.Errors.ToArray()[0].Description));
+
+            // Удаляет секретный код и блокировку смены пароля
+            user.Code = null;
+            user.CodeTimeBlock = null;
+
+            // Использование хэш-функции для пароля
+            user.PasswordHash = passwordHasher?.HashPassword(user, model.Password);
+
+            // Обновляет данные пользователя
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
         }
     }
 }

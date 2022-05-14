@@ -28,7 +28,7 @@ namespace LearnMVC.Controllers
         {
             var roles = await HttpRequestClient.GetRequestAsync<List<IdentityRole>>(_baseUrl);
 
-            return roles != null ? View(roles) : NotFound(HttpRequestClient.Errors);
+            return roles != null ? View(roles) : NotFound(HttpRequestClient.Error);
         }
 
         #endregion
@@ -52,13 +52,7 @@ namespace LearnMVC.Controllers
                     return RedirectToAction(nameof(Index));
                 else
                 {
-                    if (HttpRequestClient.Errors != null)
-                    {
-                        foreach (var error in HttpRequestClient.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error?.Message ?? "Неизвестная ошибка");
-                        }
-                    }
+                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
@@ -73,7 +67,7 @@ namespace LearnMVC.Controllers
         {
             var userRoles = await HttpRequestClient.GetRequestAsync<UserRoles>(_baseUrl, "User", id);
 
-            return userRoles != null ? View(userRoles) : NotFound(HttpRequestClient.Errors);
+            return userRoles != null ? View(userRoles) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
@@ -81,7 +75,7 @@ namespace LearnMVC.Controllers
         public async Task<IActionResult> Edit(string id, IList<string> roles) =>
             await HttpRequestClient.PutRequestAsync(roles, _baseUrl, id)
             ? RedirectToAction("Index", "Users")
-            : BadRequest(HttpRequestClient.Errors);
+            : BadRequest(HttpRequestClient.Error);
 
         #endregion
 
@@ -96,7 +90,7 @@ namespace LearnMVC.Controllers
 
             var role = await HttpRequestClient.GetRequestAsync<IdentityRole>(_baseUrl, id);
 
-            return role != null ? View(role) : NotFound(HttpRequestClient.Errors);
+            return role != null ? View(role) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
@@ -104,7 +98,7 @@ namespace LearnMVC.Controllers
         public async Task<IActionResult> Delete(IdentityRole role) =>
             await HttpRequestClient.DeleteRequestAsync<IdentityRole>(_baseUrl, role.Id)
                 ? RedirectToAction(nameof(Index))
-                : BadRequest(HttpRequestClient.Errors);
+                : BadRequest(HttpRequestClient.Error);
 
         #endregion
     }

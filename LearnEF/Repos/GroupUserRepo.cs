@@ -7,11 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using LearnEF.Context;
+using LearnEF.Entities.ErrorModel;
 
 namespace LearnEF.Repos
 {
     public class GroupUserRepo : BaseRepo<GroupUser>, IGroupUserRepo
     {
+        public GroupUserRepo() : base()
+        { }
+
+        public GroupUserRepo(LearnContext context) : base(context)
+        { }
+
         public async Task<List<User>> GetGroupUsers(int groupId)
         {
             List<User> groupUsers = new List<User>();
@@ -24,12 +32,17 @@ namespace LearnEF.Repos
             return groupUsers;
         }
 
-        public async Task<bool> AcceptedInviteAsync(string inviteId, string userId)
+        public async Task<string> AcceptedInviteAsync(string inviteId, string userId)
         {
             var group = await Context.Group.FirstOrDefaultAsync(g => g.CodeInvite == inviteId);
 
             if (group == null)
-                return false;
+                return "Код доступа не действителен";
+
+            var member = await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupId == group.Id && gu.UserId == userId);
+
+            if (group.UserId == userId || member != null)
+                return "Вы уже участник группы";
 
             GroupUser groupUser = new GroupUser
             {
@@ -53,12 +66,12 @@ namespace LearnEF.Repos
             {
                 await Context.SaveChangesAsync();
             }
-            catch
+            catch(DbMessageException ex)
             {
-                return false;
+                return ex.Message;
             }
 
-            return true;
+            return string.Empty;
         }
     }
 }

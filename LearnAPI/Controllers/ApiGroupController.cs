@@ -38,11 +38,8 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<Group>> GetGroupsAsync()
-        {
-            var groups = await _repo.GetVisibleGroupsAsync();
-            return _mapper.Map<List<Group>, List<Group>>(groups);
-        }
+        public async Task<IEnumerable<Group>> GetGroupsAsync() =>
+            _mapper.Map<List<Group>, List<Group>>(await _repo.GetVisibleGroupsAsync());
 
         /// <summary>
         /// Запрос на получение группы конкретным пользователем
@@ -56,12 +53,14 @@ namespace LearnAPI.Controllers
             var group = await _repo.GetRecordAsync(id);
 
             if (group == null)
-                return NotFound(new List<ValidateError> { new ValidateError("Группа не найдена") });
+                return NotFound(new ValidateError("Группа не найдена"));
 
+            // Проверяет доступность к группе
             if (!group.IsVisible)
             {
-                if (!await _repo.IsMemberAsync(group.Id, user.Id))
-                    return BadRequest(new List<ValidateError> { new ValidateError("Вы не являетесь участником данной группы") });
+                // Проверяет, является ли пользователь участником группы
+                if (!await _repo.IsCreatorAsync(group.Id, user.Id) && !await _repo.IsMemberAsync(group.Id, user.Id))
+                    return BadRequest(new ValidateError("Вы не являетесь участником данной группы"));
             }
 
             return Ok(_mapper.Map<Group, Group>(group));
@@ -81,16 +80,17 @@ namespace LearnAPI.Controllers
                 User user = await _userManager.FindByNameAsync(email);
                 group.UserId = user.Id;
                 group.CreateDate = DateTime.Now;
+
+                // Если группа будет закрытой,
+                //   то создается пригласительный код для набора пользователей
+                if (!group.IsVisible)
+                    group.CodeInvite = Guid.NewGuid().ToString();
+
                 await _repo.AddAsync(group);
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -110,12 +110,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -144,12 +139,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

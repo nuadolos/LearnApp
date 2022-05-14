@@ -15,7 +15,6 @@ namespace LearnAPI.Controllers
     public class ApiShareLearnController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly IMapper _mapperShareLearn;
         private readonly IMapper _mapperLearn;
         private readonly IMapper _mapperUser;
         private readonly IShareLearnRepo _repo;
@@ -36,13 +35,6 @@ namespace LearnAPI.Controllers
                 cfg => cfg.CreateMap<User, User>()
                 .ForMember(x => x.ShareLearn, opt => opt.Ignore()));
             _mapperUser = userConfig.CreateMapper();
-
-            //Игнорирование поля User и Learn в объекте ShareLearn
-            var shareLearnConfig = new MapperConfiguration(
-                cfg => cfg.CreateMap<ShareLearn, ShareLearn>()
-                .ForMember(x => x.User, opt => opt.Ignore())
-                .ForMember(x => x.Learn, opt => opt.Ignore()));
-            _mapperShareLearn = shareLearnConfig.CreateMapper();
         }
 
         /// <summary>
@@ -81,7 +73,7 @@ namespace LearnAPI.Controllers
             if (share != null)
                 return Ok(share);
 
-            return NotFound(new List<ValidateError> { new ValidateError("Нет данных о открытии доступа к материалу") });
+            return NotFound(new ValidateError("Нет данных о открытии доступа к материалу"));
         }
 
         /// <summary>
@@ -98,12 +90,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -132,12 +119,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

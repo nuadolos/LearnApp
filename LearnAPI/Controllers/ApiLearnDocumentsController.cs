@@ -35,7 +35,7 @@ namespace LearnAPI.Controllers
         /// <summary>
         /// Запрос на получение всех документов конкретного материала
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Learn/{id}")]
         public async Task<IEnumerable<LearnDocuments>> GetDocumentsAsync([FromRoute] int id) =>
@@ -54,7 +54,7 @@ namespace LearnAPI.Controllers
             if (learnDoc != null)
                 return Ok(learnDoc);
 
-            return NotFound(new List<ValidateError> { new ValidateError("Нет данных о документе") });
+            return NotFound(new ValidateError("Нет данных о документе"));
         }
 
         /// <summary>
@@ -71,12 +71,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();
@@ -105,12 +100,7 @@ namespace LearnAPI.Controllers
             }
             catch (DbMessageException ex)
             {
-                //Получение ошибок при создании записи
-                List<ValidateError> errors = new List<ValidateError>();
-
-                errors.Add(new ValidateError(ex.Message));
-
-                return BadRequest(errors);
+                return BadRequest(new ValidateError(ex.Message));
             }
 
             return Ok();

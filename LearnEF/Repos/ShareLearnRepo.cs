@@ -33,8 +33,7 @@ namespace LearnEF.Repos
 
         public async Task<List<User>> GetUsersAsync(int learnId)
         {
-            List<User> learnUsers
-                = new List<User>();
+            List<User> learnUsers = new List<User>();
 
             await Context.ShareLearn
                 .Include(sl => sl.User)

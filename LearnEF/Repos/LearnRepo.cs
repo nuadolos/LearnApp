@@ -50,7 +50,7 @@ namespace LearnEF.Repos
         }
 
         public async Task<bool> GroupIsNullAsync(int groupId) =>
-            await Context.Group.FirstAsync(g => g.Id == groupId) == null ? true : false;
+            await Context.Group.FirstAsync(g => g.Id == groupId) == null;
 
         public async Task<bool> IsMemberGroupAsync(int learnId, int groupId, string userId)
         {
@@ -72,10 +72,10 @@ namespace LearnEF.Repos
         }
 
         public async Task<bool> IsAuthorAsync(int learnId, string userId) =>
-            await Context.Learn.FirstOrDefaultAsync(u => u.UserId == userId && u.Id == learnId) != null ? true : false;
+            await Context.Learn.FirstOrDefaultAsync(u => u.UserId == userId && u.Id == learnId) != null;
 
         public async Task<bool> SharedWithAsync(int learnId, string userId) =>
-            await Context.ShareLearn.FirstOrDefaultAsync(u => u.UserId == userId && u.LearnId == learnId) != null ? true : false;
+            await Context.ShareLearn.FirstOrDefaultAsync(u => u.UserId == userId && u.LearnId == learnId) != null;
 
         public async Task<bool> CanChangeLearnAsync(int learnId, string userId)
         {
@@ -107,6 +107,6 @@ namespace LearnEF.Repos
         }
 
         public async Task<bool> IsCreaterAsync(int groupId, string userId) =>
-            await Context.Group.FirstOrDefaultAsync(u => u.Id == groupId && u.UserId == userId) != null ? true : false;
+            await Context.Group.FirstOrDefaultAsync(u => u.Id == groupId && u.UserId == userId) != null;
     }
 }
