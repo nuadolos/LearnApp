@@ -1,0 +1,50 @@
+﻿@using LearnEF.Entities
+@model IEnumerable<Group>
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h1>Список открытых групп</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Название</label>
+            </th>
+            <th>
+                <label>Описание</label>
+            </th>
+            <th>
+                <label>Дата создания</label>
+            </th>
+            <th>
+                <label>Тип</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.CreateDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.TypeName)
+                </td>
+                <td>
+                    <a asp-action="Invite" asp-route-id="@item.Id">Вступить</a>
+                </td>
+            </tr>
+        }   
+    </tbody>
+</table>

@@ -11,7 +11,7 @@ namespace LearnEF.Repos
 {
     public interface IGroupUserRepo : IRepo<GroupUser>
     {
-        Task<List<User>> GetGroupUsers(int groupId);
+        List<User> GetGroupUsers(int groupId);
         Task<string> AcceptedInviteAsync(string inviteId, string userId);
     }
 }

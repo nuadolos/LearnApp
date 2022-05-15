@@ -20,14 +20,20 @@ namespace LearnEF.Repos
         public GroupUserRepo(LearnContext context) : base(context)
         { }
 
-        public async Task<List<User>> GetGroupUsers(int groupId)
+        public List<User> GetGroupUsers(int groupId)
         {
             List<User> groupUsers = new List<User>();
 
-            await Context.GroupUser
+            var gUsers = Context.GroupUser
                 .Include(gu => gu.User)
-                .Where(gu => gu.GroupId == groupId)
-                .ForEachAsync(gu => groupUsers.Add(gu.User));
+                .Include(gu => gu.GroupRole)
+                .Where(gu => gu.GroupId == groupId);
+
+            foreach (var item in gUsers.AsParallel())
+            {
+                item.User.GroupRoleId = item.GroupRoleId;
+                groupUsers.Add(item.User);
+            }
 
             return groupUsers;
         }
@@ -55,16 +61,14 @@ namespace LearnEF.Repos
                     1 => 3,
 
                     // Если тип группы - класс,
-                    // то роль у пользователя - студент
+                    // то роль у пользователя - наблюдатель
                     _ => 1
                 }
             };
 
-            await Context.GroupUser.AddAsync(groupUser);
-
             try
             {
-                await Context.SaveChangesAsync();
+                await AddAsync(groupUser);
             }
             catch(DbMessageException ex)
             {

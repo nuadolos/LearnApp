@@ -27,7 +27,6 @@ namespace LearnEF.Entities
         public string? CodeInvite { get; set; }
 
         [Display(Name = "Дата создания")]
-        [Required]
         [DataType(DataType.Date)]
         [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }

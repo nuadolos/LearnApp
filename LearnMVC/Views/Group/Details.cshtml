@@ -1,0 +1,47 @@
+﻿@model LearnEF.Entities.Group
+
+@{
+    ViewData["Title"] = "Подробно";
+}
+
+<h1>Подробности</h1>
+
+<div>
+    <h4>Группа</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsVisible)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsVisible)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TypeName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TypeName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="UserIndex">Назад к списку</a>
+</div>

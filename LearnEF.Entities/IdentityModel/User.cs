@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Entities.IdentityModel
 {
-    public class User : IdentityUser
+    public partial class User : IdentityUser
     {
         [Required]
         [StringLength(40)]

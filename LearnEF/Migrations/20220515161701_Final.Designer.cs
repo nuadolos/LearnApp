@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220513170112_Final")]
+    [Migration("20220515161701_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,7 +68,6 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("CreateDate")
-                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Description")

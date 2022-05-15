@@ -4,6 +4,7 @@ using LearnEF.Entities.ErrorModel;
 using LearnEF.Entities.IdentityModel;
 using LearnEF.Repos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -13,12 +14,14 @@ namespace LearnAPI.Controllers
     [ApiController]
     public class ApiGroupUserController : ControllerBase
     {
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IGroupUserRepo _repo;
 
-        public ApiGroupUserController(IGroupUserRepo repo)
+        public ApiGroupUserController(IGroupUserRepo repo, UserManager<User> userManager)
         {
             _repo = repo;
+            _userManager = userManager;
 
             //Игнорирование поля GroupUser в объекте User
             var config = new MapperConfiguration(
@@ -33,23 +36,23 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Group/{id}")]
-        public async Task<IEnumerable<User>> GetGroupUsersAsync([FromRoute] int id) =>
-            _mapper.Map<List<User>, List<User>>(await _repo.GetGroupUsers(id));
+        public IEnumerable<User> GetGroupUsersAsync([FromRoute] int id) =>
+            _mapper.Map<List<User>, List<User>>(_repo.GetGroupUsers(id));
 
         /// <summary>
-        /// Запрос на получение конкретной записи пользователя группы
+        /// Запрос на получение конкретной пользователя группы
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<GroupUser>> GetGroupUserAsync([FromRoute] int id)
+        public async Task<ActionResult<GroupLearn>> GetGroupUserAsync([FromRoute] int id)
         {
             var groupUser = await _repo.GetRecordAsync(id);
 
             if (groupUser != null)
                 return Ok(groupUser);
 
-            return NotFound(new ValidateError("Нет данных о пользователе, находящийся в конкретной группе"));
+            return NotFound(new ValidateError("Нет данных о пользователе конкретной группы"));
         }
 
         /// <summary>
@@ -59,33 +62,18 @@ namespace LearnAPI.Controllers
         /// <param name="inviteId"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpPost("i/{inviteId}/u/{userId}")]
-        public async Task<IActionResult> InviteGroupUserAsync([FromRoute] string inviteId, [FromRoute] string userId)
+        [HttpPost("{email}/{inviteId}")]
+        public async Task<IActionResult> InviteGroupUserAsync([FromRoute] string email, [FromRoute] string inviteId)
         {
-            string result = await _repo.AcceptedInviteAsync(inviteId, userId);
+            User user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return NotFound("Пользователь не найден");
+
+            string result = await _repo.AcceptedInviteAsync(inviteId, user.Id);
 
             if (result != string.Empty)
                 return BadRequest(new ValidateError(result));
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Запрос на добавление пользователя в конкретную группу
-        /// </summary>
-        /// <param name="groupUser"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateGroupUserAsync([FromBody] GroupUser groupUser)
-        {
-            try
-            {
-                await _repo.AddAsync(groupUser);
-            }
-            catch (DbMessageException ex)
-            {
-                return BadRequest(new ValidateError(ex.Message));
-            }
 
             return Ok();
         }

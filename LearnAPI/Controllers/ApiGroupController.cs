@@ -27,6 +27,7 @@ namespace LearnAPI.Controllers
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<Group, Group>()
                 .ForMember(x => x.GroupType, opt => opt.Ignore())
+                .ForMember(x => x.User, opt => opt.Ignore())
                 .ForMember(x => x.GroupUser, opt => opt.Ignore())
                 .ForMember(x => x.GroupLearn, opt => opt.Ignore()));
 
@@ -42,12 +43,25 @@ namespace LearnAPI.Controllers
             _mapper.Map<List<Group>, List<Group>>(await _repo.GetVisibleGroupsAsync());
 
         /// <summary>
+        /// Запрос на получение всех групп пользователя
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpGet("{email}")]
+        public async Task<IEnumerable<Group>> GetUserGroupsAsync([FromRoute] string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            var groups = await _repo.GetUserGroupsAsync(user.Id);
+            return _mapper.Map<List<Group>, List<Group>>(groups);
+        }
+
+        /// <summary>
         /// Запрос на получение группы конкретным пользователем
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}/{email}")]
-        public async Task<ActionResult<Group>> GetGroupAsync([FromRoute] int id, [FromRoute] string email)
+        [HttpGet("{email}/{id}/{act}")]
+        public async Task<ActionResult<Group>> GetGroupAsync([FromRoute] string email, [FromRoute] int id, [FromRoute] string act)
         {
             User user = await _userManager.FindByEmailAsync(email);
             var group = await _repo.GetRecordAsync(id);
@@ -55,12 +69,34 @@ namespace LearnAPI.Controllers
             if (group == null)
                 return NotFound(new ValidateError("Группа не найдена"));
 
-            // Проверяет доступность к группе
-            if (!group.IsVisible)
+            switch (act)
             {
-                // Проверяет, является ли пользователь участником группы
-                if (!await _repo.IsCreatorAsync(group.Id, user.Id) && !await _repo.IsMemberAsync(group.Id, user.Id))
-                    return BadRequest(new ValidateError("Вы не являетесь участником данной группы"));
+                case "Details":
+                {
+                    // Проверяет доступность к группе
+                    if (!group.IsVisible)
+                    {
+                        // Проверяет, является ли пользователь участником группы
+                        if (!await _repo.IsCreatorAsync(group.Id, user.Id) && !await _repo.IsMemberAsync(group.Id, user.Id))
+                            return BadRequest(new ValidateError("Вы не являетесь участником данной группы"));
+                    }
+
+                    break;
+                }
+
+                case "Edit":
+                case "Delete":
+                {
+                    // Проверяет, является ли пользователь создателем группы
+                    if (!await _repo.IsCreatorAsync(group.Id, user.Id))
+                        return BadRequest(new ValidateError($"{(act == "Edit" ? "Редактирование" : "Удаление")}" +
+                            $" может осуществить только создатель группы"));
+
+                    break;
+                }
+
+                default:
+                    return BadRequest("Запрос не имеет действия");
             }
 
             return Ok(_mapper.Map<Group, Group>(group));
@@ -106,6 +142,11 @@ namespace LearnAPI.Controllers
         {
             try
             {
+                if (!group.IsVisible)
+                    group.CodeInvite = Guid.NewGuid().ToString();
+                else
+                    group.CodeInvite = null;
+
                 await _repo.UpdateAsync(group);
             }
             catch (DbMessageException ex)

@@ -1,0 +1,32 @@
+﻿@model LearnEF.Entities.Group
+
+@{
+    ViewData["Title"] = "Редактирование";
+}
+
+<h1>Редактирование</h1>
+
+<div class="row">
+    <div class="col-md-4 mt-5">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="Timestamp"/>
+            <input type="hidden" asp-for="CodeInvite"/>
+            <input type="hidden" asp-for="CreateDate"/>
+            <input type="hidden" asp-for="GroupTypeId"/>
+            <input type="hidden" asp-for="UserId"/>
+            @Html.EditorForModel("Group")
+            <div class="form-group mt-4">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="UserIndex">Назад к списку</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

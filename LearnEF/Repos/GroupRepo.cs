@@ -18,6 +18,19 @@ namespace LearnEF.Repos
         public GroupRepo(LearnContext context) : base(context)
         { }
 
+        public async Task<List<Group>> GetUserGroupsAsync(string userId)
+        {
+            List<Group> groups = await Context.Group
+                .Where(g => g.UserId == userId).ToListAsync();
+
+            await Context.GroupUser
+                .Include(gu => gu.Group)
+                .Where(gu => gu.UserId == userId)
+                .ForEachAsync(gu => groups.Add(gu.Group));
+
+            return groups;
+        }
+
         public async Task<List<Group>> GetVisibleGroupsAsync() =>
             await Context.Group.Where(g => g.IsVisible == true).ToListAsync();
 

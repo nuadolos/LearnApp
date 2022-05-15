@@ -1,7 +1,6 @@
 ﻿using LearnEF.Entities;
 using LearnHTTP;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -9,7 +8,7 @@ using Newtonsoft.Json;
 namespace LearnMVC.Controllers
 {
     [Authorize]
-    public class GroupController : Controller
+    public partial class GroupController : Controller
     {
         /// <summary>
         /// Базовая ссылка для обращения к LearnAPI
@@ -23,10 +22,17 @@ namespace LearnMVC.Controllers
 
         public GroupController(IConfiguration configuration)
         {
-            _baseUrl = configuration.GetSection("LearnAddress").Value;
+            _baseUrl = configuration.GetSection("GroupAddress").Value;
+            _userUrl = configuration.GetSection("GroupUserAddress").Value;
+
+            List<GroupType> groupTypes = new List<GroupType>
+            {
+                new GroupType { Id = 1, Name = "Равноправный"},
+                new GroupType { Id = 2, Name = "Поучительный"}
+            };
 
             GroupTypeList = new SelectList(
-                new[] { "Равноправный", "Класс"}, "Id", "Name", new Group().GroupTypeId);
+                groupTypes, "Id", "Name", new Group().GroupTypeId);
         }
 
         private async Task<Group?> GetGroupRecord(string email, int id, string action) =>
@@ -38,24 +44,19 @@ namespace LearnMVC.Controllers
         {
             var groups = await HttpRequestClient.GetRequestAsync<List<Group>>(_baseUrl);
 
-            if (groups != null)
-            {
-                foreach (var group in groups)
-                {
-                    foreach (var source in GroupTypeList.ToArray())
-                    {
-                        if (group.GroupTypeId.ToString() == source.Value)
-                        {
-                            group.TypeName = source.Text;
-                            break;
-                        }
-                    }
-                }
+            return groups != null ? View(groups) : BadRequest(HttpRequestClient.Error);
+        }
 
-                return View(groups);
-            }
+        public async Task<IActionResult> UserIndex()
+        {
+            string? userName = User?.Identity?.Name;
 
-            return BadRequest(HttpRequestClient.Error);
+            if (userName == null)
+                return BadRequest();
+
+            var userGroups = await HttpRequestClient.GetRequestAsync<List<Group>>(_baseUrl, userName);
+
+            return userGroups != null ? View(userGroups) : BadRequest(HttpRequestClient.Error);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -67,9 +68,9 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetGroupRecord(userName, id.Value, nameof(Details));
+            var group = await GetGroupRecord(userName, id.Value, nameof(Details));
 
-            return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
+            return group != null ? View(group) : NotFound(HttpRequestClient.Error);
         }
 
         #endregion
@@ -78,30 +79,30 @@ namespace LearnMVC.Controllers
 
         public IActionResult Create()
         {
-            ViewData["SourceLoreId"] = GroupTypeList;
+            ViewData["GroupTypeId"] = GroupTypeList;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Learn learn)
+        public async Task<IActionResult> Create(Group group)
         {
             string? userName = User?.Identity?.Name;
 
             if (ModelState.IsValid && userName != null)
             {
-                bool result = await HttpRequestClient.PostRequestAsync(learn, _baseUrl, userName);
+                bool result = await HttpRequestClient.PostRequestAsync(group, _baseUrl, userName);
 
                 if (result)
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(UserIndex));
                 else
                 {
                     ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
-            ViewData["SourceLoreId"] = GroupTypeList;
-            return View(learn);
+            ViewData["GroupTypeId"] = GroupTypeList;
+            return View(group);
         }
 
         #endregion
@@ -119,34 +120,34 @@ namespace LearnMVC.Controllers
 
             var learn = await GetGroupRecord(userName, id.Value, nameof(Edit));
 
-            ViewData["SourceLoreId"] = GroupTypeList;
+            ViewData["GroupTypeId"] = GroupTypeList;
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Learn learn)
+        public async Task<IActionResult> Edit(int id, Group group)
         {
-            if (id != learn.Id)
+            if (id != group.Id)
             {
                 return BadRequest();
             }
 
             if (ModelState.IsValid)
             {
-                bool result = await HttpRequestClient.PutRequestAsync(learn, _baseUrl, id.ToString());
+                bool result = await HttpRequestClient.PutRequestAsync(group, _baseUrl, id.ToString());
 
                 if (result)
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(UserIndex));
                 else
                 {
                     ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
                 }
             }
 
-            ViewData["SourceLoreId"] = GroupTypeList;
-            return View(learn);
+            ViewData["GroupTypeId"] = GroupTypeList;
+            return View(group);
         }
 
         #endregion
@@ -169,24 +170,16 @@ namespace LearnMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([Bind("Id, Timestamp")] Learn learn)
+        public async Task<IActionResult> Delete(Group group)
         {
             //Сериализация массива байтов в строку для вставки в маршрут
-            var timeStampString = JsonConvert.SerializeObject(learn.Timestamp);
+            var timeStampString = JsonConvert.SerializeObject(group.Timestamp);
 
-            return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, learn.Id.ToString(), timeStampString)
-                ? RedirectToAction(nameof(Index))
+            return await HttpRequestClient.DeleteRequestAsync<Group>(_baseUrl, group.Id.ToString(), timeStampString)
+                ? RedirectToAction(nameof(UserIndex))
                 : BadRequest(HttpRequestClient.Error);
         }
 
         #endregion
-
-        [HttpPost]
-        public IActionResult Invite(int groupId)
-        {
-            //bool result = await HttpRequestClient.PostRequestAsync()
-
-            return View();
-        }
     }
 }

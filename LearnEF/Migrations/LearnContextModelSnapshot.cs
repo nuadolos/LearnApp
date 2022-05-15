@@ -66,7 +66,6 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("CreateDate")
-                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Description")

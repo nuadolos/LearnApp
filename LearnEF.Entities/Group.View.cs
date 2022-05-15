@@ -10,6 +10,13 @@ namespace LearnEF.Entities
     public partial class Group
     {
         [NotMapped]
-        public string? TypeName { get; set; }
+        public string? TypeName
+        {
+            get => GroupTypeId switch
+            {
+                1 => "Равноправный",
+                _ => "Поучительный"
+            };
+        }
     }
 }

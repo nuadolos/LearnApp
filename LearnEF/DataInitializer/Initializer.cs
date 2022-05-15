@@ -186,15 +186,15 @@ namespace LearnEF.DataInitializer
             List<GroupType> groupTypes = new List<GroupType>()
             { 
                 new GroupType { Name = "Равноправный" },
-                new GroupType { Name = "Класс" }
+                new GroupType { Name = "Поучительный" }
             };
 
             groupTypes.ForEach(gropType => context.GroupType.Add(gropType));
 
             List<GroupRole> groupRoles = new List<GroupRole>()
             {
-                new GroupRole { Name = "Студент" },
-                new GroupRole { Name = "Учитель" },
+                new GroupRole { Name = "Наблюдатель" },
+                new GroupRole { Name = "Ответственный" },
                 new GroupRole { Name = "Общий" }
             };
 

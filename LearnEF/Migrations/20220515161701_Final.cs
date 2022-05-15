@@ -235,7 +235,7 @@ namespace LearnEF.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CodeInvite = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "date", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: true),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     GroupTypeId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
