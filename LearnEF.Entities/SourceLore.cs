@@ -18,6 +18,6 @@ namespace LearnEF.Entities
         public string? Name { get; set; }
 
         [InverseProperty(nameof(SourceLore))]
-        public List<Learn>? Learn { get; } = new List<Learn>();
+        public List<Note>? Note { get; } = new List<Note>();
     }
 }

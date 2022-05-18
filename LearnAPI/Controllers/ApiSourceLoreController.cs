@@ -21,7 +21,7 @@ namespace LearnAPI.Controllers
             //Игнорирование поля Learn в объекте SourceLore
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<SourceLore, SourceLore>()
-                .ForMember(x => x.Learn, opt => opt.Ignore()));
+                .ForMember(x => x.Note, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
 
@@ -80,7 +80,7 @@ namespace LearnAPI.Controllers
         {
             // Если у источника есть ссылка хотя бы на один материал,
             //   то удаление невозможно
-            if (_repo.ContainedInLearn(id))
+            if (_repo.ContainedInNote(id))
             {
                 return BadRequest(new ValidateError(
                     "Удаление невозможно, пока не будут удалены все записи с данным ресурсом"));

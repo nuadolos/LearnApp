@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220515161701_Final")]
+    [Migration("20220518143156_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,10 @@ namespace LearnEF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("CodeAdmin")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("CodeInvite")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -101,34 +105,6 @@ namespace LearnEF.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Group");
-                });
-
-            modelBuilder.Entity("LearnEF.Entities.GroupLearn", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LearnId")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("LearnId");
-
-                    b.ToTable("GroupLearn");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.GroupRole", b =>
@@ -304,22 +280,18 @@ namespace LearnEF.Migrations
                         .IsRequired()
                         .HasColumnType("date");
 
-                    b.Property<DateTime?>("DateReading")
+                    b.Property<DateTime?>("Deadline")
                         .HasColumnType("date");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Description")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
 
-                    b.Property<bool>("IsStudying")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int?>("SourceLoreId")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsAttached")
+                        .HasColumnType("bit");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -336,12 +308,7 @@ namespace LearnEF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SourceLoreId");
-
                     b.HasIndex("UserId");
-
-                    b.HasIndex("Title", "Link")
-                        .IsUnique();
 
                     b.ToTable("Learn");
                 });
@@ -376,7 +343,52 @@ namespace LearnEF.Migrations
                     b.ToTable("LearnDocuments");
                 });
 
-            modelBuilder.Entity("LearnEF.Entities.ShareLearn", b =>
+            modelBuilder.Entity("LearnEF.Entities.Note", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreateDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(600)
+                        .HasColumnType("nvarchar(600)");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int?>("SourceLoreId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SourceLoreId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Note");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.ShareNote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -387,7 +399,7 @@ namespace LearnEF.Migrations
                     b.Property<bool>("CanChange")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("LearnId")
+                    b.Property<int?>("NoteId")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Timestamp")
@@ -400,11 +412,11 @@ namespace LearnEF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LearnId");
+                    b.HasIndex("NoteId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ShareLearn");
+                    b.ToTable("ShareNote");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.SourceLore", b =>
@@ -595,21 +607,6 @@ namespace LearnEF.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("LearnEF.Entities.GroupLearn", b =>
-                {
-                    b.HasOne("LearnEF.Entities.Group", "Group")
-                        .WithMany("GroupLearn")
-                        .HasForeignKey("GroupId");
-
-                    b.HasOne("LearnEF.Entities.Learn", "Learn")
-                        .WithMany("GroupLearn")
-                        .HasForeignKey("LearnId");
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Learn");
-                });
-
             modelBuilder.Entity("LearnEF.Entities.GroupUser", b =>
                 {
                     b.HasOne("LearnEF.Entities.Group", "Group")
@@ -634,16 +631,9 @@ namespace LearnEF.Migrations
 
             modelBuilder.Entity("LearnEF.Entities.Learn", b =>
                 {
-                    b.HasOne("LearnEF.Entities.SourceLore", "SourceLore")
-                        .WithMany("Learn")
-                        .HasForeignKey("SourceLoreId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany("Learn")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("SourceLore");
 
                     b.Navigation("User");
                 });
@@ -657,17 +647,33 @@ namespace LearnEF.Migrations
                     b.Navigation("Learn");
                 });
 
-            modelBuilder.Entity("LearnEF.Entities.ShareLearn", b =>
+            modelBuilder.Entity("LearnEF.Entities.Note", b =>
                 {
-                    b.HasOne("LearnEF.Entities.Learn", "Learn")
-                        .WithMany("ShareLearn")
-                        .HasForeignKey("LearnId");
+                    b.HasOne("LearnEF.Entities.SourceLore", "SourceLore")
+                        .WithMany("Note")
+                        .HasForeignKey("SourceLoreId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
-                        .WithMany("ShareLearn")
+                        .WithMany("Note")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Learn");
+                    b.Navigation("SourceLore");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnEF.Entities.ShareNote", b =>
+                {
+                    b.HasOne("LearnEF.Entities.Note", "Note")
+                        .WithMany("ShareNote")
+                        .HasForeignKey("NoteId");
+
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
+                        .WithMany("ShareNote")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Note");
 
                     b.Navigation("User");
                 });
@@ -725,8 +731,6 @@ namespace LearnEF.Migrations
 
             modelBuilder.Entity("LearnEF.Entities.Group", b =>
                 {
-                    b.Navigation("GroupLearn");
-
                     b.Navigation("GroupUser");
                 });
 
@@ -748,23 +752,26 @@ namespace LearnEF.Migrations
 
                     b.Navigation("Learn");
 
+                    b.Navigation("Note");
+
                     b.Navigation("SentUser");
 
-                    b.Navigation("ShareLearn");
+                    b.Navigation("ShareNote");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.Learn", b =>
                 {
-                    b.Navigation("GroupLearn");
-
                     b.Navigation("LearnDocuments");
+                });
 
-                    b.Navigation("ShareLearn");
+            modelBuilder.Entity("LearnEF.Entities.Note", b =>
+                {
+                    b.Navigation("ShareNote");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.SourceLore", b =>
                 {
-                    b.Navigation("Learn");
+                    b.Navigation("Note");
                 });
 #pragma warning restore 612, 618
         }

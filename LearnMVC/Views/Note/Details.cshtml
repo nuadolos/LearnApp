@@ -1,4 +1,4 @@
-﻿@model LearnEF.Entities.Learn
+﻿@model LearnEF.Entities.Note
 
 @{
     ViewData["Title"] = "Подробно";
@@ -7,14 +7,20 @@
 <h1>Подробности</h1>
 
 <div>
-    <h4>Материал "@Model.Title"</h4>
+    <h4>Заметка</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Link)
+            @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Link)
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreateDate)
@@ -23,22 +29,16 @@
             @Html.DisplayFor(model => model.CreateDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateReading)
+            @Html.DisplayNameFor(model => model.Link)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateReading)
+            <a>@Html.DisplayFor(model => model.Link)</a>
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SourceLoreId)
+            @Html.DisplayNameFor(model => model.LoreName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SourceLoreId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Studied)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Studied)
+            @Html.DisplayFor(model => model.LoreName)
         </dd>
     </dl>
 </div>

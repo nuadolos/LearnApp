@@ -1,4 +1,4 @@
-﻿@model LearnEF.Entities.Learn
+﻿@model LearnEF.Entities.Note
 
 @{
     ViewData["Title"] = "Создание";
@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-md-4 mt-5">
         <form asp-action="Create">
-            @Html.EditorForModel("Learn")
+            @Html.EditorForModel("Note")
             <div class="form-group mt-4">
                 <input type="submit" value="Создать" class="btn btn-primary" />
             </div>

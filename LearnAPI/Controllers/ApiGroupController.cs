@@ -23,13 +23,12 @@ namespace LearnAPI.Controllers
             _repo = repo;
             _userManager = userManager;
 
-            //Игнорирование поля GroupType, GroupUser и GroupLearn в объекте Group
+            //Игнорирование поля GroupType, GroupUser и User в объекте Group
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<Group, Group>()
                 .ForMember(x => x.GroupType, opt => opt.Ignore())
                 .ForMember(x => x.User, opt => opt.Ignore())
-                .ForMember(x => x.GroupUser, opt => opt.Ignore())
-                .ForMember(x => x.GroupLearn, opt => opt.Ignore()));
+                .ForMember(x => x.GroupUser, opt => opt.Ignore()));
 
             _mapper = config.CreateMapper();
         }
@@ -43,15 +42,28 @@ namespace LearnAPI.Controllers
             _mapper.Map<List<Group>, List<Group>>(await _repo.GetVisibleGroupsAsync());
 
         /// <summary>
-        /// Запрос на получение всех групп пользователя
+        /// Запрос на получение собственных групп пользователя
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        [HttpGet("{email}")]
+        [HttpGet("MyGroup/{email}")]
         public async Task<IEnumerable<Group>> GetUserGroupsAsync([FromRoute] string email)
         {
             User user = await _userManager.FindByEmailAsync(email);
             var groups = await _repo.GetUserGroupsAsync(user.Id);
+            return _mapper.Map<List<Group>, List<Group>>(groups);
+        }
+
+        /// <summary>
+        /// Запрос на получение групп, где пользователь является участником
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpGet("Member/{email}")]
+        public async Task<IEnumerable<Group>> GetMemberGroupsAsync([FromRoute] string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            var groups = await _repo.GetMemberGroupsAsync(user.Id);
             return _mapper.Map<List<Group>, List<Group>>(groups);
         }
 
@@ -96,7 +108,7 @@ namespace LearnAPI.Controllers
                 }
 
                 default:
-                    return BadRequest("Запрос не имеет действия");
+                    return BadRequest(new ValidateError("Запрос не имеет действия"));
             }
 
             return Ok(_mapper.Map<Group, Group>(group));

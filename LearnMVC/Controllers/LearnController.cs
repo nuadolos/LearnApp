@@ -1,11 +1,9 @@
-﻿using LearnHTTP;
-using LearnEF.Entities;
+﻿using LearnEF.Entities;
+using LearnHTTP;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using LearnEF.Entities.ErrorModel;
 
 namespace LearnMVC.Controllers
 {
@@ -17,67 +15,22 @@ namespace LearnMVC.Controllers
         /// </summary>
         private readonly string _baseUrl;
 
-        /// <summary>
-        /// Хранит список ролей
-        /// </summary>
-        private SelectList SourceLoreList { get; }
+        public LearnController(IConfiguration configuration) =>
+            _baseUrl = configuration.GetSection("LearnAddres").Value;
 
-        /// <summary>
-        /// Получает URL Api для отправки и получения запросов.
-        /// Также заполняет SourceLoreList данными из БД.
-        /// </summary>
-        /// <param name="configuration"></param>
-        public LearnController(IConfiguration configuration)
-        {
-            _baseUrl = configuration.GetSection("LearnAddress").Value;
-
-            SourceLoreList = new SelectList(
-                HttpRequestClient.GetRequestAsync<List<SourceLore>>(_baseUrl, "sources").Result, "Id", "Name", new Learn().SourceLoreId);
-        }
-
-        /// <summary>
-        /// Получает запись о материале.
-        /// Метод используется с целью сокращение кода.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private async Task<Learn?> GetLearnRecord(string email, int id, string action) => 
-            await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, email, id.ToString(), action);
+        private async Task<Learn?> GetLearnRecord(int groupId, string email, int id, string action) =>
+            await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, groupId.ToString(), email, id.ToString(), action);
 
         #region Index/Details
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
-            string? userName = User?.Identity?.Name;
+            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, "Group", id.ToString());
 
-            if (userName == null)
-            {
-                return BadRequest();
-            }
-
-            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, "User", userName);
-
-            if (learns != null)
-            {
-                foreach (var learn in learns)
-                {
-                    foreach (var source in SourceLoreList.ToArray())
-                    {
-                        if (learn.SourceLoreId.ToString() == source.Value)
-                        {
-                            learn.LoreName = source.Text;
-                            break;
-                        }
-                    }
-                }
-
-                return View(learns);
-            }
-
-            return BadRequest(HttpRequestClient.Error);
+            return learns != null ? View(learns) : BadRequest(HttpRequestClient.Error);
         }
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int groupId)
         {
             string? userName = User?.Identity?.Name;
 
@@ -86,7 +39,7 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(userName, id.Value, nameof(Details));
+            var learn = await GetLearnRecord(groupId, userName, id.Value, nameof(Details));
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
         }
@@ -97,13 +50,12 @@ namespace LearnMVC.Controllers
 
         public IActionResult Create()
         {
-            ViewData["SourceLoreId"] = SourceLoreList;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Learn learn)
+        public async Task<IActionResult> Create(int groupId, Learn learn)
         {
             string? userName = User?.Identity?.Name;
 
@@ -119,7 +71,6 @@ namespace LearnMVC.Controllers
                 }
             }
 
-            ViewData["SourceLoreId"] = SourceLoreList;
             return View(learn);
         }
 
@@ -127,7 +78,7 @@ namespace LearnMVC.Controllers
 
         #region Edit
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int groupId)
         {
             string? userName = User?.Identity?.Name;
 
@@ -136,9 +87,7 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(userName, id.Value, nameof(Edit));
-
-            ViewData["SourceLoreId"] = SourceLoreList;
+            var learn = await GetLearnRecord(groupId, userName, id.Value, nameof(Edit));
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
         }
@@ -164,7 +113,6 @@ namespace LearnMVC.Controllers
                 }
             }
 
-            ViewData["SourceLoreId"] = SourceLoreList;
             return View(learn);
         }
 
@@ -172,7 +120,7 @@ namespace LearnMVC.Controllers
 
         #region Delete
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int groupId)
         {
             string? userName = User?.Identity?.Name;
 
@@ -181,20 +129,20 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetLearnRecord(userName, id.Value, nameof(Delete));
+            var learn = await GetLearnRecord(groupId, userName, id.Value, nameof(Delete));
 
             return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([Bind("Id, Timestamp")] Learn learn)
+        public async Task<IActionResult> Delete(Learn learn)
         {
             //Сериализация массива байтов в строку для вставки в маршрут
             var timeStampString = JsonConvert.SerializeObject(learn.Timestamp);
 
-            return await HttpRequestClient.DeleteRequestAsync<Learn>(_baseUrl, learn.Id.ToString(), timeStampString) 
-                ? RedirectToAction(nameof(Index)) 
+            return await HttpRequestClient.DeleteRequestAsync<Group>(_baseUrl, learn.Id.ToString(), timeStampString)
+                ? RedirectToAction(nameof(Index))
                 : BadRequest(HttpRequestClient.Error);
         }
 

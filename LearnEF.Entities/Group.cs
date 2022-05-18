@@ -22,7 +22,11 @@ namespace LearnEF.Entities
         [StringLength(1000, ErrorMessage = "Описание максимум содержит 1000 символов")]
         public string? Description { get; set; }
 
-        [Display(Name = "Код доступа")]
+        [Display(Name = "Код преподавателя")]
+        [StringLength(200)]
+        public string? CodeAdmin { get; set; }
+
+        [Display(Name = "Код студента")]
         [StringLength(200)]
         public string? CodeInvite { get; set; }
 
@@ -50,8 +54,5 @@ namespace LearnEF.Entities
 
         [InverseProperty(nameof(Group))]
         public List<GroupUser>? GroupUser { get; } = new List<GroupUser>();
-
-        [InverseProperty(nameof(Group))]
-        public List<GroupLearn>? GroupLearn { get; } = new List<GroupLearn>();
     }
 }

@@ -18,10 +18,12 @@ namespace LearnEF.Repos
         public GroupRepo(LearnContext context) : base(context)
         { }
 
-        public async Task<List<Group>> GetUserGroupsAsync(string userId)
+        public async Task<List<Group>> GetUserGroupsAsync(string userId) =>
+             await Context.Group.Where(g => g.UserId == userId).ToListAsync();
+
+        public async Task<List<Group>> GetMemberGroupsAsync(string userId)
         {
-            List<Group> groups = await Context.Group
-                .Where(g => g.UserId == userId).ToListAsync();
+            List<Group> groups = new List<Group>();
 
             await Context.GroupUser
                 .Include(gu => gu.Group)

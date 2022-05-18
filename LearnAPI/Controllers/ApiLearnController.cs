@@ -25,98 +25,18 @@ namespace LearnAPI.Controllers
             //Игнорирование ссылочных полей объекта Learn
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<Learn, Learn>()
-                .ForMember(x => x.SourceLore, opt => opt.Ignore())
                 .ForMember(x => x.User, opt => opt.Ignore())
-                .ForMember(x => x.ShareLearn, opt => opt.Ignore())
-                .ForMember(x => x.GroupLearn, opt => opt.Ignore())
                 .ForMember(x => x.LearnDocuments, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
 
-        #region Пользовательские запросы на материал
-
-        /// <summary>
-        /// Запрос на получение всех материалов конкретного пользователя
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("User/{email}")]
-        public async Task<IEnumerable<Learn>> GetUserLearnsAsync([FromRoute] string email)
-        {
-            User user = await _userManager.FindByNameAsync(email);
-            var learns = await _repo.UserLearnsAsync(user.Id);
-            return _mapper.Map<List<Learn>, List<Learn>>(learns);
-        }
-
-        /// <summary>
-        /// Запрос на получение конкретного материала
-        /// с учетом вызванного действия и залогиненного пользователя
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="id"></param>
-        /// <param name="act"></param>
-        /// <returns></returns>
-        [HttpGet("{email}/{id}/{act}")]
-        public async Task<ActionResult<Learn>> GetUserLearnAsync([FromRoute] string email, [FromRoute] int id, [FromRoute] string act)
-        {
-            // Поиск пользователя и материала
-            User user = await _userManager.FindByNameAsync(email);
-            var learn = await _repo.GetRecordAsync(id);
-
-            if (learn == null)
-                return NotFound(new ValidateError("Материал не найден"));
-
-            // Определяет, какое действие было вызвано
-            switch (act)
-            {
-                case "Details":
-                    {
-                        // Проверяет, кто пытается запросить данные,
-                        // автор или другой пользователь, с кем поделились записью
-                        if (!await _repo.IsAuthorAsync(learn.Id, user.Id) && !await _repo.SharedWithAsync(learn.Id, user.Id))
-                            return BadRequest(new ValidateError("Вы не имеете доступ к данному материалу"));
-
-                        break;
-                    }
-                case "Edit":
-                    {
-                        // Проверяет, запрашивает ли автор запись
-                        if (!await _repo.IsAuthorAsync(learn.Id, user.Id))
-                        {
-                            // Проверяет, имеет ли доступ к редактированию
-                            // данной записи пользователь, с кем ею поделились
-                            if (!await _repo.CanChangeLearnAsync(learn.Id, user.Id))
-                                return BadRequest(new ValidateError("Вы не имеете доступ к редактированию данного материала"));
-                        }    
-
-                        break;
-                    }
-                case "Delete":
-                    {
-                        // Проверяет, запрашивает ли автор запись
-                        if (!await _repo.IsAuthorAsync(learn.Id, user.Id))
-                            return BadRequest(new ValidateError("Доступ к удалению данного материала имеет только автор"));
-
-                        break;
-                    }
-                default:
-                    return BadRequest(new ValidateError("Запрос не имеет действия"));
-            }
-
-            return Ok(_mapper.Map<Learn, Learn>(learn));
-        }
-
-        #endregion
-
-        #region Групповые запросы на материал
-
         /// <summary>
         /// Запрос на получение всех материалов конкретной группы
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("Group/{id}")]
-        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int id) =>
-            _mapper.Map<List<Learn>, List<Learn>>(await _repo.GroupLearnsAsync(id));
+        [HttpGet("Group/{groupId}")]
+        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int groupId) =>
+            _mapper.Map<List<Learn>, List<Learn>>(await _repo.GetGroupLearnsAsync(groupId));
 
         /// <summary>
         /// Запрос на получение конкретного материала
@@ -129,15 +49,19 @@ namespace LearnAPI.Controllers
         /// <param name="act"></param>
         /// <returns></returns>
         [HttpGet("{groupId}/{email}/{learnId}/{act}")]
-        public async Task<ActionResult<Learn>> GetGroupLearnAsync([FromRoute] int groupId, [FromRoute] string email, 
+        public async Task<ActionResult<Learn>> GetGroupLearnAsync([FromRoute] int groupId, [FromRoute] string email,
             [FromRoute] int learnId, [FromRoute] string act)
         {
-            // Поиск пользователя и материала
-            User user = await _userManager.FindByNameAsync(email);
-            var learn = await _repo.GetRecordAsync(learnId);
+            var group = await _repo.GetGroupAsync(groupId);
+            var learn = await _repo.GetLearnAsync(learnId);
 
-            if (learn == null || await _repo.GroupIsNullAsync(groupId))
-                return NotFound(new ValidateError("Материал не найден"));
+            if (group == null || learn == null)
+                return NotFound(new ValidateError("Группа не существует"));
+
+            if (learn.GroupId != group.Id)
+                return NotFound(new ValidateError("Данный материал отсутствует в группе"));
+
+            User user = await _userManager.FindByNameAsync(email);
 
             // Определяет, какое действие было вызвано
             switch (act)
@@ -145,7 +69,7 @@ namespace LearnAPI.Controllers
                 case "Details":
                     {
                         // Проверяет, участник ли группы пытается запросить данные
-                        if (!await _repo.IsCreaterAsync(groupId, user.Id) && !await _repo.IsMemberGroupAsync(learn.Id, groupId, user.Id))
+                        if (group.UserId != user.Id && !await _repo.IsMemberGroupAsync(groupId, user.Id))
                             return BadRequest(new ValidateError("Вы не имеете доступ к данному материалу"));
 
                         break;
@@ -153,11 +77,11 @@ namespace LearnAPI.Controllers
                 case "Edit":
                     {
                         // Проверяет, запрашивает ли создатель группы
-                        if (!await _repo.IsCreaterAsync(groupId, user.Id))
+                        if (group.UserId != user.Id)
                         {
                             // Проверяет, имеет ли доступ к редактированию
                             // данной записи участник группы
-                            if (!await _repo.CanChangeLearnAsync(learn.Id, groupId, user.Id))
+                            if (!await _repo.CanChangeLearnAsync(groupId, user.Id))
                                 return BadRequest(new ValidateError("Вы не имеете доступ к редактированию данного материала"));
                         }
 
@@ -166,7 +90,7 @@ namespace LearnAPI.Controllers
                 case "Delete":
                     {
                         // Проверяет, запрашивает ли автор запись
-                        if (!await _repo.IsCreaterAsync(groupId, user.Id) && !await _repo.IsAuthorAsync(learn.Id, user.Id))
+                        if (group.UserId != user.Id && learn.UserId != user.Id)
                             return BadRequest(new ValidateError("Доступ к удалению данного материала имеет только автор или создатель группы"));
 
                         break;
@@ -178,16 +102,6 @@ namespace LearnAPI.Controllers
             return Ok(_mapper.Map<Learn, Learn>(learn));
         }
 
-        #endregion
-
-        /// <summary>
-        /// Запрос на получение всех ресурсов
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("sources")]
-        public async Task<IEnumerable<SourceLore>> GetSourcesAsync() =>
-            _mapper.Map<List<SourceLore>, List<SourceLore>>(await _repo.GetSourceLoresAsync());
-
         /// <summary>
         /// Запрос на добавление нового материала
         /// и его привязка к конкретному пользователю
@@ -195,13 +109,14 @@ namespace LearnAPI.Controllers
         /// <param name="email"></param>
         /// <param name="learn"></param>
         /// <returns></returns>
-        [HttpPost("{email}")]
-        public async Task<IActionResult> CreateLearnAsync([FromRoute] string email, [FromBody] Learn learn)
+        [HttpPost("{email}/{groupId}")]
+        public async Task<IActionResult> CreateLearnAsync([FromRoute] string email, [FromRoute] int groupId, [FromBody] Learn learn)
         {
             try
             {
                 User user = await _userManager.FindByNameAsync(email);
                 learn.UserId = user.Id;
+                learn.GroupId = groupId;
                 await _repo.AddAsync(learn);
             }
             catch (DbMessageException ex)

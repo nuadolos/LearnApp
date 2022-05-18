@@ -15,7 +15,7 @@ namespace LearnEF.Entities
             get => GroupTypeId switch
             {
                 1 => "Равноправный",
-                _ => "Поучительный"
+                _ => "Класс"
             };
         }
     }

@@ -1,0 +1,43 @@
+﻿@using LearnEF.Entities
+@model Note
+
+@*Использование собственного стиля для дескриптора <select>
+    Необходимо указать в атрибуте class*@
+<style>
+  .select {
+    padding: 10px;
+    width: 300px;
+    font-size:16px;
+    border: 1px solid teal;
+    border-bottom: 3px solid teal;
+  }
+</style>
+
+<h4>Заметка</h4>
+<hr/>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="form-group mt-3">
+    <label asp-for="Title" class="control-label fs-4"></label>
+    <input asp-for="Title" class="form-control mt-2"/>
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+
+<div class="form-group mt-3">
+    <label asp-for="Description" class="control-label fs-4"></label>
+    <input asp-for="Description" class="form-control mt-2"/>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+
+<div class="form-group mt-3">
+    <label asp-for="Link" class="control-label fs-4"></label>
+    <input asp-for="Link" class="form-control mt-2"/>
+    <span asp-validation-for="Link" class="text-danger"></span>
+</div>
+
+<div class="form-group mt-3">
+    <label asp-for="SourceLoreId" class="control-label fs-4"></label>
+    <select asp-for="SourceLoreId" asp-items="ViewBag.SourceLoreId" class="select form-control mt-2"></select>
+    <span asp-validation-for="SourceLoreId" class="text-danger"></span>
+</div>

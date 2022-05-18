@@ -12,7 +12,5 @@ namespace LearnEF.Entities.ErrorModel
 
         public ValidateError(string message) =>
             Message = message;
-
-        public override string ToString() => Message;
     }
 }

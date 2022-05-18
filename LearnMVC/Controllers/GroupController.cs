@@ -24,11 +24,12 @@ namespace LearnMVC.Controllers
         {
             _baseUrl = configuration.GetSection("GroupAddress").Value;
             _userUrl = configuration.GetSection("GroupUserAddress").Value;
+            _learnUrl = configuration.GetSection("LearnAddres").Value;
 
             List<GroupType> groupTypes = new List<GroupType>
             {
                 new GroupType { Id = 1, Name = "Равноправный"},
-                new GroupType { Id = 2, Name = "Поучительный"}
+                new GroupType { Id = 2, Name = "Класс"}
             };
 
             GroupTypeList = new SelectList(
@@ -47,14 +48,26 @@ namespace LearnMVC.Controllers
             return groups != null ? View(groups) : BadRequest(HttpRequestClient.Error);
         }
 
-        public async Task<IActionResult> UserIndex()
+        public async Task<IActionResult> MyIndex()
         {
             string? userName = User?.Identity?.Name;
 
             if (userName == null)
                 return BadRequest();
 
-            var userGroups = await HttpRequestClient.GetRequestAsync<List<Group>>(_baseUrl, userName);
+            var userGroups = await HttpRequestClient.GetRequestAsync<List<Group>>(_baseUrl, "MyGroup", userName);
+
+            return userGroups != null ? View(userGroups) : BadRequest(HttpRequestClient.Error);
+        }
+
+        public async Task<IActionResult> MemberIndex()
+        {
+            string? userName = User?.Identity?.Name;
+
+            if (userName == null)
+                return BadRequest();
+
+            var userGroups = await HttpRequestClient.GetRequestAsync<List<Group>>(_baseUrl, "Member", userName);
 
             return userGroups != null ? View(userGroups) : BadRequest(HttpRequestClient.Error);
         }
@@ -94,7 +107,7 @@ namespace LearnMVC.Controllers
                 bool result = await HttpRequestClient.PostRequestAsync(group, _baseUrl, userName);
 
                 if (result)
-                    return RedirectToAction(nameof(UserIndex));
+                    return RedirectToAction(nameof(MyIndex));
                 else
                 {
                     ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
@@ -118,11 +131,11 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetGroupRecord(userName, id.Value, nameof(Edit));
+            var group = await GetGroupRecord(userName, id.Value, nameof(Edit));
 
             ViewData["GroupTypeId"] = GroupTypeList;
 
-            return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
+            return group != null ? View(group) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
@@ -139,7 +152,7 @@ namespace LearnMVC.Controllers
                 bool result = await HttpRequestClient.PutRequestAsync(group, _baseUrl, id.ToString());
 
                 if (result)
-                    return RedirectToAction(nameof(UserIndex));
+                    return RedirectToAction(nameof(MyIndex));
                 else
                 {
                     ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
@@ -163,9 +176,9 @@ namespace LearnMVC.Controllers
                 return BadRequest();
             }
 
-            var learn = await GetGroupRecord(userName, id.Value, nameof(Delete));
+            var group = await GetGroupRecord(userName, id.Value, nameof(Delete));
 
-            return learn != null ? View(learn) : NotFound(HttpRequestClient.Error);
+            return group != null ? View(group) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
@@ -176,7 +189,7 @@ namespace LearnMVC.Controllers
             var timeStampString = JsonConvert.SerializeObject(group.Timestamp);
 
             return await HttpRequestClient.DeleteRequestAsync<Group>(_baseUrl, group.Id.ToString(), timeStampString)
-                ? RedirectToAction(nameof(UserIndex))
+                ? RedirectToAction(nameof(MyIndex))
                 : BadRequest(HttpRequestClient.Error);
         }
 

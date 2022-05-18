@@ -227,6 +227,31 @@ namespace LearnEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Learn",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Deadline = table.Column<DateTime>(type: "date", nullable: true),
+                    IsAttached = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Learn", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Learn_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Group",
                 columns: table => new
                 {
@@ -234,6 +259,7 @@ namespace LearnEF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CodeAdmin = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CodeInvite = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreateDate = table.Column<DateTime>(type: "date", nullable: true),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
@@ -258,35 +284,54 @@ namespace LearnEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Learn",
+                name: "Note",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(600)", maxLength: 600, nullable: true),
                     Link = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "date", nullable: false),
-                    DateReading = table.Column<DateTime>(type: "date", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: true),
                     SourceLoreId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsStudying = table.Column<bool>(type: "bit", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Learn", x => x.Id);
+                    table.PrimaryKey("PK_Note", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Learn_AspNetUsers_UserId",
+                        name: "FK_Note_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Learn_SourceLore_SourceLoreId",
+                        name: "FK_Note_SourceLore_SourceLoreId",
                         column: x => x.SourceLoreId,
                         principalTable: "SourceLore",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LearnDocuments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    LearnId = table.Column<int>(type: "int", nullable: true),
+                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LearnDocuments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LearnDocuments_Learn_LearnId",
+                        column: x => x.LearnId,
+                        principalTable: "Learn",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -322,74 +367,28 @@ namespace LearnEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupLearn",
+                name: "ShareNote",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupId = table.Column<int>(type: "int", nullable: true),
-                    LearnId = table.Column<int>(type: "int", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupLearn", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GroupLearn_Group_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Group",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_GroupLearn_Learn_LearnId",
-                        column: x => x.LearnId,
-                        principalTable: "Learn",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LearnDocuments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    LearnId = table.Column<int>(type: "int", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LearnDocuments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LearnDocuments_Learn_LearnId",
-                        column: x => x.LearnId,
-                        principalTable: "Learn",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ShareLearn",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LearnId = table.Column<int>(type: "int", nullable: true),
+                    NoteId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CanChange = table.Column<bool>(type: "bit", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShareLearn", x => x.Id);
+                    table.PrimaryKey("PK_ShareNote", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShareLearn_AspNetUsers_UserId",
+                        name: "FK_ShareNote_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ShareLearn_Learn_LearnId",
-                        column: x => x.LearnId,
-                        principalTable: "Learn",
+                        name: "FK_ShareNote_Note_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Note",
                         principalColumn: "Id");
                 });
 
@@ -453,16 +452,6 @@ namespace LearnEF.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupLearn_GroupId",
-                table: "GroupLearn",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupLearn_LearnId",
-                table: "GroupLearn",
-                column: "LearnId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GroupUser_GroupId",
                 table: "GroupUser",
                 column: "GroupId");
@@ -478,17 +467,6 @@ namespace LearnEF.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Learn_SourceLoreId",
-                table: "Learn",
-                column: "SourceLoreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Learn_Title_Link",
-                table: "Learn",
-                columns: new[] { "Title", "Link" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Learn_UserId",
                 table: "Learn",
                 column: "UserId");
@@ -499,13 +477,23 @@ namespace LearnEF.Migrations
                 column: "LearnId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShareLearn_LearnId",
-                table: "ShareLearn",
-                column: "LearnId");
+                name: "IX_Note_SourceLoreId",
+                table: "Note",
+                column: "SourceLoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShareLearn_UserId",
-                table: "ShareLearn",
+                name: "IX_Note_UserId",
+                table: "Note",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShareNote_NoteId",
+                table: "ShareNote",
+                column: "NoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShareNote_UserId",
+                table: "ShareNote",
                 column: "UserId");
         }
 
@@ -530,16 +518,13 @@ namespace LearnEF.Migrations
                 name: "Friend");
 
             migrationBuilder.DropTable(
-                name: "GroupLearn");
-
-            migrationBuilder.DropTable(
                 name: "GroupUser");
 
             migrationBuilder.DropTable(
                 name: "LearnDocuments");
 
             migrationBuilder.DropTable(
-                name: "ShareLearn");
+                name: "ShareNote");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -552,6 +537,9 @@ namespace LearnEF.Migrations
 
             migrationBuilder.DropTable(
                 name: "Learn");
+
+            migrationBuilder.DropTable(
+                name: "Note");
 
             migrationBuilder.DropTable(
                 name: "GroupType");

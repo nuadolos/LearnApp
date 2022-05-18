@@ -118,88 +118,53 @@ namespace LearnEF.DataInitializer
             User newUser4 = await userManager.FindByNameAsync("wasd@gmail.com");
             User newUser5 = await userManager.FindByNameAsync("zxc@gmail.com");
 
-            List<Learn> learns = new List<Learn>()
-            {
-                new Learn()
-                {
-                    Title = "test1",
-                    Link = "test11",
-                    CreateDate = DateTime.Now,
-                    DateReading = DateTime.Now,
-                    Image = "test111",
-                    SourceLoreId = 1,
-                    UserId = newUser1.Id,
-                    IsStudying = false
-                },
-
-                new Learn()
-                {
-                    Title = "test2",
-                    Link = "test22",
-                    CreateDate = DateTime.Now,
-                    DateReading = DateTime.Now,
-                    Image = "test222",
-                    SourceLoreId = 2,
-                    UserId = newUser2.Id,
-                    IsStudying = true
-                },
-
-                new Learn()
-                {
-                    Title = "TEST3",
-                    Link = "test33",
-                    CreateDate = DateTime.Now,
-                    DateReading = DateTime.Now,
-                    Image = "test333",
-                    SourceLoreId = 2,
-                    UserId = newUser1.Id,
-                    IsStudying = false
-                },
-
-                new Learn()
-                {
-                    Title = "TEST4",
-                    Link = "test44",
-                    CreateDate = DateTime.Now,
-                    DateReading = DateTime.Now,
-                    Image = "test444",
-                    SourceLoreId = 1,
-                    UserId = newUser3.Id,
-                    IsStudying = false
-                },
-
-                new Learn()
-                {
-                    Title = "TEST5",
-                    Link = "test55",
-                    CreateDate = DateTime.Now,
-                    DateReading = DateTime.Now,
-                    Image = "test555",
-                    SourceLoreId = 2,
-                    UserId = newUser5.Id,
-                    IsStudying = false
-                }
-            };
-
-            learns.ForEach(learn => context.Learn.Add(learn));
-
             List<GroupType> groupTypes = new List<GroupType>()
-            { 
+            {
                 new GroupType { Name = "Равноправный" },
-                new GroupType { Name = "Поучительный" }
+                new GroupType { Name = "Класс" }
             };
 
             groupTypes.ForEach(gropType => context.GroupType.Add(gropType));
 
             List<GroupRole> groupRoles = new List<GroupRole>()
             {
-                new GroupRole { Name = "Наблюдатель" },
-                new GroupRole { Name = "Ответственный" },
+                new GroupRole { Name = "Студент" },
+                new GroupRole { Name = "Преподаватель" },
                 new GroupRole { Name = "Общий" }
             };
 
             groupRoles.ForEach(gropRole => context.GroupRole.Add(gropRole));
-            context.SaveChanges();
+           
+            await context.SaveChangesAsync();
+
+            List<Note> notes = new List<Note>
+            {
+                new Note {
+                    Title = "Программирование на равне",
+                    Link = "https://vk.com/audios195148235",
+                    CreateDate = DateTime.Now,
+                    SourceLoreId = 1,
+                    UserId = newUser1.Id
+                },
+
+                new Note {
+                    Title = "Точка соприкосновения",
+                    Link = "https://github.com/nuadolos",
+                    CreateDate = DateTime.Now,
+                    SourceLoreId = 1,
+                    UserId = newUser3.Id
+                },
+
+                new Note {
+                    Title = "Дерево молниеносное",
+                    Link = "https://vk.com/audios195148235",
+                    CreateDate = DateTime.Now,
+                    SourceLoreId = 1,
+                    UserId = newUser1.Id
+                },
+            };
+
+            notes.ForEach(note => context.Note.Add(note));
 
             List<Group> groups = new List<Group>()
             {
@@ -221,6 +186,7 @@ namespace LearnEF.DataInitializer
 
                 new Group {
                     Name = "TestGroup3",
+                    CodeAdmin = Guid.NewGuid().ToString(),
                     CodeInvite = Guid.NewGuid().ToString(),
                     CreateDate = DateTime.Now,
                     IsVisible = false,
@@ -231,16 +197,62 @@ namespace LearnEF.DataInitializer
 
             context.Group.AddRange(groups);
 
-            List<GroupLearn> groupLearns = new List<GroupLearn>()
+            await context.SaveChangesAsync();
+
+            List<Learn> learns = new List<Learn>()
             {
-                new GroupLearn { GroupId = 1, LearnId = 1 },
-                new GroupLearn { GroupId = 1, LearnId = 3 },
-                new GroupLearn { GroupId = 1, LearnId = 5 },
-                new GroupLearn { GroupId = 2, LearnId = 2 },
-                new GroupLearn { GroupId = 2, LearnId = 4 }
+                new Learn()
+                {
+                    Title = "test1",
+                    CreateDate = DateTime.Now,
+                    Deadline = DateTime.Now.AddDays(7),
+                    IsAttached = false,
+                    UserId = newUser1.Id,
+                    GroupId = 1
+                },
+
+                new Learn()
+                {
+                    Title = "test2",
+                    CreateDate = DateTime.Now,
+                    Deadline = DateTime.Now.AddDays(7),
+                    IsAttached = false,
+                    UserId = newUser1.Id,
+                    GroupId = 2
+                },
+
+                new Learn()
+                {
+                    Title = "TEST3",
+                    CreateDate = DateTime.Now,
+                    Deadline = DateTime.Now.AddDays(7),
+                    IsAttached = false,
+                    UserId = newUser1.Id,
+                    GroupId = 1
+                },
+
+                new Learn()
+                {
+                    Title = "TEST4",
+                    CreateDate = DateTime.Now,
+                    Deadline = DateTime.Now.AddDays(7),
+                    IsAttached = false,
+                    UserId = newUser1.Id,
+                    GroupId = 2
+                },
+
+                new Learn()
+                {
+                    Title = "TEST5",
+                    CreateDate = DateTime.Now,
+                    Deadline = DateTime.Now.AddDays(7),
+                    IsAttached = false,
+                    UserId = newUser1.Id,
+                    GroupId = 1
+                }
             };
 
-            groupLearns.ForEach(groupLearn => context.GroupLearn.Add(groupLearn));
+            learns.ForEach(learn => context.Learn.Add(learn));
 
             List<GroupUser> groupUsers = new List<GroupUser>()
             {
@@ -253,14 +265,14 @@ namespace LearnEF.DataInitializer
 
             groupUsers.ForEach(groupUser => context.GroupUser.Add(groupUser));
 
-            List<ShareLearn> shareLearns = new List<ShareLearn>()
-            { 
-                new ShareLearn { LearnId = 4, UserId = newUser1.Id, CanChange = true },
-                new ShareLearn { LearnId = 5, UserId = newUser1.Id, CanChange = true },
-                new ShareLearn { LearnId = 1, UserId = newUser3.Id, CanChange = false }
+            List<ShareNote> shareNotes = new List<ShareNote>()
+            {
+                new ShareNote { NoteId = 1, UserId = newUser2.Id, CanChange = true },
+                new ShareNote { NoteId = 2, UserId = newUser4.Id, CanChange = true },
+                new ShareNote { NoteId = 3, UserId = newUser5.Id, CanChange = false }
             };
 
-            shareLearns.ForEach(shareLearn => context.ShareLearn.Add(shareLearn));
+            shareNotes.ForEach(shareLearn => context.ShareNote.Add(shareLearn));
 
             List<Friend> friends = new List<Friend>()
             {

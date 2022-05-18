@@ -14,19 +14,13 @@ namespace LearnEF.Entities
         [Display(Name = "Статус")]
         public string? Studied
         {
-            get => IsStudying ? "Изучен" : "Не изучен";
+            get => IsAttached ? "Сдано" : "Не сдано";
         }
 
         [NotMapped]
         public string? LoreName { get; set; }
 
-        //Новый синтаксис оператора switch
-        //return SourceLoreId switch
-        //{
-        //    1 => "Тест1115",
-        //    2 => "Тест2225",
-        //    3 => "Тест3335",
-        //    _ => "Неизвестно"
-        //};
+        [NotMapped]
+        public string? ShareUserName { get; set; }
     }
 }

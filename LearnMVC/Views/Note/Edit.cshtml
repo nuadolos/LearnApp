@@ -1,4 +1,4 @@
-﻿@model LearnEF.Entities.Learn
+﻿@model LearnEF.Entities.Note
 
 @{
     ViewData["Title"] = "Редактирование";
@@ -12,7 +12,8 @@
             <input type="hidden" asp-for="Id"/>
             <input type="hidden" asp-for="Timestamp"/>
             <input type="hidden" asp-for="UserId"/>
-            @Html.EditorForModel("Learn")
+            <input type="hidden" asp-for="CreateDate"/>
+            @Html.EditorForModel("Note")
             <div class="form-group mt-4">
                 <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>

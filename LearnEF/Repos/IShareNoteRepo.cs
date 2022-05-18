@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Repos
 {
-    public interface IShareLearnRepo : IRepo<ShareLearn>
+    public interface IShareNoteRepo : IRepo<ShareNote>
     {
-        Task<List<User>> GetUsersAsync(int learnId);
-        Task<List<Learn>> GetLearnsAsync(string userId);
+        Task<List<User>> GetUsersAsync(int noteId);
+        Task<List<Note>> GetNotesAsync(string userId);
     }
 }

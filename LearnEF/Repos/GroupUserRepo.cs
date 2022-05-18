@@ -32,18 +32,53 @@ namespace LearnEF.Repos
             foreach (var item in gUsers.AsParallel())
             {
                 item.User.GroupRoleId = item.GroupRoleId;
+                item.User.GroupId = item.GroupId;
                 groupUsers.Add(item.User);
             }
 
             return groupUsers;
         }
 
-        public async Task<string> AcceptedInviteAsync(string inviteId, string userId)
+        public async Task<string> JoinOpenGroupAsync(int groupId, string userId)
         {
-            var group = await Context.Group.FirstOrDefaultAsync(g => g.CodeInvite == inviteId);
+            var group = await Context.Group.FirstOrDefaultAsync(g => g.Id == groupId);
 
             if (group == null)
-                return "Код доступа не действителен";
+                return "Группы не существует";
+
+            GroupUser groupUser = new GroupUser {
+                GroupId = group.Id,
+                UserId = userId,
+                GroupRoleId = group.GroupTypeId switch
+                {
+                    // Если тип группы - равноправный,
+                    // то роль у пользователя - общий
+                    1 => 3,
+
+                    // Если тип группы - класс,
+                    // то роль у пользователя - студент
+                    _ => 1
+                }
+            };
+
+            try
+            {
+                await AddAsync(groupUser);
+            }
+            catch (DbMessageException ex)
+            {
+                return ex.Message;
+            }
+            
+            return string.Empty;
+        }
+
+        public async Task<string> AcceptedInviteAsync(string inviteId, string userId)
+        {
+            var group = await Context.Group.FirstOrDefaultAsync(g => g.CodeInvite == inviteId || g.CodeAdmin == inviteId);
+
+            if (group == null)
+                return "Код доступа не существует";
 
             var member = await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupId == group.Id && gu.UserId == userId);
 
@@ -54,23 +89,38 @@ namespace LearnEF.Repos
             {
                 GroupId = group.Id,
                 UserId = userId,
-                GroupRoleId = group.GroupTypeId switch
-                {
-                    // Если тип группы - равноправный,
-                    // то роль у пользователя - общий
-                    1 => 3,
-
-                    // Если тип группы - класс,
-                    // то роль у пользователя - наблюдатель
-                    _ => 1
-                }
             };
+
+            if (group.CodeInvite == inviteId)
+                groupUser.GroupRoleId = 1;
+            else
+                groupUser.GroupRoleId = 2;
 
             try
             {
                 await AddAsync(groupUser);
             }
             catch(DbMessageException ex)
+            {
+                return ex.Message;
+            }
+
+            return string.Empty;
+        }
+
+        public async Task<string> KickUserAsync(int groupId, string userId)
+        {
+            var groupUser = await Context.GroupUser.FirstOrDefaultAsync(
+                gu => gu.GroupId == groupId && gu.UserId == userId);
+
+            if (groupUser == null)
+                return "Такого пользователя в группе не существует";
+
+            try
+            {
+                await DeleteAsync(groupUser);
+            }
+            catch (DbMessageException ex)
             {
                 return ex.Message;
             }

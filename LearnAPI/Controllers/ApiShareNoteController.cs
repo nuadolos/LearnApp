@@ -12,69 +12,54 @@ namespace LearnAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiShareLearnController : ControllerBase
+    public class ApiShareNoteController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly IMapper _mapperLearn;
+        private readonly IMapper _mapperNote;
         private readonly IMapper _mapperUser;
-        private readonly IShareLearnRepo _repo;
+        private readonly IShareNoteRepo _repo;
 
-        public ApiShareLearnController(IShareLearnRepo repo, UserManager<User> userManager)
+        public ApiShareNoteController(IShareNoteRepo repo, UserManager<User> userManager)
         {
             _repo = repo;
             _userManager = userManager;
 
-            //Игнорирование поля ShareLearn в объекте Learn
+            //Игнорирование поля ShareLearn в объекте Note
             var learnConfig = new MapperConfiguration(
-                cfg => cfg.CreateMap<Learn, Learn>()
-                .ForMember(x => x.ShareLearn, opt => opt.Ignore()));
-            _mapperLearn = learnConfig.CreateMapper();
+                cfg => cfg.CreateMap<Note, Note>()
+                .ForMember(x => x.ShareNote, opt => opt.Ignore()));
+            _mapperNote = learnConfig.CreateMapper();
 
             //Игнорирование поля ShareLearn в объекте User
             var userConfig = new MapperConfiguration(
                 cfg => cfg.CreateMap<User, User>()
-                .ForMember(x => x.ShareLearn, opt => opt.Ignore()));
+                .ForMember(x => x.ShareNote, opt => opt.Ignore()));
             _mapperUser = userConfig.CreateMapper();
         }
 
         /// <summary>
-        /// Запрос на получение материалов пользователем, с кем поделились
+        /// Запрос на получение чужих заметок пользователем,
+        /// имеющий к ним доступ
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpGet("User/{email}")]
-        public async Task<IEnumerable<Learn>> GetLearnsAsync([FromRoute] string email)
+        public async Task<IEnumerable<Note>> GetNotesAsync([FromRoute] string email)
         {
             User user = await _userManager.FindByNameAsync(email);
-            var learns = await _repo.GetLearnsAsync(user.Id);
-            return _mapperLearn.Map<List<Learn>, List<Learn>>(learns);
+            var notes = await _repo.GetNotesAsync(user.Id);
+            return _mapperNote.Map<List<Note>, List<Note>>(notes);
         }
 
         /// <summary>
-        /// Запрос на получение пользователей, 
-        /// с кеми поделились конкретным материалом
+        /// Запрос на получение пользователей,
+        /// кто имеет доступ к чужой заметке
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("Learn/{id}")]
+        [HttpGet("Note/{id}")]
         public async Task<IEnumerable<User>> GetUsersAsync([FromRoute] int id) =>
             _mapperUser.Map<List<User>, List<User>>(await _repo.GetUsersAsync(id));
-
-        /// <summary>
-        /// Запрос на получение конкретной записи открытния доступа к материалу
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ShareLearn>> GetShareAsync([FromRoute] int id)
-        {
-            var share = await _repo.GetRecordAsync(id);
-
-            if (share != null)
-                return Ok(share);
-
-            return NotFound(new ValidateError("Нет данных о открытии доступа к материалу"));
-        }
 
         /// <summary>
         /// Запрос на создание открытого доступа к материалу
@@ -82,11 +67,11 @@ namespace LearnAPI.Controllers
         /// <param name="shapeLearn"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateShareAsync([FromBody] ShareLearn shapeLearn)
+        public async Task<IActionResult> CreateShareAsync([FromBody] ShareNote shareNote)
         {
             try
             {
-                await _repo.AddAsync(shapeLearn);
+                await _repo.AddAsync(shareNote);
             }
             catch (DbMessageException ex)
             {

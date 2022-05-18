@@ -10,21 +10,18 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Entities
 {
-    [Table("ShareLearn")]
-    public class ShareLearn : EntityBase
+    [Table("ShareNote")]
+    public class ShareNote : EntityBase
     {
-        [Display(Name = "Материал")]
-        [ForeignKey(nameof(Learn))]
-        public int? LearnId { get; set; }
+        [ForeignKey(nameof(Note))]
+        public int? NoteId { get; set; }
 
-        [Display(Name = "Пользователь")]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
-        [Display(Name = "Имеет доступ к изменению?")]
         public bool CanChange { get; set; }
 
         public User? User { get; set; }
-        public Learn? Learn { get; set; }
+        public Note? Note { get; set; }
     }
 }

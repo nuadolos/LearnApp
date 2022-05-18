@@ -20,12 +20,12 @@ namespace LearnEF.Context
         { }
 
         public DbSet<Entities.SourceLore> SourceLore { get; set; }
-        public DbSet<Entities.ShareLearn> ShareLearn { get; set; }
+        public DbSet<Entities.Note> Note { get; set; }
+        public DbSet<Entities.ShareNote> ShareNote { get; set; }
         public DbSet<Entities.Learn> Learn { get; set; }
         public DbSet<Entities.LearnDocuments> LearnDocuments { get; set; }
         public DbSet<Entities.Friend> Friend { get; set; }
         public DbSet<Entities.Group> Group { get; set; }
-        public DbSet<Entities.GroupLearn> GroupLearn { get; set; }
         public DbSet<Entities.GroupUser> GroupUser { get; set; }
         public DbSet<Entities.GroupRole> GroupRole { get; set; }
         public DbSet<Entities.GroupType> GroupType { get; set; }
@@ -46,12 +46,9 @@ namespace LearnEF.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Entities.Learn>(
-                entity => entity.HasIndex(e => new { e.Title, e.Link }).IsUnique());
-
-            modelBuilder.Entity<Entities.Learn>()
+            modelBuilder.Entity<Entities.Note>()
                 .HasOne(e => e.SourceLore)
-                .WithMany(e => e.Learn)
+                .WithMany(e => e.Note)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Entities.Group>()

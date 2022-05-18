@@ -17,11 +17,11 @@ namespace LearnEF.Repos
         public SourceLoreRepo(LearnContext context) : base(context)
         { }
 
-        public bool ContainedInLearn(int id)
+        public bool ContainedInNote(int id)
         {
-            foreach (var learn in Context.Learn)
+            foreach (var note in Context.Note)
             {
-                if (learn.SourceLoreId == id)
+                if (note.SourceLoreId == id)
                     return true;
             }
 

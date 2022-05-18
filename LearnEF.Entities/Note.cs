@@ -2,7 +2,6 @@
 using LearnEF.Entities.IdentityModel;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -11,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Entities
 {
-    [Table("Learn")]
-    public partial class Learn : EntityBase
+    [Table("Note")]
+    public partial class Note : EntityBase
     {
         [Display(Name = "Название")]
         [Required(ErrorMessage = "Поле \"Название\" пустое")]
@@ -23,29 +22,29 @@ namespace LearnEF.Entities
         [StringLength(600)]
         public string? Description { get; set; }
 
+        [Display(Name = "Ссылка на ресурс")]
+        [Required(ErrorMessage = "Поле \"Ссылка на ресурс\" пустое")]
+        [StringLength(1000)]
+        public string? Link { get; set; }
+
         [Display(Name = "Дата создания")]
-        [Required(ErrorMessage = "Поле \"Дата создания\" пустое")]
         [DataType(DataType.Date)]
         [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }
 
-        [Display(Name = "Дата сдачи")]
-        [DataType(DataType.Date)]
-        [Column(TypeName = "date")]
-        public DateTime? Deadline { get; set; }
+        [Display(Name = "Ресурс")]
+        [ForeignKey(nameof(SourceLoreId))]
+        public int? SourceLoreId { get; set; }
 
-        [Display(Name = "Работа сдана?")]
-        public bool IsAttached { get; set; }
-
+        [Display(Name = "Принадлежит")]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
-        [ForeignKey(nameof(GroupId))]
-        public int? GroupId { get; set; }
-
         public User? User { get; set; }
 
-        [InverseProperty(nameof(Learn))]
-        public List<LearnDocuments>? LearnDocuments { get; } = new List<LearnDocuments>();
+        public SourceLore? SourceLore { get; set; }
+
+        [InverseProperty(nameof(Note))]
+        public List<ShareNote>? ShareNote { get; } = new List<ShareNote>();
     }
 }

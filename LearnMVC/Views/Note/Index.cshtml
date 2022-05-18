@@ -1,11 +1,11 @@
 ﻿@using LearnEF.Entities
-@model IEnumerable<Learn>
+@model IEnumerable<Note>
 
 @{
     ViewData["Title"] = "Список";
 }
 
-<h1>Список материалов</h1>
+<h1>Список заметок</h1>
 
 <p>
     <a asp-action="Create">Создать</a>
@@ -15,16 +15,13 @@
     <thead>
         <tr>
             <th>
-                <label>Название</label>
+                <label>Наименование</label>
             </th>
             <th>
                 <label>Дата создания</label>
             </th>
             <th>
-                <label>Ресурс</label>
-            </th>
-            <th>
-                <label>Статус</label>
+                <label>Источник</label>
             </th>
             <th></th>
         </tr>
@@ -32,7 +29,7 @@
     <tbody>
         @foreach (var item in Model) 
         {
-            @Html.DisplayFor(modelItem => item, "LearnList")
+            @Html.DisplayFor(modelItem => item, "NoteList")
         }   
     </tbody>
 </table>
