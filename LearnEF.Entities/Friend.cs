@@ -14,14 +14,17 @@ namespace LearnEF.Entities
     public class Friend : EntityBase
     {
         [Display(Name = "Отправил заявку")]
+        [Required]
         [ForeignKey(nameof(SentUserId))]
         public string? SentUserId { get; set; }
 
         [Display(Name = "Принял заявку")]
+        [Required]
         [ForeignKey(nameof(AcceptedUserId))]
         public string? AcceptedUserId { get; set; }
 
         [Display(Name = "Подружились")]
+        [Required]
         [Column(TypeName = "date")]
         public DateTime? MakeFriend { get; set; }
 

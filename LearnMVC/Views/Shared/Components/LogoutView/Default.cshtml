@@ -13,11 +13,11 @@
     {
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <a class="navbar-brand" href="~/">Начало</a>
-            <a class="navbar-brand" href="/Note/Index">Мои заметки</a>
-            <a class="navbar-brand" href="/Group/MyIndex">Мои группы</a>
-            <a class="navbar-brand" href="/SourceLore/Index">Ресурсы</a>
-            <a class="navbar-brand" href="/Users/Index">Пользователи</a>
-            <a class="navbar-brand" href="/Roles/Index">Роли</a>
+            <a class="navbar-brand" asp-controller="Note" asp-action="Index">Мои заметки</a>
+            <a class="navbar-brand" asp-controller="Group" asp-action="MyIndex">Мои группы</a>
+            <a class="navbar-brand" asp-controller="SourceLore" asp-action="Index">Ресурсы</a>
+            <a class="navbar-brand" asp-controller="Users" asp-action="Index">Пользователи</a>
+            <a class="navbar-brand" asp-controller="Roles" asp-action="Index">Роли</a>
             <user-name class="navbar-brand" role="Администратор" name="@User.Identity.Name"></user-name>
             <form method="post" asp-controller="Account" asp-action="Logout">
             <input type="submit" value="Выход"/>
@@ -28,8 +28,8 @@
     {
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <a class="navbar-brand" href="~/">Начало</a>
-            <a class="navbar-brand" href="/Note/Index">Мои заметки</a>
-            <a class="navbar-brand" href="/Group/MyIndex">Мои группы</a>
+            <a class="navbar-brand" asp-controller="Note" asp-action="Index">Мои заметки</a>
+            <a class="navbar-brand" asp-controller="Group" asp-action="MyIndex">Мои группы</a>
             <user-name class="navbar-brand" role="Пользователь" name="@User.Identity.Name"></user-name>
             <form method="post" asp-controller="Account" asp-action="Logout">
             <input type="submit" value="Выход"/>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LearnEF.Context;
+using LearnEF.Entities.ErrorModel;
 
 namespace LearnEF.Repos
 {
@@ -41,5 +42,35 @@ namespace LearnEF.Repos
 
         public async Task<bool> IsMemberAsync(int groupId, string userId) =>
             await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupId == groupId && gu.UserId == userId) != null;
+
+        public async Task<string> DeleteAllDataAboutGroup(int groupId)
+        {
+            var group = await Context.Group.FirstOrDefaultAsync(g => g.Id == groupId);
+
+            if (group == null)
+                return "Искомая группа не существует";
+
+            var members = Context.GroupUser.Where(gu => gu.GroupId == groupId);
+            var learns = Context.Learn.Where(l => l.GroupId == groupId);
+
+            if (members != null)
+                Context.GroupUser.RemoveRange(members);
+
+            if (learns != null)
+                Context.Learn.RemoveRange(learns);
+
+            try
+            {
+                await SaveChangesAsync();
+
+                await DeleteAsync(group);
+            }
+            catch (DbMessageException ex)
+            {
+                return ex.Message;
+            }
+
+            return string.Empty;
+        }
     }
 }

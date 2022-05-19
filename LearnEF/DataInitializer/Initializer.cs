@@ -206,7 +206,6 @@ namespace LearnEF.DataInitializer
                     Title = "test1",
                     CreateDate = DateTime.Now,
                     Deadline = DateTime.Now.AddDays(7),
-                    IsAttached = false,
                     UserId = newUser1.Id,
                     GroupId = 1
                 },
@@ -216,7 +215,6 @@ namespace LearnEF.DataInitializer
                     Title = "test2",
                     CreateDate = DateTime.Now,
                     Deadline = DateTime.Now.AddDays(7),
-                    IsAttached = false,
                     UserId = newUser1.Id,
                     GroupId = 2
                 },
@@ -226,7 +224,6 @@ namespace LearnEF.DataInitializer
                     Title = "TEST3",
                     CreateDate = DateTime.Now,
                     Deadline = DateTime.Now.AddDays(7),
-                    IsAttached = false,
                     UserId = newUser1.Id,
                     GroupId = 1
                 },
@@ -236,7 +233,6 @@ namespace LearnEF.DataInitializer
                     Title = "TEST4",
                     CreateDate = DateTime.Now,
                     Deadline = DateTime.Now.AddDays(7),
-                    IsAttached = false,
                     UserId = newUser1.Id,
                     GroupId = 2
                 },
@@ -246,7 +242,6 @@ namespace LearnEF.DataInitializer
                     Title = "TEST5",
                     CreateDate = DateTime.Now,
                     Deadline = DateTime.Now.AddDays(7),
-                    IsAttached = false,
                     UserId = newUser1.Id,
                     GroupId = 1
                 }

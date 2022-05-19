@@ -11,18 +11,20 @@ namespace LearnMVC.Controllers
         private readonly string _userUrl;
 
         [HttpGet]
-        public async Task<IActionResult> Members(int id)
+        [Route("Members")]
+        public async Task<IActionResult> Members(int? id)
         {
-            var users = await HttpRequestClient.GetRequestAsync<List<User>>(_userUrl, "Group", id.ToString());
+            if (id == null)
+                return NotFound();
+
+            var users = await HttpRequestClient.GetRequestAsync<List<User>>(_userUrl, "Group", id.Value.ToString());
 
             return users != null ? View(users) : BadRequest(HttpRequestClient.Error);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Invite()
+        public async Task<IActionResult> Invite(string? id)
         {
-            var id = RouteData?.Values["id"]?.ToString();
-
             string? userName = User?.Identity?.Name;
 
             if (userName == null || id == null)
@@ -33,16 +35,15 @@ namespace LearnMVC.Controllers
             return result ? RedirectToAction(nameof(MyIndex)) : BadRequest(HttpRequestClient.Error);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Join(int id)
+        [HttpGet]
+        public async Task<IActionResult> Join(int? id)
         {
             string? userName = User?.Identity?.Name;
 
-            if (userName == null)
+            if (userName == null || id == null)
                 return BadRequest();
 
-            bool result = await HttpRequestClient.PostRequestAsync(new object(), _userUrl, "Join", id.ToString(), userName);
+            bool result = await HttpRequestClient.PostRequestAsync(new object(), _userUrl, "Join", id.Value.ToString(), userName);
 
             return result ? RedirectToAction(nameof(MemberIndex)) : BadRequest(HttpRequestClient.Error);
         }

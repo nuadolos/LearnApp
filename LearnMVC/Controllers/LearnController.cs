@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 namespace LearnMVC.Controllers
 {
     [Authorize]
+    [Route("g/{groupId}/l/{action}/{id?}")]
     public class LearnController : Controller
     {
         /// <summary>
@@ -16,16 +17,18 @@ namespace LearnMVC.Controllers
         private readonly string _baseUrl;
 
         public LearnController(IConfiguration configuration) =>
-            _baseUrl = configuration.GetSection("LearnAddres").Value;
+            _baseUrl = configuration.GetSection("LearnAddress").Value;
 
         private async Task<Learn?> GetLearnRecord(int groupId, string email, int id, string action) =>
             await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, groupId.ToString(), email, id.ToString(), action);
 
         #region Index/Details
 
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int groupId)
         {
-            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, "Group", id.ToString());
+            var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, "Group", groupId.ToString());
+
+            learns?.Insert(0, new Learn { GroupId = groupId });
 
             return learns != null ? View(learns) : BadRequest(HttpRequestClient.Error);
         }
@@ -33,11 +36,9 @@ namespace LearnMVC.Controllers
         public async Task<IActionResult> Details(int? id, int groupId)
         {
             string? userName = User?.Identity?.Name;
-
+            
             if (id == null || userName == null)
-            {
                 return BadRequest();
-            }
 
             var learn = await GetLearnRecord(groupId, userName, id.Value, nameof(Details));
 
@@ -48,14 +49,14 @@ namespace LearnMVC.Controllers
 
         #region Create
 
-        public IActionResult Create()
+        public IActionResult Create(int groupId)
         {
-            return View();
+            return View(new Learn { GroupId = groupId });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int groupId, Learn learn)
+        public async Task<IActionResult> Create(Learn learn)
         {
             string? userName = User?.Identity?.Name;
 
@@ -82,10 +83,8 @@ namespace LearnMVC.Controllers
         {
             string? userName = User?.Identity?.Name;
 
-            if (id == null || userName == null)
-            {
+            if (userName == null || id == null)
                 return BadRequest();
-            }
 
             var learn = await GetLearnRecord(groupId, userName, id.Value, nameof(Edit));
 
@@ -124,10 +123,8 @@ namespace LearnMVC.Controllers
         {
             string? userName = User?.Identity?.Name;
 
-            if (id == null || userName == null)
-            {
+            if (userName == null || id == null)
                 return BadRequest();
-            }
 
             var learn = await GetLearnRecord(groupId, userName, id.Value, nameof(Delete));
 

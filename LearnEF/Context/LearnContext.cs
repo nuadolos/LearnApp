@@ -46,20 +46,60 @@ namespace LearnEF.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Entities.Attach>()
+                .HasOne(e => e.Learn)
+                .WithMany(e => e.Attach)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.Friend>()
+                .HasOne(e => e.SentUser)
+                .WithMany(e => e.SentUser)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.Friend>()
+                .HasOne(e => e.SentUser)
+                .WithMany(e => e.SentUser)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.Friend>()
+                .HasOne(e => e.AcceptedUser)
+                .WithMany(e => e.AcceptedUser)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Entities.Note>()
                 .HasOne(e => e.SourceLore)
                 .WithMany(e => e.Note)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.ShareNote>()
+                .HasOne(e => e.Note)
+                .WithMany(e => e.ShareNote)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Entities.Group>()
                 .HasOne(e => e.GroupType)
                 .WithMany(e => e.Group)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.Group>()
+                .HasOne(e => e.User)
+                .WithMany(e => e.Group)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.GroupUser>()
+                .HasOne(e => e.User)
+                .WithMany(e => e.GroupUser)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Entities.GroupUser>()
+                .HasOne(e => e.Group)
+                .WithMany(e => e.GroupUser)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Entities.GroupUser>()
                 .HasOne(e => e.GroupRole)
                 .WithMany(e => e.GroupUser)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

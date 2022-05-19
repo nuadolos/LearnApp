@@ -175,25 +175,13 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        [HttpDelete("{id}/{timestamp}")]
-        public async Task<IActionResult> RemoveGroupAsync([FromRoute] int id, [FromRoute] string timestamp)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveGroupAsync([FromRoute] int id)
         {
-            if (!timestamp.StartsWith("\""))
-                timestamp = $"\"{timestamp}\"";
+            string result = await _repo.DeleteAllDataAboutGroup(id);
 
-            if (timestamp.Contains("%2F"))
-                timestamp = timestamp.Replace("%2F", "/");
-
-            var ts = JsonConvert.DeserializeObject<byte[]>(timestamp);
-
-            try
-            {
-                await _repo.DeleteAsync(id, ts);
-            }
-            catch (DbMessageException ex)
-            {
-                return BadRequest(new ValidateError(ex.Message));
-            }
+            if (result != string.Empty)
+                return BadRequest(new ValidateError(result));
 
             return Ok();
         }

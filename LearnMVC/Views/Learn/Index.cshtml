@@ -1,0 +1,41 @@
+﻿@using LearnEF.Entities
+@model IEnumerable<Learn>
+
+@functions
+{
+    public int? GetGroupId(IEnumerable<Learn> learns) =>
+        learns.ToArray()[0].GroupId;
+}
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h1>Список заданий</h1>
+
+<p>
+    <a asp-action="Create" asp-route-groupId="@GetGroupId(Model)">Создать</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Наименование</label>
+            </th>
+            <th>
+                <label>Дата создания</label>
+            </th>
+            <th>
+                <label>Срок сдачи</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Skip(1)) 
+        {
+            @Html.DisplayFor(modelItem => item, "LearnList")
+        }   
+    </tbody>
+</table>

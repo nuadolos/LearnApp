@@ -11,13 +11,6 @@ namespace LearnEF.Entities
     public partial class Learn
     {
         [NotMapped]
-        [Display(Name = "Статус")]
-        public string? Studied
-        {
-            get => IsAttached ? "Сдано" : "Не сдано";
-        }
-
-        [NotMapped]
         public string? LoreName { get; set; }
 
         [NotMapped]

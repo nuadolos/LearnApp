@@ -30,22 +30,27 @@ namespace LearnEF.Entities
         public DateTime? CreateDate { get; set; }
 
         [Display(Name = "Дата сдачи")]
+        [Required]
         [DataType(DataType.Date)]
         [Column(TypeName = "date")]
         public DateTime? Deadline { get; set; }
 
-        [Display(Name = "Работа сдана?")]
-        public bool IsAttached { get; set; }
-
+        [Required]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
+        [Required]
         [ForeignKey(nameof(GroupId))]
         public int? GroupId { get; set; }
 
         public User? User { get; set; }
 
+        public Group? Group { get; set; }
+
         [InverseProperty(nameof(Learn))]
         public List<LearnDocuments>? LearnDocuments { get; } = new List<LearnDocuments>();
+
+        [InverseProperty(nameof(Learn))]
+        public List<Attach>? Attach { get; } = new List<Attach>();
     }
 }

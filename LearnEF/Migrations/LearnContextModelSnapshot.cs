@@ -22,6 +22,43 @@ namespace LearnEF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("LearnEF.Entities.Attach", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("AttachmentDate")
+                        .IsRequired()
+                        .HasColumnType("date");
+
+                    b.Property<byte[]>("FileContent")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int?>("LearnId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LearnId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Attach");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.Friend", b =>
                 {
                     b.Property<int>("Id")
@@ -31,12 +68,15 @@ namespace LearnEF.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AcceptedUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("MakeFriend")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("SentUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<byte[]>("Timestamp")
@@ -70,6 +110,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("CreateDate")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -94,6 +135,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("rowversion");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -160,9 +202,11 @@ namespace LearnEF.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("GroupId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("GroupRoleId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Timestamp")
@@ -171,6 +215,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("rowversion");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -279,6 +324,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("date");
 
                     b.Property<DateTime?>("Deadline")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -286,10 +332,8 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(600)");
 
                     b.Property<int?>("GroupId")
+                        .IsRequired()
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsAttached")
-                        .HasColumnType("bit");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -302,9 +346,12 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("UserId");
 
@@ -319,13 +366,16 @@ namespace LearnEF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<byte[]>("Content")
+                    b.Property<byte[]>("FileContent")
+                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("LearnId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -350,6 +400,7 @@ namespace LearnEF.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("CreateDate")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
@@ -362,6 +413,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<int?>("SourceLoreId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Timestamp")
@@ -375,6 +427,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -398,6 +451,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("NoteId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<byte[]>("Timestamp")
@@ -406,6 +460,7 @@ namespace LearnEF.Migrations
                         .HasColumnType("rowversion");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -573,15 +628,38 @@ namespace LearnEF.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LearnEF.Entities.Attach", b =>
+                {
+                    b.HasOne("LearnEF.Entities.Learn", "Learn")
+                        .WithMany("Attach")
+                        .HasForeignKey("LearnId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
+                        .WithMany("Attach")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Learn");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LearnEF.Entities.Friend", b =>
                 {
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "AcceptedUser")
                         .WithMany("AcceptedUser")
-                        .HasForeignKey("AcceptedUserId");
+                        .HasForeignKey("AcceptedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "SentUser")
                         .WithMany("SentUser")
-                        .HasForeignKey("SentUserId");
+                        .HasForeignKey("SentUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("AcceptedUser");
 
@@ -593,12 +671,14 @@ namespace LearnEF.Migrations
                     b.HasOne("LearnEF.Entities.GroupType", "GroupType")
                         .WithMany("Group")
                         .HasForeignKey("GroupTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Group")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("GroupType");
 
@@ -609,16 +689,21 @@ namespace LearnEF.Migrations
                 {
                     b.HasOne("LearnEF.Entities.Group", "Group")
                         .WithMany("GroupUser")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("LearnEF.Entities.GroupRole", "GroupRole")
                         .WithMany("GroupUser")
                         .HasForeignKey("GroupRoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany("GroupUser")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Group");
 
@@ -629,9 +714,19 @@ namespace LearnEF.Migrations
 
             modelBuilder.Entity("LearnEF.Entities.Learn", b =>
                 {
+                    b.HasOne("LearnEF.Entities.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany("Learn")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
 
                     b.Navigation("User");
                 });
@@ -640,7 +735,9 @@ namespace LearnEF.Migrations
                 {
                     b.HasOne("LearnEF.Entities.Learn", "Learn")
                         .WithMany("LearnDocuments")
-                        .HasForeignKey("LearnId");
+                        .HasForeignKey("LearnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Learn");
                 });
@@ -650,11 +747,14 @@ namespace LearnEF.Migrations
                     b.HasOne("LearnEF.Entities.SourceLore", "SourceLore")
                         .WithMany("Note")
                         .HasForeignKey("SourceLoreId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany("Note")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("SourceLore");
 
@@ -665,11 +765,15 @@ namespace LearnEF.Migrations
                 {
                     b.HasOne("LearnEF.Entities.Note", "Note")
                         .WithMany("ShareNote")
-                        .HasForeignKey("NoteId");
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("LearnEF.Entities.IdentityModel.User", "User")
                         .WithMany("ShareNote")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Note");
 
@@ -746,6 +850,10 @@ namespace LearnEF.Migrations
                 {
                     b.Navigation("AcceptedUser");
 
+                    b.Navigation("Attach");
+
+                    b.Navigation("Group");
+
                     b.Navigation("GroupUser");
 
                     b.Navigation("Learn");
@@ -759,6 +867,8 @@ namespace LearnEF.Migrations
 
             modelBuilder.Entity("LearnEF.Entities.Learn", b =>
                 {
+                    b.Navigation("Attach");
+
                     b.Navigation("LearnDocuments");
                 });
 

@@ -14,14 +14,17 @@ namespace LearnEF.Entities
     public class GroupUser : EntityBase
     {
         [Display(Name = "Группа")]
+        [Required]
         [ForeignKey(nameof(GroupId))]
         public int? GroupId { get; set; }
 
         [Display(Name = "Пользователь")]
+        [Required]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
         [Display(Name = "Роль")]
+        [Required]
         [ForeignKey(nameof(GroupRoleId))]
         public int? GroupRoleId { get; set; }
 

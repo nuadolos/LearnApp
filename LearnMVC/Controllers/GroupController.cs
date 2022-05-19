@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 namespace LearnMVC.Controllers
 {
     [Authorize]
+    [Route("g/{action}/{id?}")]
     public partial class GroupController : Controller
     {
         /// <summary>
@@ -24,7 +25,6 @@ namespace LearnMVC.Controllers
         {
             _baseUrl = configuration.GetSection("GroupAddress").Value;
             _userUrl = configuration.GetSection("GroupUserAddress").Value;
-            _learnUrl = configuration.GetSection("LearnAddres").Value;
 
             List<GroupType> groupTypes = new List<GroupType>
             {
@@ -76,10 +76,8 @@ namespace LearnMVC.Controllers
         {
             string? userName = User?.Identity?.Name;
 
-            if (id == null || userName == null)
-            {
+            if (userName == null || id == null)
                 return BadRequest();
-            }
 
             var group = await GetGroupRecord(userName, id.Value, nameof(Details));
 
@@ -126,10 +124,8 @@ namespace LearnMVC.Controllers
         {
             string? userName = User?.Identity?.Name;
 
-            if (id == null || userName == null)
-            {
+            if (userName == null || id == null)
                 return BadRequest();
-            }
 
             var group = await GetGroupRecord(userName, id.Value, nameof(Edit));
 
@@ -171,10 +167,8 @@ namespace LearnMVC.Controllers
         {
             string? userName = User?.Identity?.Name;
 
-            if (id == null || userName == null)
-            {
+            if (userName == null || id == null)
                 return BadRequest();
-            }
 
             var group = await GetGroupRecord(userName, id.Value, nameof(Delete));
 
@@ -183,15 +177,10 @@ namespace LearnMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Group group)
-        {
-            //Сериализация массива байтов в строку для вставки в маршрут
-            var timeStampString = JsonConvert.SerializeObject(group.Timestamp);
-
-            return await HttpRequestClient.DeleteRequestAsync<Group>(_baseUrl, group.Id.ToString(), timeStampString)
+        public async Task<IActionResult> Delete(Group group) =>
+            await HttpRequestClient.DeleteRequestAsync<Group>(_baseUrl, group.Id.ToString())
                 ? RedirectToAction(nameof(MyIndex))
                 : BadRequest(HttpRequestClient.Error);
-        }
 
         #endregion
     }

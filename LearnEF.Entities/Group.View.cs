@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace LearnEF.Entities
     public partial class Group
     {
         [NotMapped]
+        [Display(Name = "Тип группы")]
         public string? TypeName
         {
             get => GroupTypeId switch

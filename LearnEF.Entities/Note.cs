@@ -28,15 +28,18 @@ namespace LearnEF.Entities
         public string? Link { get; set; }
 
         [Display(Name = "Дата создания")]
+        [Required]
         [DataType(DataType.Date)]
         [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }
 
         [Display(Name = "Ресурс")]
+        [Required]
         [ForeignKey(nameof(SourceLoreId))]
         public int? SourceLoreId { get; set; }
 
         [Display(Name = "Принадлежит")]
+        [Required]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 

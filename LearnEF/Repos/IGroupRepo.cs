@@ -15,5 +15,6 @@ namespace LearnEF.Repos
         Task<List<Group>> GetMemberGroupsAsync(string userId);
         Task<bool> IsCreatorAsync(int groupId, string userId);
         Task<bool> IsMemberAsync(int groupId, string userId);
+        Task<string> DeleteAllDataAboutGroup(int groupId);
     }
 }

@@ -10,20 +10,25 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Entities
 {
-    [Table("ShareNote")]
-    public class ShareNote : EntityBase
+    [Table("Attach")]
+    public class Attach : EntityBase
     {
         [Required]
-        [ForeignKey(nameof(Note))]
-        public int? NoteId { get; set; }
+        [ForeignKey(nameof(LearnId))]
+        public int? LearnId { get; set; }
 
         [Required]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
-        public bool CanChange { get; set; }
+        [Required]
+        [Column(TypeName = "date")]
+        public DateTime? AttachmentDate { get; set; }
+
+        public byte[]? FileContent { get; set; }
+
+        public Learn? Learn { get; set; }
 
         public User? User { get; set; }
-        public Note? Note { get; set; }
     }
 }

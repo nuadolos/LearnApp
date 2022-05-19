@@ -31,6 +31,7 @@ namespace LearnEF.Entities
         public string? CodeInvite { get; set; }
 
         [Display(Name = "Дата создания")]
+        [Required]
         [DataType(DataType.Date)]
         [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }
@@ -45,6 +46,7 @@ namespace LearnEF.Entities
         public int? GroupTypeId { get; set; }
 
         [Display(Name = "Принадлежит")]
+        [Required]
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 

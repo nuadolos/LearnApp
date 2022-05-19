@@ -46,6 +46,11 @@ namespace LearnEF.Repos
             if (group == null)
                 return "Группы не существует";
 
+            var member = await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupId == group.Id && gu.UserId == userId);
+
+            if (group.UserId == userId || member != null)
+                return "Вы уже участник группы";
+
             GroupUser groupUser = new GroupUser {
                 GroupId = group.Id,
                 UserId = userId,

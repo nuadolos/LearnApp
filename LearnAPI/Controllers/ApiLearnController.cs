@@ -55,8 +55,11 @@ namespace LearnAPI.Controllers
             var group = await _repo.GetGroupAsync(groupId);
             var learn = await _repo.GetLearnAsync(learnId);
 
-            if (group == null || learn == null)
-                return NotFound(new ValidateError("Группа не существует"));
+            if (group == null)
+                return NotFound(new ValidateError("Искомая группа не существует"));
+
+            if (learn == null)
+                return NotFound(new ValidateError("Искомый материал отсутствует"));
 
             if (learn.GroupId != group.Id)
                 return NotFound(new ValidateError("Данный материал отсутствует в группе"));
@@ -109,14 +112,13 @@ namespace LearnAPI.Controllers
         /// <param name="email"></param>
         /// <param name="learn"></param>
         /// <returns></returns>
-        [HttpPost("{email}/{groupId}")]
-        public async Task<IActionResult> CreateLearnAsync([FromRoute] string email, [FromRoute] int groupId, [FromBody] Learn learn)
+        [HttpPost("{email}")]
+        public async Task<IActionResult> CreateLearnAsync([FromRoute] string email, [FromBody] Learn learn)
         {
             try
             {
                 User user = await _userManager.FindByNameAsync(email);
                 learn.UserId = user.Id;
-                learn.GroupId = groupId;
                 await _repo.AddAsync(learn);
             }
             catch (DbMessageException ex)
