@@ -14,5 +14,11 @@ namespace LearnEF.Entities.IdentityModel
 
         [NotMapped]
         public int? GroupId { get; set; }
+
+        [NotMapped]
+        public int? NoteId { get; set; }
+
+        [NotMapped]
+        public string? CanChangeNote { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using LearnEF.Entities.ErrorModel;
 
 namespace LearnEF.Repos
 {
@@ -31,16 +32,69 @@ namespace LearnEF.Repos
             return userNotes;
         }
 
-        public async Task<List<User>> GetUsersAsync(int noteId)
+        public List<User> GetUsersAsync(int noteId)
         {
             List<User> noteUsers = new List<User>();
 
-            await Context.ShareNote
+            var shareNotes = Context.ShareNote
                 .Include(sl => sl.User)
-                .Where(sl => sl.NoteId == noteId)
-                .ForEachAsync(sl => noteUsers.Add(sl.User));
+                .Where(sl => sl.NoteId == noteId);
+
+            foreach (var item in shareNotes.AsParallel())
+            {
+                item.User.NoteId = item.NoteId;
+                item.User.CanChangeNote = item.CanChange ? "Имеется" : "Отсутствует";
+
+                noteUsers.Add(item.User);
+            }
 
             return noteUsers;
+        }
+
+        public async Task<string> OpenAccess(int noteId, string userId, bool canChange)
+        {
+            var shareNote = await Context.ShareNote.FirstOrDefaultAsync(
+                sn => sn.NoteId == noteId && sn.UserId == userId);
+
+            if (shareNote != null)
+                return "Вы уже поделились заметкой с этим пользователем";
+
+            ShareNote newShare = new ShareNote {
+                NoteId = noteId,
+                UserId = userId,
+                CanChange = canChange
+            };
+
+            try
+            {
+                await AddAsync(newShare);
+            }
+            catch (DbMessageException ex)
+            {
+                return ex.Message;
+            }
+
+            return string.Empty;
+        }
+
+        public async Task<string> BlockAccess(int noteId, string userId)
+        {
+            var shareNote = await Context.ShareNote.FirstOrDefaultAsync(
+                sn => sn.NoteId == noteId && sn.UserId == userId);
+
+            if (shareNote == null)
+                return "Вы не делились заметкой с этим пользователем";
+
+            try
+            {
+                await DeleteAsync(shareNote);
+            }
+            catch (DbMessageException ex)
+            {
+                return ex.Message;
+            }
+
+            return string.Empty;
         }
     }
 }

@@ -10,7 +10,7 @@ using LearnEF.Entities.ErrorModel;
 namespace LearnMVC.Controllers
 {
     [Authorize]
-    public class NoteController : Controller
+    public partial class NoteController : Controller
     {
         /// <summary>
         /// Базовая ссылка для обращения к LearnAPI
@@ -32,6 +32,7 @@ namespace LearnMVC.Controllers
         public NoteController(IConfiguration configuration)
         {
             _baseUrl = configuration.GetSection("NoteAddress").Value;
+            _shareUrl = configuration.GetSection("ShareNoteAddress").Value;
 
             LoreList = HttpRequestClient.GetRequestAsync<List<SourceLore>>(_baseUrl, "sources").Result;
 

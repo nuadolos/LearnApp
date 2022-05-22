@@ -47,7 +47,7 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Friend>> GetDocumentAsync([FromRoute] int id)
+        public async Task<ActionResult<Follow>> GetDocumentAsync([FromRoute] int id)
         {
             var learnDoc = await _repo.GetRecordAsync(id);
 

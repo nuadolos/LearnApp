@@ -10,19 +10,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LearnEF.Repos
 {
-    public class FriendRepo : BaseRepo<Friend>, IFriendRepo
+    public class FriendRepo : BaseRepo<Follow>, IFriendRepo
     {
         public async Task<List<User>> GetFriendsAsync(string userId)
         {
             List<User> friends = new List<User>();
 
             await Context.Friend
-                .Include(f => f.AcceptedUser)
+                .Include(f => f.TrackedUser)
                 .Where(f => f.SentUserId == userId)
                 .ForEachAsync(f => friends.Add(f.AcceptedUser));
 
             await Context.Friend
-                .Include(f => f.SentUser)
+                .Include(f => f.SubscribeUser)
                 .Where(f => f.AcceptedUserId == userId)
                 .ForEachAsync(f => friends.Add(f.SentUser));
 

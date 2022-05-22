@@ -38,6 +38,10 @@ namespace LearnEF.Entities
         [ForeignKey(nameof(SourceLoreId))]
         public int? SourceLoreId { get; set; }
 
+        [Display(Name = "Имеет открытый доступ?")]
+        [Required]
+        public bool IsVisible { get; set; }
+
         [Display(Name = "Принадлежит")]
         [Required]
         [ForeignKey(nameof(UserId))]

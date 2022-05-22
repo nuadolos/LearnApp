@@ -40,9 +40,9 @@ namespace LearnEF.Entities.IdentityModel
         public List<GroupUser>? GroupUser { get; set; } = new List<GroupUser>();
 
         [InverseProperty("SentUser")]
-        public List<Friend>? SentUser { get; set; } = new List<Friend>();
+        public List<Follow>? SentUser { get; set; } = new List<Follow>();
 
         [InverseProperty("AcceptedUser")]
-        public List<Friend>? AcceptedUser { get; set; } = new List<Friend>();
+        public List<Follow>? AcceptedUser { get; set; } = new List<Follow>();
     }
 }

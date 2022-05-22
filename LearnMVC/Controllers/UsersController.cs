@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LearnMVC.Controllers
 {
     [Authorize(Roles = "admin")]
-    public class UsersController : Controller
+    public partial class UsersController : Controller
     {
         /// <summary>
         /// Базовая ссылка для обращения к LearnAPI
@@ -19,8 +19,11 @@ namespace LearnMVC.Controllers
         /// Получает URL Api для отправки и получения запросов
         /// </summary>
         /// <param name="configuration"></param>
-        public UsersController(IConfiguration configuration) =>
+        public UsersController(IConfiguration configuration)
+        {
             _baseUrl = configuration.GetSection("UsersAddress").Value;
+            _friendUrl = configuration.GetSection("FriendAddress").Value;
+        }
 
 
         /// <summary>

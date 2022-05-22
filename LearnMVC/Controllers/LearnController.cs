@@ -28,8 +28,6 @@ namespace LearnMVC.Controllers
         {
             var learns = await HttpRequestClient.GetRequestAsync<List<Learn>>(_baseUrl, "Group", groupId.ToString());
 
-            learns?.Insert(0, new Learn { GroupId = groupId });
-
             return learns != null ? View(learns) : BadRequest(HttpRequestClient.Error);
         }
 
@@ -49,10 +47,8 @@ namespace LearnMVC.Controllers
 
         #region Create
 
-        public IActionResult Create(int groupId)
-        {
-            return View(new Learn { GroupId = groupId });
-        }
+        public IActionResult Create(int groupId) =>
+            View(new Learn { GroupId = groupId });
 
         [HttpPost]
         [ValidateAntiForgeryToken]

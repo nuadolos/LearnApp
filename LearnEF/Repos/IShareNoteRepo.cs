@@ -11,7 +11,9 @@ namespace LearnEF.Repos
 {
     public interface IShareNoteRepo : IRepo<ShareNote>
     {
-        Task<List<User>> GetUsersAsync(int noteId);
+        List<User> GetUsersAsync(int noteId);
         Task<List<Note>> GetNotesAsync(string userId);
+        Task<string> OpenAccess(int noteId, string userId, bool canChange);
+        Task<string> BlockAccess(int noteId, string userId);
     }
 }

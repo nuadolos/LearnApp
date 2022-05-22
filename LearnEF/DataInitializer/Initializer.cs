@@ -269,11 +269,11 @@ namespace LearnEF.DataInitializer
 
             shareNotes.ForEach(shareLearn => context.ShareNote.Add(shareLearn));
 
-            List<Friend> friends = new List<Friend>()
+            List<Follow> friends = new List<Follow>()
             {
-                new Friend { SentUserId = newUser1.Id, AcceptedUserId = newUser3.Id, MakeFriend = DateTime.Now },
-                new Friend { SentUserId = newUser2.Id, AcceptedUserId = newUser4.Id, MakeFriend = DateTime.Now },
-                new Friend { SentUserId = newUser1.Id, AcceptedUserId = newUser5.Id, MakeFriend = DateTime.Now }
+                new Follow { SentUserId = newUser1.Id, AcceptedUserId = newUser3.Id, MakeFriend = DateTime.Now },
+                new Follow { SentUserId = newUser2.Id, AcceptedUserId = newUser4.Id, MakeFriend = DateTime.Now },
+                new Follow { SentUserId = newUser1.Id, AcceptedUserId = newUser5.Id, MakeFriend = DateTime.Now }
             };
 
             friends.ForEach(fr => context.Friend.Add(fr));

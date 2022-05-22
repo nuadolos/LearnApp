@@ -24,7 +24,7 @@ namespace LearnEF.Context
         public DbSet<Entities.ShareNote> ShareNote { get; set; }
         public DbSet<Entities.Learn> Learn { get; set; }
         public DbSet<Entities.LearnDocuments> LearnDocuments { get; set; }
-        public DbSet<Entities.Friend> Friend { get; set; }
+        public DbSet<Entities.Follow> Friend { get; set; }
         public DbSet<Entities.Group> Group { get; set; }
         public DbSet<Entities.GroupUser> GroupUser { get; set; }
         public DbSet<Entities.GroupRole> GroupRole { get; set; }
@@ -51,18 +51,18 @@ namespace LearnEF.Context
                 .WithMany(e => e.Attach)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Entities.Friend>()
-                .HasOne(e => e.SentUser)
+            modelBuilder.Entity<Entities.Follow>()
+                .HasOne(e => e.SubscribeUser)
                 .WithMany(e => e.SentUser)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Entities.Friend>()
-                .HasOne(e => e.SentUser)
+            modelBuilder.Entity<Entities.Follow>()
+                .HasOne(e => e.SubscribeUser)
                 .WithMany(e => e.SentUser)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Entities.Friend>()
-                .HasOne(e => e.AcceptedUser)
+            modelBuilder.Entity<Entities.Follow>()
+                .HasOne(e => e.TrackedUser)
                 .WithMany(e => e.AcceptedUser)
                 .OnDelete(DeleteBehavior.NoAction);
 

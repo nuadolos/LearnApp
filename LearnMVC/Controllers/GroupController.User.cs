@@ -11,7 +11,6 @@ namespace LearnMVC.Controllers
         private readonly string _userUrl;
 
         [HttpGet]
-        [Route("Members")]
         public async Task<IActionResult> Members(int? id)
         {
             if (id == null)
@@ -35,7 +34,8 @@ namespace LearnMVC.Controllers
             return result ? RedirectToAction(nameof(MyIndex)) : BadRequest(HttpRequestClient.Error);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(int? id)
         {
             string? userName = User?.Identity?.Name;
@@ -50,11 +50,9 @@ namespace LearnMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Kick(int id, string userId)
-        {
-            bool result = await HttpRequestClient.DeleteRequestAsync<object>(_userUrl, id.ToString(), userId);
-
-            return result ? RedirectToAction(nameof(Members)) : BadRequest(HttpRequestClient.Error);
-        }
+        public async Task<IActionResult> Kick(int id, string userId) =>
+            await HttpRequestClient.DeleteRequestAsync<object>(_userUrl, id.ToString(), userId)
+                ? RedirectToAction(nameof(Members), "Group", new { id = id })
+                : BadRequest(HttpRequestClient.Error);
     }
 }

@@ -1,0 +1,55 @@
+﻿@using LearnEF.Entities.IdentityModel
+@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h5>Список пользователей, кому видна данная заметка</h5>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Email</label>
+            </th>
+            <th>
+                <label>Фамилия</label>
+            </th>
+            <th>
+                <label>Имя</label>
+            </th>
+            <th>
+                <label>Доступ к редактированию</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.CanChangeNote)
+                </td>
+                <td>
+                    <form asp-action="PrivateNote" asp-controller="Note" 
+                        asp-route-id="@item.NoteId" asp-route-userId="@item.Id">
+                        <div class="form-group">
+                            <input type="submit" value="Убрать доступ" class="btn btn-danger"/>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }   
+    </tbody>
+</table>

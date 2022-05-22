@@ -2,6 +2,7 @@
 using LearnEF.Entities;
 using LearnEF.Entities.ErrorModel;
 using LearnEF.Entities.IdentityModel;
+using LearnEF.Entities.WebModel;
 using LearnEF.Repos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -58,8 +59,8 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Note/{id}")]
-        public async Task<IEnumerable<User>> GetUsersAsync([FromRoute] int id) =>
-            _mapperUser.Map<List<User>, List<User>>(await _repo.GetUsersAsync(id));
+        public IEnumerable<User> GetUsersAsync([FromRoute] int id) =>
+            _mapperUser.Map<List<User>, List<User>>(_repo.GetUsersAsync(id));
 
         /// <summary>
         /// Запрос на создание открытого доступа к материалу
@@ -67,16 +68,17 @@ namespace LearnAPI.Controllers
         /// <param name="shapeLearn"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateShareAsync([FromBody] ShareNote shareNote)
+        public async Task<IActionResult> CreateShareAsync([FromBody] OpenAccessNote shareNote)
         {
-            try
-            {
-                await _repo.AddAsync(shareNote);
-            }
-            catch (DbMessageException ex)
-            {
-                return BadRequest(new ValidateError(ex.Message));
-            }
+            User user = await _userManager.FindByEmailAsync(shareNote.Email);
+
+            if (user == null)
+                return BadRequest(new ValidateError("Пользователь не найден"));
+
+            string result = await _repo.OpenAccess(shareNote.NoteId, user.Id, shareNote.CanChange);
+
+            if (result != string.Empty)
+                return BadRequest(new ValidateError(result));
 
             return Ok();
         }
@@ -87,25 +89,13 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        [HttpDelete("{id}/{timestamp}")]
-        public async Task<IActionResult> RemoveShareAsync([FromRoute] int id, [FromRoute] string timestamp)
+        [HttpDelete("{noteId}/{userId}")]
+        public async Task<IActionResult> RemoveShareAsync([FromRoute] int noteId, [FromRoute] string userId)
         {
-            if (!timestamp.StartsWith("\""))
-                timestamp = $"\"{timestamp}\"";
+            string result = await _repo.BlockAccess(noteId, userId);
 
-            if (timestamp.Contains("%2F"))
-                timestamp = timestamp.Replace("%2F", "/");
-
-            var ts = JsonConvert.DeserializeObject<byte[]>(timestamp);
-
-            try
-            {
-                await _repo.DeleteAsync(id, ts);
-            }
-            catch (DbMessageException ex)
-            {
-                return BadRequest(new ValidateError(ex.Message));
-            }
+            if (result != string.Empty)
+                return BadRequest(new ValidateError(result));
 
             return Ok();
         }

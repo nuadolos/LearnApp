@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LearnEF.Repos
 {
-    public interface IFriendRepo : IRepo<Friend>
+    public interface IFriendRepo : IRepo<Follow>
     {
         Task<List<User>> GetFriendsAsync(string userId);
     }

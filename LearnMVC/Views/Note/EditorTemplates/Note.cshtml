@@ -37,6 +37,12 @@
 </div>
 
 <div class="form-group mt-3">
+    <label asp-for="IsVisible" class="control-label fs-4"></label>
+    <input asp-for="IsVisible"/>
+    <span asp-validation-for="IsVisible" class="text-danger"></span>
+</div>
+
+<div class="form-group mt-3">
     <label asp-for="SourceLoreId" class="control-label fs-4"></label>
     <select asp-for="SourceLoreId" asp-items="ViewBag.SourceLoreId" class="select form-control mt-2"></select>
     <span asp-validation-for="SourceLoreId" class="text-danger"></span>
