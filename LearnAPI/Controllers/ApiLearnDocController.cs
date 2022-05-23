@@ -52,8 +52,6 @@ namespace LearnAPI.Controllers
 
             return Ok(doc);
         }
-            
-
 
         /// <summary>
         /// Запрос на прикрепление документа к материалу
@@ -75,7 +73,6 @@ namespace LearnAPI.Controllers
         /// Запрос на удаление документа
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="timestamp"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFriendAsync([FromRoute] int id)

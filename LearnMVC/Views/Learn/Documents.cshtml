@@ -5,11 +5,15 @@
     ViewData["Title"] = "Список";
 }
 
-<h1>Список заданий</h1>
+<h1>Список прикрепленных документов</h1>
 
 <p>
+    <a asp-action="Details" asp-route-id="@Model.ToArray()[0].LearnId">Назад к заданию</a>
+</p>
+<hr />
+<p>
     <form asp-action="LoadFile" asp-route-id="@Model.ToArray()[0].LearnId" enctype="multipart/form-data">
-        <input type="file" class="form-control" name="uploadFile"/>
+        <input type="file" class="form-control mt-2" name="uploadFile"/>
         <input type="submit" value="Прикрепить" class="btn btn-primary"/>
     </form>
 </p>

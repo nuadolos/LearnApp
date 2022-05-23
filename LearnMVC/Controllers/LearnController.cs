@@ -1,5 +1,8 @@
 ﻿using LearnEF.Entities;
+using LearnEF.Entities.Base;
+using LearnEF.Entities.WebModel;
 using LearnHTTP;
+using LearnMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -51,27 +54,50 @@ namespace LearnMVC.Controllers
         #region Create
 
         public IActionResult Create(int groupId) =>
-            View(new Learn { GroupId = groupId });
+            View(new LearnViewModel { GroupId = groupId });
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Learn learn)
+        public async Task<IActionResult> Create(LearnViewModel learnView)
         {
             string? userName = User?.Identity?.Name;
 
-            if (ModelState.IsValid && userName != null)
-            {
-                bool result = await HttpRequestClient.PostRequestAsync(learn, _baseUrl, userName);
+            if (!ModelState.IsValid || userName == null)
+                return View(learnView);
 
-                if (result)
-                    return RedirectToAction(nameof(Index));
-                else
+            FullLearn fullLearn = new FullLearn
+            {
+                Title = learnView.Title,
+                Description = learnView.Description,
+                CreateDate = learnView.CreateDate,
+                Deadline = learnView.Deadline,
+                GroupId = learnView.GroupId
+            };
+
+            if (learnView.FilesContent != null)
+            {
+                fullLearn.Files = new List<Document>();
+
+                foreach (var item in learnView.FilesContent)
                 {
-                    ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
+                    Document document = new Document { Name = item.FileName };
+
+                    using (var binaryReader = new BinaryReader(item.OpenReadStream()))
+                    {
+                        document.FileContent = binaryReader.ReadBytes((int)item.Length);
+                    }
+
+                    fullLearn.Files.Add(document);
                 }
             }
 
-            return View(learn);
+            if (!await HttpRequestClient.PostRequestAsync(fullLearn, _baseUrl, userName))
+            {
+                ModelState.AddModelError(string.Empty, HttpRequestClient.Error.Message);
+                return View(learnView);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         #endregion
@@ -132,15 +158,10 @@ namespace LearnMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Learn learn)
-        {
-            //Сериализация массива байтов в строку для вставки в маршрут
-            var timeStampString = JsonConvert.SerializeObject(learn.Timestamp);
-
-            return await HttpRequestClient.DeleteRequestAsync<Group>(_baseUrl, learn.Id.ToString(), timeStampString)
+        public async Task<IActionResult> Delete(Learn learn) =>
+            await HttpRequestClient.DeleteRequestAsync<object>(_baseUrl, learn.Id.ToString())
                 ? RedirectToAction(nameof(Index))
                 : BadRequest(HttpRequestClient.Error);
-        }
 
         #endregion
     }

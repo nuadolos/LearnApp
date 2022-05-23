@@ -1,4 +1,5 @@
 ﻿using LearnEF.Entities;
+using LearnEF.Entities.Base;
 using LearnEF.Entities.IdentityModel;
 using LearnEF.Repos.Base;
 using System;
@@ -16,5 +17,7 @@ namespace LearnEF.Repos
         Task<Learn?> GetLearnAsync(int learnId);
         Task<bool> IsMemberGroupAsync(int groupId, string userId);
         Task<bool> CanChangeLearnAsync(int groupId, string userId);
+        Task<string> CreateFullLearnAsync(Learn learn, List<LearnDocuments> documents);
+        Task<string> DeleteAllDataLearnAsync(int learnId);
     }
 }

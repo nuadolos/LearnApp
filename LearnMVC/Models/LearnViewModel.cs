@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnEF.Entities.WebModel
+namespace LearnMVC.Models
 {
     public class LearnViewModel
     {
@@ -22,16 +22,16 @@ namespace LearnEF.Entities.WebModel
         [Display(Name = "Дата создания")]
         [Required(ErrorMessage = "Поле \"Дата создания\" пустое")]
         [DataType(DataType.Date)]
-        [Column(TypeName = "date")]
         public DateTime? CreateDate { get; set; }
 
         [Display(Name = "Дата сдачи")]
         [Required]
         [DataType(DataType.Date)]
-        [Column(TypeName = "date")]
         public DateTime? Deadline { get; set; }
 
         [Display(Name = "Документы")]
-        public IFormFileCollection? FileContent { get; set; }
+        public IFormFileCollection? FilesContent { get; set; }
+
+        public int? GroupId { get; set; }
     }
 }
