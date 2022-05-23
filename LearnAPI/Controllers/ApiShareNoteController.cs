@@ -75,7 +75,7 @@ namespace LearnAPI.Controllers
             if (user == null)
                 return BadRequest(new ValidateError("Пользователь не найден"));
 
-            string result = await _repo.OpenAccess(shareNote.NoteId, user.Id, shareNote.CanChange);
+            string result = await _repo.OpenAccessAsync(shareNote.NoteId, user.Id, shareNote.CanChange);
 
             if (result != string.Empty)
                 return BadRequest(new ValidateError(result));
@@ -92,7 +92,7 @@ namespace LearnAPI.Controllers
         [HttpDelete("{noteId}/{userId}")]
         public async Task<IActionResult> RemoveShareAsync([FromRoute] int noteId, [FromRoute] string userId)
         {
-            string result = await _repo.BlockAccess(noteId, userId);
+            string result = await _repo.BlockAccessAsync(noteId, userId);
 
             if (result != string.Empty)
                 return BadRequest(new ValidateError(result));

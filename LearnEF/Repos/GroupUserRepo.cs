@@ -26,7 +26,6 @@ namespace LearnEF.Repos
 
             var gUsers = Context.GroupUser
                 .Include(gu => gu.User)
-                .Include(gu => gu.GroupRole)
                 .Where(gu => gu.GroupId == groupId);
 
             foreach (var item in gUsers.AsParallel())
@@ -51,7 +50,7 @@ namespace LearnEF.Repos
             if (group.UserId == userId || member != null)
                 return "Вы уже участник группы";
 
-            GroupUser groupUser = new GroupUser {
+            member = new GroupUser {
                 GroupId = group.Id,
                 UserId = userId,
                 GroupRoleId = group.GroupTypeId switch
@@ -68,7 +67,7 @@ namespace LearnEF.Repos
 
             try
             {
-                await AddAsync(groupUser);
+                await AddAsync(member);
             }
             catch (DbMessageException ex)
             {
@@ -90,20 +89,20 @@ namespace LearnEF.Repos
             if (group.UserId == userId || member != null)
                 return "Вы уже участник группы";
 
-            GroupUser groupUser = new GroupUser
+            member = new GroupUser
             {
                 GroupId = group.Id,
                 UserId = userId,
             };
 
             if (group.CodeInvite == inviteId)
-                groupUser.GroupRoleId = 1;
+                member.GroupRoleId = 1;
             else
-                groupUser.GroupRoleId = 2;
+                member.GroupRoleId = 2;
 
             try
             {
-                await AddAsync(groupUser);
+                await AddAsync(member);
             }
             catch(DbMessageException ex)
             {

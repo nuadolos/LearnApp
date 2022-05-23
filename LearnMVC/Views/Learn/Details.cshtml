@@ -37,6 +37,7 @@
     </dl>
 </div>
 <div>
+    <a asp-action="Documents" asp-route-id="@Model?.Id">Документы</a> |
     <a asp-action="Edit" asp-route-id="@Model?.Id" asp-route-groupId="@Model?.GroupId">Редактировать</a> |
     <a asp-action="Index" asp-route-groupId="@Model?.GroupId">Назад к списку</a>
 </div>

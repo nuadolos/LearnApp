@@ -1,0 +1,46 @@
+﻿@using LearnEF.Entities
+@model IEnumerable<LearnDocuments>
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h1>Список заданий</h1>
+
+<p>
+    <form asp-action="LoadFile" asp-route-id="@Model.ToArray()[0].LearnId" enctype="multipart/form-data">
+        <input type="file" class="form-control" name="uploadFile"/>
+        <input type="submit" value="Прикрепить" class="btn btn-primary"/>
+    </form>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Наименование файла</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Skip(1))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    <form asp-action="Download" asp-route-docId="@item.Id">
+                        <input type="submit" value="Загрузить" class="btn btn-primary"/>
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="Unpin" asp-route-docId="@item.Id" asp-route-learnId="@item.LearnId">
+                        <input type="submit" value="Удалить" class="btn btn-danger"/>
+                    </form>
+                </td>
+            </tr>
+        }   
+    </tbody>
+</table>

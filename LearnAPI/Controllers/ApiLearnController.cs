@@ -26,6 +26,7 @@ namespace LearnAPI.Controllers
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<Learn, Learn>()
                 .ForMember(x => x.User, opt => opt.Ignore())
+                .ForMember(x => x.Group, opt => opt.Ignore())
                 .ForMember(x => x.LearnDocuments, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }

@@ -40,7 +40,7 @@ namespace LearnAPI.Controllers
         public async Task<IEnumerable<Note>> GetUserLearnsAsync([FromRoute] string email)
         {
             User user = await _userManager.FindByNameAsync(email);
-            var notes = await _repo.GetUserNotes(user.Id);
+            var notes = await _repo.GetUserNotesAsync(user.Id);
             return _mapper.Map<List<Note>, List<Note>>(notes);
         }
 

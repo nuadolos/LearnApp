@@ -51,7 +51,7 @@ namespace LearnEF.Repos
             return noteUsers;
         }
 
-        public async Task<string> OpenAccess(int noteId, string userId, bool canChange)
+        public async Task<string> OpenAccessAsync(int noteId, string userId, bool canChange)
         {
             var shareNote = await Context.ShareNote.FirstOrDefaultAsync(
                 sn => sn.NoteId == noteId && sn.UserId == userId);
@@ -59,7 +59,7 @@ namespace LearnEF.Repos
             if (shareNote != null)
                 return "Вы уже поделились заметкой с этим пользователем";
 
-            ShareNote newShare = new ShareNote {
+            shareNote = new ShareNote {
                 NoteId = noteId,
                 UserId = userId,
                 CanChange = canChange
@@ -67,7 +67,7 @@ namespace LearnEF.Repos
 
             try
             {
-                await AddAsync(newShare);
+                await AddAsync(shareNote);
             }
             catch (DbMessageException ex)
             {
@@ -77,7 +77,7 @@ namespace LearnEF.Repos
             return string.Empty;
         }
 
-        public async Task<string> BlockAccess(int noteId, string userId)
+        public async Task<string> BlockAccessAsync(int noteId, string userId)
         {
             var shareNote = await Context.ShareNote.FirstOrDefaultAsync(
                 sn => sn.NoteId == noteId && sn.UserId == userId);

@@ -11,30 +11,57 @@ namespace LearnMVC.Controllers
         private readonly string _friendUrl;
 
         [HttpGet]
-        public async Task<IActionResult> Friends()
+        public async Task<IActionResult> Following()
         {
             string? userName = User?.Identity?.Name;
 
             if (userName == null)
                 return BadRequest();
 
-            var friends = await HttpRequestClient.GetRequestAsync<List<User>>(_friendUrl, "Friends", userName);
+            var myFollowing = await HttpRequestClient.GetRequestAsync<List<User>>(_friendUrl, "Following", userName);
 
-            return friends != null ? View(friends) : BadRequest(HttpRequestClient.Error);
+            return myFollowing != null ? View(myFollowing) : BadRequest(HttpRequestClient.Error);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Followers()
+        {
+            string? userName = User?.Identity?.Name;
+
+            if (userName == null)
+                return BadRequest();
+
+            var myFollowers = await HttpRequestClient.GetRequestAsync<List<User>>(_friendUrl, "Followers", userName);
+
+            return myFollowers != null ? View(myFollowers) : BadRequest(HttpRequestClient.Error);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MakeFriends()
+        public async Task<IActionResult> Follow(string userId)
         {
-            
+            string? userName = User?.Identity?.Name;
+
+            if (userName == null)
+                return BadRequest();
+
+            return await HttpRequestClient.PostRequestAsync(new object(), _friendUrl, userName, userId)
+                ? RedirectToAction(nameof(Details), new { id = userId })
+                : BadRequest(HttpRequestClient.Error);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EndFriendship()
+        public async Task<IActionResult> Unfollow(string userId)
         {
+            string? userName = User?.Identity?.Name;
 
+            if (userName == null)
+                return BadRequest();
+
+            return await HttpRequestClient.DeleteRequestAsync<object>(_friendUrl, userName, userId)
+                ? RedirectToAction(nameof(Details), new { id = userId })
+                : BadRequest(HttpRequestClient.Error);
         }
     }
 }

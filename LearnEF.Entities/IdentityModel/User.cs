@@ -39,10 +39,10 @@ namespace LearnEF.Entities.IdentityModel
         [InverseProperty(nameof(User))]
         public List<GroupUser>? GroupUser { get; set; } = new List<GroupUser>();
 
-        [InverseProperty("SentUser")]
-        public List<Follow>? SentUser { get; set; } = new List<Follow>();
+        [InverseProperty("SubscribeUser")]
+        public List<Follow>? SubscribeUser { get; set; } = new List<Follow>();
 
-        [InverseProperty("AcceptedUser")]
-        public List<Follow>? AcceptedUser { get; set; } = new List<Follow>();
+        [InverseProperty("TrackedUser")]
+        public List<Follow>? TrackedUser { get; set; } = new List<Follow>();
     }
 }

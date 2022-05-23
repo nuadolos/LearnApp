@@ -28,9 +28,10 @@ builder.Services.AddScoped<ILearnRepo, LearnRepo>();
 builder.Services.AddScoped<ISourceLoreRepo, SourceLoreRepo>();
 builder.Services.AddScoped<IShareNoteRepo, ShareNoteRepo>();
 builder.Services.AddScoped<IGroupRepo, GroupRepo>();
-builder.Services.AddScoped<IFriendRepo, FriendRepo>();
+builder.Services.AddScoped<IFollowRepo, FollowRepo>();
 builder.Services.AddScoped<INoteRepo, NoteRepo>();
 builder.Services.AddScoped<IGroupUserRepo, GroupUserRepo>();
+builder.Services.AddScoped<ILearnDocumentsRepo, LearnDocumentsRepo>();
 
 #endregion
 

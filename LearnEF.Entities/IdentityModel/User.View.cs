@@ -20,5 +20,8 @@ namespace LearnEF.Entities.IdentityModel
 
         [NotMapped]
         public string? CanChangeNote { get; set; }
+
+        [NotMapped]
+        public bool? FollowingHim { get; set; }
     }
 }

@@ -1,0 +1,37 @@
+﻿@using LearnEF.Entities.IdentityModel
+@model IEnumerable<User>
+
+<h1>Список пользователей</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Email</label>
+            </th>
+            <th>
+                <label>Имя</label>
+            </th>
+            <th>
+                <label>Фамилия</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Surname)
+                </td>
+            </tr>
+        }   
+    </tbody>
+</table>

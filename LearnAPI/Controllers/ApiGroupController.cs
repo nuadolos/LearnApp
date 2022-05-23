@@ -178,7 +178,7 @@ namespace LearnAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveGroupAsync([FromRoute] int id)
         {
-            string result = await _repo.DeleteAllDataAboutGroup(id);
+            string result = await _repo.DeleteAllDataAboutGroupAsync(id);
 
             if (result != string.Empty)
                 return BadRequest(new ValidateError(result));

@@ -43,7 +43,7 @@ namespace LearnEF.Repos
         public async Task<bool> IsMemberAsync(int groupId, string userId) =>
             await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupId == groupId && gu.UserId == userId) != null;
 
-        public async Task<string> DeleteAllDataAboutGroup(int groupId)
+        public async Task<string> DeleteAllDataAboutGroupAsync(int groupId)
         {
             var group = await Context.Group.FirstOrDefaultAsync(g => g.Id == groupId);
 

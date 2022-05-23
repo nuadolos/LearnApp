@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220519124437_Final")]
+    [Migration("20220523110559_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,7 +61,7 @@ namespace LearnEF.Migrations
                     b.ToTable("Attach");
                 });
 
-            modelBuilder.Entity("LearnEF.Entities.Friend", b =>
+            modelBuilder.Entity("LearnEF.Entities.Follow", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,15 +69,11 @@ namespace LearnEF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AcceptedUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("MakeFriend")
+                    b.Property<DateTime?>("FollowDate")
                         .IsRequired()
                         .HasColumnType("date");
 
-                    b.Property<string>("SentUserId")
+                    b.Property<string>("SubscribeUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -86,13 +82,17 @@ namespace LearnEF.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<string>("TrackedUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AcceptedUserId");
+                    b.HasIndex("SubscribeUserId");
 
-                    b.HasIndex("SentUserId");
+                    b.HasIndex("TrackedUserId");
 
-                    b.ToTable("Friend");
+                    b.ToTable("Follow");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.Group", b =>
@@ -378,8 +378,7 @@ namespace LearnEF.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -408,6 +407,9 @@ namespace LearnEF.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(600)
                         .HasColumnType("nvarchar(600)");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Link")
                         .IsRequired()
@@ -649,23 +651,23 @@ namespace LearnEF.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("LearnEF.Entities.Friend", b =>
+            modelBuilder.Entity("LearnEF.Entities.Follow", b =>
                 {
-                    b.HasOne("LearnEF.Entities.IdentityModel.User", "AcceptedUser")
-                        .WithMany("AcceptedUser")
-                        .HasForeignKey("AcceptedUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("LearnEF.Entities.IdentityModel.User", "SentUser")
-                        .WithMany("SentUser")
-                        .HasForeignKey("SentUserId")
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "SubscribeUser")
+                        .WithMany("SubscribeUser")
+                        .HasForeignKey("SubscribeUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("AcceptedUser");
+                    b.HasOne("LearnEF.Entities.IdentityModel.User", "TrackedUser")
+                        .WithMany("TrackedUser")
+                        .HasForeignKey("TrackedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Navigation("SentUser");
+                    b.Navigation("SubscribeUser");
+
+                    b.Navigation("TrackedUser");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.Group", b =>
@@ -850,8 +852,6 @@ namespace LearnEF.Migrations
 
             modelBuilder.Entity("LearnEF.Entities.IdentityModel.User", b =>
                 {
-                    b.Navigation("AcceptedUser");
-
                     b.Navigation("Attach");
 
                     b.Navigation("Group");
@@ -862,9 +862,11 @@ namespace LearnEF.Migrations
 
                     b.Navigation("Note");
 
-                    b.Navigation("SentUser");
-
                     b.Navigation("ShareNote");
+
+                    b.Navigation("SubscribeUser");
+
+                    b.Navigation("TrackedUser");
                 });
 
             modelBuilder.Entity("LearnEF.Entities.Learn", b =>

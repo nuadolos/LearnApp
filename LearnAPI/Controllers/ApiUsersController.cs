@@ -1,5 +1,6 @@
 ﻿using LearnEF.Entities.ErrorModel;
 using LearnEF.Entities.IdentityModel;
+using LearnEF.Repos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +12,13 @@ namespace LearnAPI.Controllers
     public class ApiUsersController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly IFollowRepo _repo;
 
-        public ApiUsersController(UserManager<User> userManager) => 
+        public ApiUsersController(IFollowRepo repo, UserManager<User> userManager)
+        {
             _userManager = userManager;
+            _repo = repo;
+        }
 
         /// <summary>
         /// Запрос на получение всех пользователь
@@ -26,17 +31,21 @@ namespace LearnAPI.Controllers
         /// <summary>
         /// Запрос на получение конкретного пользователя
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserAsync([FromRoute] string id)
+        [HttpGet("{email}/{userId}")]
+        public async Task<ActionResult<User>> GetUserAsync([FromRoute] string email, [FromRoute] string userId)
         {
-            User user = await _userManager.FindByIdAsync(id);
+            User user = await _userManager.FindByEmailAsync(email);
+            User findUser = await _userManager.FindByIdAsync(userId);
 
-            if (user != null)
-                return Ok(user);
+            if (findUser == null)
+                return NotFound(new ValidateError("Искомый пользователь не найден"));
 
-            return NotFound(new ValidateError("Пользователь не найден"));
+            if (await _repo.IsFollowingAsync(user.Id, findUser.Id))
+                findUser.FollowingHim = true;
+
+            return Ok(findUser);
         }
 
         /// <summary>

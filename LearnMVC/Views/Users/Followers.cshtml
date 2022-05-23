@@ -1,0 +1,8 @@
+﻿@using LearnEF.Entities.IdentityModel
+@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Подписчики";
+}
+
+@Html.DisplayFor(model => Model, "FollowList")

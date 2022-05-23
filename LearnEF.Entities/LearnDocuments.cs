@@ -14,7 +14,6 @@ namespace LearnEF.Entities
     {
         [Display(Name = "Название")]
         [Required]
-        [StringLength(50)]
         public string? Name { get; set; }
 
         [Display(Name = "Документ")]

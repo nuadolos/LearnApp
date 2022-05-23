@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMVC.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize]
     public partial class UsersController : Controller
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace LearnMVC.Controllers
         public UsersController(IConfiguration configuration)
         {
             _baseUrl = configuration.GetSection("UsersAddress").Value;
-            _friendUrl = configuration.GetSection("FriendAddress").Value;
+            _friendUrl = configuration.GetSection("FollowAddress").Value;
         }
 
 
@@ -32,11 +32,13 @@ namespace LearnMVC.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private async Task<User?> GetUserRecord(string id) =>
-            await HttpRequestClient.GetRequestAsync<User>(_baseUrl, id);
+        [Authorize(Roles = "admin")]
+        private async Task<User?> GetUserRecord(string email, string id) =>
+            await HttpRequestClient.GetRequestAsync<User>(_baseUrl, email, id);
 
         #region Index/Details
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
             var users = await HttpRequestClient.GetRequestAsync<List<User>>(_baseUrl);
@@ -46,12 +48,12 @@ namespace LearnMVC.Controllers
 
         public async Task<IActionResult> Details(string? id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
+            string? userName = User?.Identity?.Name;
 
-            var user = await GetUserRecord(id);
+            if (id == null || userName == null)
+                return BadRequest();
+
+            var user = await GetUserRecord(userName, id);
             return user != null ? View(user) : NotFound(HttpRequestClient.Error);
         }
 
@@ -59,6 +61,7 @@ namespace LearnMVC.Controllers
 
         #region Create
 
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -87,19 +90,18 @@ namespace LearnMVC.Controllers
 
         #region Edit
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(string? id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
+            string? userName = User?.Identity?.Name;
 
-            var currentUser = await GetUserRecord(id);
+            if (id == null || userName == null)
+                return BadRequest();
+
+            var currentUser = await GetUserRecord(userName, id);
 
             if (currentUser == null)
-            {
                 return NotFound(HttpRequestClient.Error);
-            }
             else
             {
                 UserData user = new UserData
@@ -121,9 +123,7 @@ namespace LearnMVC.Controllers
         public async Task<IActionResult> Edit(string id, UserData user)
         {
             if (id != user.Id)
-            {
                 return BadRequest();
-            }
 
             if (ModelState.IsValid)
             {
@@ -144,26 +144,25 @@ namespace LearnMVC.Controllers
 
         #region Delete
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(string? id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
+            string? userName = User?.Identity?.Name;
 
-            var user = await GetUserRecord(id);
+            if (id == null || userName == null)
+                return BadRequest();
+
+            var user = await GetUserRecord(userName, id);
 
             return user != null ? View(user) : NotFound(HttpRequestClient.Error);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(User user)
-        {
-            return await HttpRequestClient.DeleteRequestAsync<User>(_baseUrl, user.Id) 
-                ? RedirectToAction(nameof(Index)) 
+        public async Task<IActionResult> Delete(User user) =>
+            await HttpRequestClient.DeleteRequestAsync<User>(_baseUrl, user.Id)
+                ? RedirectToAction(nameof(Index))
                 : BadRequest(HttpRequestClient.Error);
-        }
 
         #endregion
     }

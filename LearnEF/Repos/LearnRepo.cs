@@ -26,7 +26,7 @@ namespace LearnEF.Repos
             await Context.Group.FirstOrDefaultAsync(g => g.Id == groupId);
 
         public async Task<Learn?> GetLearnAsync(int learnId) =>
-            await Context.Learn.FirstOrDefaultAsync(g => g.Id == learnId);
+            await Context.Learn.FirstOrDefaultAsync(l => l.Id == learnId);
 
         public async Task<bool> IsMemberGroupAsync(int groupId, string userId) =>
             await Context.GroupUser.FirstOrDefaultAsync(

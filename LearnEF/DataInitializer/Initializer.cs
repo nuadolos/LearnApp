@@ -143,6 +143,7 @@ namespace LearnEF.DataInitializer
                     Title = "Программирование на равне",
                     Link = "https://vk.com/audios195148235",
                     CreateDate = DateTime.Now,
+                    IsVisible = false,
                     SourceLoreId = 1,
                     UserId = newUser1.Id
                 },
@@ -151,6 +152,7 @@ namespace LearnEF.DataInitializer
                     Title = "Точка соприкосновения",
                     Link = "https://github.com/nuadolos",
                     CreateDate = DateTime.Now,
+                    IsVisible = false,
                     SourceLoreId = 1,
                     UserId = newUser3.Id
                 },
@@ -159,6 +161,7 @@ namespace LearnEF.DataInitializer
                     Title = "Дерево молниеносное",
                     Link = "https://vk.com/audios195148235",
                     CreateDate = DateTime.Now,
+                    IsVisible = false,
                     SourceLoreId = 1,
                     UserId = newUser1.Id
                 },
@@ -271,12 +274,12 @@ namespace LearnEF.DataInitializer
 
             List<Follow> friends = new List<Follow>()
             {
-                new Follow { SentUserId = newUser1.Id, AcceptedUserId = newUser3.Id, MakeFriend = DateTime.Now },
-                new Follow { SentUserId = newUser2.Id, AcceptedUserId = newUser4.Id, MakeFriend = DateTime.Now },
-                new Follow { SentUserId = newUser1.Id, AcceptedUserId = newUser5.Id, MakeFriend = DateTime.Now }
+                new Follow { SubscribeUserId = newUser1.Id, TrackedUserId = newUser3.Id, FollowDate = DateTime.Now },
+                new Follow { SubscribeUserId = newUser2.Id, TrackedUserId = newUser4.Id, FollowDate = DateTime.Now },
+                new Follow { SubscribeUserId = newUser1.Id, TrackedUserId = newUser5.Id, FollowDate = DateTime.Now }
             };
 
-            friends.ForEach(fr => context.Friend.Add(fr));
+            friends.ForEach(fr => context.Follow.Add(fr));
 
             context.SaveChanges();
 

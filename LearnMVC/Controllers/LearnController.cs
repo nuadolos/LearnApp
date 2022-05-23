@@ -9,15 +9,18 @@ namespace LearnMVC.Controllers
 {
     [Authorize]
     [Route("g/{groupId}/l/{action}/{id?}")]
-    public class LearnController : Controller
+    public partial class LearnController : Controller
     {
         /// <summary>
         /// Базовая ссылка для обращения к LearnAPI
         /// </summary>
         private readonly string _baseUrl;
 
-        public LearnController(IConfiguration configuration) =>
+        public LearnController(IConfiguration configuration)
+        {
             _baseUrl = configuration.GetSection("LearnAddress").Value;
+            _documentUrl = configuration.GetSection("LearnDocAddress").Value;
+        }
 
         private async Task<Learn?> GetLearnRecord(int groupId, string email, int id, string action) =>
             await HttpRequestClient.GetRequestAsync<Learn>(_baseUrl, groupId.ToString(), email, id.ToString(), action);

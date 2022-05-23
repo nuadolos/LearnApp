@@ -13,7 +13,7 @@ namespace LearnEF.Repos
     {
         List<User> GetUsersAsync(int noteId);
         Task<List<Note>> GetNotesAsync(string userId);
-        Task<string> OpenAccess(int noteId, string userId, bool canChange);
-        Task<string> BlockAccess(int noteId, string userId);
+        Task<string> OpenAccessAsync(int noteId, string userId, bool canChange);
+        Task<string> BlockAccessAsync(int noteId, string userId);
     }
 }

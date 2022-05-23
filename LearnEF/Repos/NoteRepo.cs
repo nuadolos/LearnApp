@@ -13,7 +13,7 @@ namespace LearnEF.Repos
 {
     public class NoteRepo : BaseRepo<Note>, INoteRepo
     {
-        public async Task<List<Note>> GetUserNotes(string userId) =>
+        public async Task<List<Note>> GetUserNotesAsync(string userId) =>
             await Context.Note.Where(n => n.UserId == userId).ToListAsync();
 
         public async Task<List<SourceLore>> GetSourceLoresAsync() =>

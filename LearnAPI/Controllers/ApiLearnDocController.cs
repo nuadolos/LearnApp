@@ -10,7 +10,7 @@ namespace LearnAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiLearnDocumentsController : ControllerBase
+    public class ApiLearnDocController : ControllerBase
     {
         // Статья о работе с файлами в ASP.NET Core
         // https://docs.microsoft.com/ru-ru/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0
@@ -21,13 +21,14 @@ namespace LearnAPI.Controllers
         private readonly IMapper _mapper;
         private readonly ILearnDocumentsRepo _repo;
 
-        public ApiLearnDocumentsController(ILearnDocumentsRepo repo)
+        public ApiLearnDocController(ILearnDocumentsRepo repo)
         {
             _repo = repo;
 
-            //Игнорирование поля SentUser и AcceptedUser в объекте Friend
+            //Игнорирование поля Learn в объекте LearnDocuments
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<LearnDocuments, LearnDocuments>()
+                .ForMember(x => x.FileContent, opt => opt.Ignore())
                 .ForMember(x => x.Learn, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
@@ -38,24 +39,21 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Learn/{id}")]
-        public async Task<IEnumerable<LearnDocuments>> GetDocumentsAsync([FromRoute] int id) =>
+        public async Task<ActionResult<List<LearnDocuments>>> GetDocumentsAsync([FromRoute] int id) =>
             _mapper.Map<List<LearnDocuments>, List<LearnDocuments>>(await _repo.GetDocumentsAsync(id));
 
-        /// <summary>
-        /// Запрос на получение конкретного документа
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Follow>> GetDocumentAsync([FromRoute] int id)
+        public async Task<ActionResult<LearnDocuments>> GetDocumentAsync([FromRoute] int id)
         {
-            var learnDoc = await _repo.GetRecordAsync(id);
+            var doc = await _repo.GetRecordAsync(id);
 
-            if (learnDoc != null)
-                return Ok(learnDoc);
+            if (doc == null)
+                return BadRequest(new ValidateError("Искомый документ отсутствует"));
 
-            return NotFound(new ValidateError("Нет данных о документе"));
+            return Ok(doc);
         }
+            
+
 
         /// <summary>
         /// Запрос на прикрепление документа к материалу
@@ -65,14 +63,10 @@ namespace LearnAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDocumentAsync([FromBody] LearnDocuments learnDoc)
         {
-            try
-            {
-                await _repo.AddAsync(learnDoc);
-            }
-            catch (DbMessageException ex)
-            {
-                return BadRequest(new ValidateError(ex.Message));
-            }
+            string result = await _repo.LoadAsync(learnDoc);
+
+            if (result != string.Empty)
+                return BadRequest(new ValidateError(result));
 
             return Ok();
         }
@@ -83,20 +77,17 @@ namespace LearnAPI.Controllers
         /// <param name="id"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        [HttpDelete("{id}/{timestamp}")]
-        public async Task<IActionResult> RemoveFriendAsync([FromRoute] int id, [FromRoute] string timestamp)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveFriendAsync([FromRoute] int id)
         {
-            if (!timestamp.StartsWith("\""))
-                timestamp = $"\"{timestamp}\"";
+            var doc = await _repo.GetRecordAsync(id);
 
-            if (timestamp.Contains("%2F"))
-                timestamp = timestamp.Replace("%2F", "/");
-
-            var ts = JsonConvert.DeserializeObject<byte[]>(timestamp);
+            if (doc == null)
+                return BadRequest(new ValidateError("Искомый документ отсутствует"));
 
             try
             {
-                await _repo.DeleteAsync(id, ts);
+                await _repo.DeleteAsync(doc);
             }
             catch (DbMessageException ex)
             {

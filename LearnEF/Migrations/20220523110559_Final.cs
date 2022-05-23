@@ -201,30 +201,30 @@ namespace LearnEF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Friend",
+                name: "Follow",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SentUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AcceptedUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MakeFriend = table.Column<DateTime>(type: "date", nullable: false),
+                    SubscribeUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TrackedUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowDate = table.Column<DateTime>(type: "date", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Friend", x => x.Id);
+                    table.PrimaryKey("PK_Follow", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Friend_AspNetUsers_AcceptedUserId",
-                        column: x => x.AcceptedUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Friend_AspNetUsers_SentUserId",
-                        column: x => x.SentUserId,
+                        name: "FK_Follow_AspNetUsers_SubscribeUserId",
+                        column: x => x.SubscribeUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Follow_AspNetUsers_TrackedUserId",
+                        column: x => x.TrackedUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -271,6 +271,7 @@ namespace LearnEF.Migrations
                     Link = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     CreateDate = table.Column<DateTime>(type: "date", nullable: false),
                     SourceLoreId = table.Column<int>(type: "int", nullable: false),
+                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
@@ -419,7 +420,7 @@ namespace LearnEF.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     LearnId = table.Column<int>(type: "int", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -485,14 +486,14 @@ namespace LearnEF.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Friend_AcceptedUserId",
-                table: "Friend",
-                column: "AcceptedUserId");
+                name: "IX_Follow_SubscribeUserId",
+                table: "Follow",
+                column: "SubscribeUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Friend_SentUserId",
-                table: "Friend",
-                column: "SentUserId");
+                name: "IX_Follow_TrackedUserId",
+                table: "Follow",
+                column: "TrackedUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Group_GroupTypeId",
@@ -576,7 +577,7 @@ namespace LearnEF.Migrations
                 name: "Attach");
 
             migrationBuilder.DropTable(
-                name: "Friend");
+                name: "Follow");
 
             migrationBuilder.DropTable(
                 name: "GroupUser");
