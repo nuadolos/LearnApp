@@ -27,6 +27,9 @@ namespace LearnEF.Repos
         public async Task<Group?> GetGroupAsync(int groupId) =>
             await Context.Group.FirstOrDefaultAsync(g => g.Id == groupId);
 
+        public async Task<GroupUser?> GetGroupUserAsync(int groupId, string userId) =>
+            await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupId == groupId && gu.UserId == userId);
+
         public async Task<Learn?> GetLearnAsync(int learnId) =>
             await Context.Learn.FirstOrDefaultAsync(l => l.Id == learnId);
 
@@ -78,8 +81,10 @@ namespace LearnEF.Repos
                 return "Искомое задание отсутствует";
 
             var learnDocs = Context.LearnDocuments.Where(ld => ld.LearnId == learn.Id);
+            var attaches = Context.Attaches.Where(at => at.LearnId == learn.Id);
 
             Context.LearnDocuments.RemoveRange(learnDocs);
+            Context.Attaches.RemoveRange(attaches);
 
             try
             {

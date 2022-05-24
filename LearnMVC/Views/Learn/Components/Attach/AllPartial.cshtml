@@ -1,0 +1,50 @@
+﻿@using LearnEF.Entities
+@model IEnumerable<Attach>
+
+@{
+    ViewData["Title"] = "Список";
+}
+
+<h1>Список пользователей, выполнившие задание</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <label>Пользователь</label>
+            </th>
+            <th>
+                <label>Дата сдачи</label>
+            </th>
+            <th>
+                <label>Оценка</label>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {  
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.AttachmentDate)
+                </td>
+                <td>
+                    <form asp-action="UpdateRating" asp-controller="Learn"
+                        asp-route-id="@item.Id" asp-route-learnId="@item.LearnId">
+                        <div class="form-group">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input name="rating" class="form-control mb-4" value="@item.Rating"/>
+                            <label class="control-label fs-4">/5</label>
+                        </div>
+
+                        <input type="submit" value="Поставить" class="btn btn-primary"/>
+                    </form>
+                </td>
+            </tr>
+        } 
+    </tbody>
+</table>

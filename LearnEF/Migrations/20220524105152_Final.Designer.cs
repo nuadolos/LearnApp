@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEF.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220523110559_Final")]
+    [Migration("20220524105152_Final")]
     partial class Final
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,14 @@ namespace LearnEF.Migrations
                     b.Property<byte[]>("FileContent")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("LearnId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Rating")
                         .IsRequired()
                         .HasColumnType("int");
 

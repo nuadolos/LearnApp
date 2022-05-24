@@ -32,6 +32,7 @@ builder.Services.AddScoped<IFollowRepo, FollowRepo>();
 builder.Services.AddScoped<INoteRepo, NoteRepo>();
 builder.Services.AddScoped<IGroupUserRepo, GroupUserRepo>();
 builder.Services.AddScoped<ILearnDocumentsRepo, LearnDocumentsRepo>();
+builder.Services.AddScoped<IAttachRepo, AttachRepo>();
 
 #endregion
 

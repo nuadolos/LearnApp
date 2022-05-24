@@ -11,9 +11,6 @@ namespace LearnEF.Entities
     public partial class Learn
     {
         [NotMapped]
-        public string? LoreName { get; set; }
-
-        [NotMapped]
-        public string? ShareUserName { get; set; }
+        public string? UserRoleName { get; set; }
     }
 }

@@ -23,6 +23,7 @@ namespace LearnMVC.Controllers
         {
             _baseUrl = configuration.GetSection("LearnAddress").Value;
             _documentUrl = configuration.GetSection("LearnDocAddress").Value;
+            _attachUrl = configuration.GetSection("AttachAddress").Value;
         }
 
         private async Task<Learn?> GetLearnRecord(int groupId, string email, int id, string action) =>

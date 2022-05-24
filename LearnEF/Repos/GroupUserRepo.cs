@@ -38,6 +38,30 @@ namespace LearnEF.Repos
             return groupUsers;
         }
 
+        public async Task<string> UserRoleInGroup(int groupId, string userId)
+        {
+            var groupUser = await Context.GroupUser.FirstOrDefaultAsync(
+                gu => gu.GroupId == groupId && gu.UserId == userId);
+
+            if (groupUser == null)
+            {
+                var creator = await Context.Group.FirstOrDefaultAsync(
+                    g => g.Id == groupId && g.UserId == userId);
+
+                if (creator != null)
+                    return "Администратор";
+                else
+                    return string.Empty;
+            }
+
+            return groupUser.GroupRoleId switch
+            {
+                1 => "Студент",
+                2 => "Преподаватель",
+                _ => "Общий"
+            };
+        }
+
         public async Task<string> JoinOpenGroupAsync(int groupId, string userId)
         {
             var group = await Context.Group.FirstOrDefaultAsync(g => g.Id == groupId);

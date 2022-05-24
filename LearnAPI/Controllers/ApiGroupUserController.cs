@@ -44,15 +44,20 @@ namespace LearnAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GroupUser>> GetGroupUserAsync([FromRoute] int id)
+        [HttpGet("{email}/{groupId}")]
+        public async Task<ActionResult<GroupRole>> GetUserRoleAsync([FromRoute] string email, [FromRoute] int groupId)
         {
-            var groupUser = await _repo.GetRecordAsync(id);
+            User user = await _userManager.FindByEmailAsync(email);
 
-            if (groupUser != null)
-                return Ok(groupUser);
+            if (user == null)
+                return NotFound(new ValidateError("Пользователь не найден"));
 
-            return NotFound(new ValidateError("Нет данных о пользователе конкретной группы"));
+            string result = await _repo.UserRoleInGroup(groupId, user.Id);
+
+            if (result == string.Empty)
+                return BadRequest(new ValidateError("У вас отсутствует роль в группе"));
+
+            return new GroupRole { Name = result };
         }
 
         /// <summary>

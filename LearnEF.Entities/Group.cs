@@ -56,5 +56,8 @@ namespace LearnEF.Entities
 
         [InverseProperty(nameof(Group))]
         public List<GroupUser>? GroupUser { get; } = new List<GroupUser>();
+
+        [InverseProperty(nameof(Group))]
+        public List<Learn>? Learn { get; } = new List<Learn>();
     }
 }

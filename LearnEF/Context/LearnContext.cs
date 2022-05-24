@@ -23,6 +23,7 @@ namespace LearnEF.Context
         public DbSet<Entities.Note> Note { get; set; }
         public DbSet<Entities.ShareNote> ShareNote { get; set; }
         public DbSet<Entities.Learn> Learn { get; set; }
+        public DbSet<Entities.Attach> Attaches { get; set; }
         public DbSet<Entities.LearnDocuments> LearnDocuments { get; set; }
         public DbSet<Entities.Follow> Follow { get; set; }
         public DbSet<Entities.Group> Group { get; set; }

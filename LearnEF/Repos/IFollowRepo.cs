@@ -16,5 +16,6 @@ namespace LearnEF.Repos
         Task<bool> IsFollowingAsync(string subUserId, string trackUserId);
         Task<string> FollowAsync(string subUserId, string trUserId);
         Task<string> UnfollowAsync(string subUserId, string trUserId);
+        Task<string> DeleteFullDataUserAsync(string userId);
     }
 }

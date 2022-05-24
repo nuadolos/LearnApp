@@ -25,11 +25,12 @@ namespace LearnEF.Repos
         public async Task<string> LoadAsync(LearnDocuments document)
         {
             var learnDoc = await Context.LearnDocuments.FirstOrDefaultAsync(
-                ld => ld.Name == document.Name && ld.FileContent.Length == document.FileContent.Length);
+                ld => ld.LearnId == document.LearnId && ld.Name == document.Name 
+                    && ld.FileContent.Length == document.FileContent.Length);
 
             if (learnDoc != null)
                 return "Этот файл уже был загружен";
-
+            
             try
             {
                 await AddAsync(document);

@@ -116,7 +116,6 @@ namespace LearnAPI.Controllers
         {
             User user = await _userManager.FindByEmailAsync(email);
 
-            note.CreateDate = DateTime.Now;
             note.UserId = user.Id;
 
             try

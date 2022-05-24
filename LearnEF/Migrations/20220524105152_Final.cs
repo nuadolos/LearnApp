@@ -394,6 +394,8 @@ namespace LearnEF.Migrations
                     LearnId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AttachmentDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },

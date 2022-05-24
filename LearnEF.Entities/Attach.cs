@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace LearnEF.Entities
 {
     [Table("Attach")]
-    public class Attach : EntityBase
+    public partial class Attach : EntityBase
     {
         [Required]
         [ForeignKey(nameof(LearnId))]
@@ -21,9 +21,17 @@ namespace LearnEF.Entities
         [ForeignKey(nameof(UserId))]
         public string? UserId { get; set; }
 
+        [Display(Name = "День сдачи")]
         [Required]
         [Column(TypeName = "date")]
         public DateTime? AttachmentDate { get; set; }
+
+        [Display(Name = "Оценка")]
+        [Required]
+        public int? Rating { get; set; }
+
+        [Display(Name = "Имя файла")]
+        public string? FileName { get; set; }
 
         public byte[]? FileContent { get; set; }
 

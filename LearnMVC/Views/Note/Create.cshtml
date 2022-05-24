@@ -9,6 +9,8 @@
 <div class="row">
     <div class="col-md-4 mt-5">
         <form asp-action="Create">
+            <input type="hidden" asp-for="CreateDate" value="@DateTime.Now"/>
+            <input type="hidden" asp-for="UserId" value="1"/>
             @Html.EditorForModel("Note")
             <div class="form-group mt-4">
                 <input type="submit" value="Создать" class="btn btn-primary" />

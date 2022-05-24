@@ -69,6 +69,20 @@ namespace LearnAPI.Controllers
 
             User user = await _userManager.FindByNameAsync(email);
 
+            var groupUser = await _repo.GetGroupUserAsync(group.Id, user.Id);
+
+            if (groupUser == null)
+                learn.UserRoleName = "Создатель";
+            else
+            {
+                learn.UserRoleName = groupUser.GroupRoleId switch
+                {
+                    1 => "Студент",
+                    2 => "Учитель",
+                    _ => "Общий"
+                };
+            }
+
             // Определяет, какое действие было вызвано
             switch (act)
             {

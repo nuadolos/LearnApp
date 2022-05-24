@@ -1,4 +1,5 @@
-﻿using LearnEF.Entities.ErrorModel;
+﻿using LearnEF.Context;
+using LearnEF.Entities.ErrorModel;
 using LearnEF.Entities.IdentityModel;
 using LearnEF.Repos;
 using Microsoft.AspNetCore.Identity;
@@ -121,6 +122,9 @@ namespace LearnAPI.Controllers
 
             if (user == null)
                 return BadRequest(new ValidateError("Пользователь не найден"));
+
+            // Удаляет все данные, связанные с пользователем
+            await _repo.DeleteFullDataUserAsync(user.Id);
 
             // Удаляет учетную запись пользователя
             var result = await _userManager.DeleteAsync(user);

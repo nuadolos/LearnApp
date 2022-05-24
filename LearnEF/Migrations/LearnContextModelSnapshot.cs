@@ -37,7 +37,14 @@ namespace LearnEF.Migrations
                     b.Property<byte[]>("FileContent")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("LearnId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Rating")
                         .IsRequired()
                         .HasColumnType("int");
 

@@ -86,5 +86,79 @@ namespace LearnEF.Repos
 
             return string.Empty;
         }
+
+        public async Task<string> DeleteFullDataUserAsync(string userId)
+        {
+            var subUser = Context.Follow.Where(f => f.SubscribeUserId == userId);
+            var trackUser = Context.Follow.Where(f => f.TrackedUserId == userId);
+            var shareNote = Context.ShareNote.Where(sn => sn.UserId == userId);
+            var attach = Context.Attaches.Where(at => at.UserId == userId);
+            var groupUser = Context.GroupUser.Where(at => at.UserId == userId);
+
+            Context.Follow.RemoveRange(subUser);
+            Context.Follow.RemoveRange(trackUser);
+            Context.ShareNote.RemoveRange(shareNote);
+            Context.Attaches.RemoveRange(attach);
+            Context.GroupUser.RemoveRange(groupUser);
+
+            var learn = Context.Learn
+                .Include(l => l.LearnDocuments)
+                .Include(l => l.Attach)
+                .Where(l => l.UserId == userId);
+
+            if (learn != null)
+            {
+                foreach (var item in learn)
+                {
+                    Context.LearnDocuments.RemoveRange(item.LearnDocuments);
+                    Context.Attaches.RemoveRange(item.Attach);
+                }
+            }
+
+            try
+            {
+                await SaveChangesAsync();
+
+                Context.Learn.RemoveRange(learn);
+
+                await SaveChangesAsync();
+
+                var group = Context.Group
+                    .Include(g => g.Learn)
+                    .Include(g => g.GroupUser)
+                    .Where(g => g.UserId == userId);
+
+                foreach (var item in group)
+                {
+                    Context.Learn.RemoveRange(item.Learn);
+                    Context.GroupUser.RemoveRange(item.GroupUser);
+                }
+
+                await SaveChangesAsync();
+
+                Context.Group.RemoveRange(group);
+
+                var note = Context.Note
+                    .Include(g => g.ShareNote)
+                    .Where(g => g.UserId == userId);
+
+                foreach (var item in note)
+                {
+                    Context.ShareNote.RemoveRange(item.ShareNote);
+                }
+
+                await SaveChangesAsync();
+
+                Context.Note.RemoveRange(note);
+
+                await SaveChangesAsync();
+            }
+            catch (DbMessageException ex)
+            {
+                return ex.Message;
+            }
+
+            return string.Empty;
+        }
     }
 }

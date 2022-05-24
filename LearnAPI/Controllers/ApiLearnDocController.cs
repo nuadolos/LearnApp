@@ -34,7 +34,7 @@ namespace LearnAPI.Controllers
         }
 
         /// <summary>
-        /// Запрос на получение всех документов конкретного материала
+        /// Запрос на получение всех документов конкретного задания
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -42,6 +42,11 @@ namespace LearnAPI.Controllers
         public async Task<ActionResult<List<LearnDocuments>>> GetDocumentsAsync([FromRoute] int id) =>
             _mapper.Map<List<LearnDocuments>, List<LearnDocuments>>(await _repo.GetDocumentsAsync(id));
 
+        /// <summary>
+        /// Запрос на получение конкретного документа
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<LearnDocuments>> GetDocumentAsync([FromRoute] int id)
         {
@@ -54,7 +59,7 @@ namespace LearnAPI.Controllers
         }
 
         /// <summary>
-        /// Запрос на прикрепление документа к материалу
+        /// Запрос на прикрепление документа к заданию
         /// </summary>
         /// <param name="learnDoc"></param>
         /// <returns></returns>
