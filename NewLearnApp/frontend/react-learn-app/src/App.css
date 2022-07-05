@@ -1,0 +1,18 @@
+.app {
+  box-sizing: border-box;
+}
+
+.note-enter {
+  opacity: 0;
+}
+.note-enter-active {
+  opacity: 1;
+  transition: opacity 1s;
+}
+.note-exit {
+  opacity: 1;
+}
+.note-exit-active {
+  opacity: 0;
+  transition: opacity 1s;
+}

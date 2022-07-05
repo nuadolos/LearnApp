@@ -1,0 +1,41 @@
+﻿@using LearnEF.Entities.WebModel
+@model OpenAccessNote
+
+@{
+    ViewData["Title"] = "Поделиться заметкой";
+}
+
+<h3>Предоставьте доступ пользователю</h3>
+
+<div class="row">
+    <div class="col-md-4 mt-5">
+        <form asp-action="ToOpenAccess">
+            <input type="hidden" asp-for="NoteId"/>
+            <hr/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mt-3">
+                <label asp-for="Email" class="control-label fs-4"></label>
+                <input placeholder="Введите email" asp-for="Email" class="form-control mt-2"/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <label asp-for="CanChange" class="control-label fs-4"></label>
+                <input asp-for="CanChange"/>
+                <span asp-validation-for="CanChange" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Поделиться" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Details" asp-route-id="@Model.NoteId">Назад к заметке</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
