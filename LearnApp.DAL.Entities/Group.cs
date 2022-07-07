@@ -1,4 +1,5 @@
 ﻿using LearnApp.DAL.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("Group")]
+    [Table("Groups")]
+    [Index(nameof(InviteCode), nameof(AdminCode), IsUnique = true)]
     public partial class Group : EntityBase
     {
-        [StringLength(50)]
+        [StringLength(100)]
         public string Name { get; set; } = null!;
 
-        [StringLength(1000)]
         public string? Description { get; set; }
 
-        public Guid CodeAdmin { get; set; }
+        public Guid InviteCode { get; set; }
 
-        public Guid CodeInvite { get; set; }
+        public Guid AdminCode { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime CreateDate { get; set; }
@@ -38,9 +39,22 @@ namespace LearnApp.DAL.Entities
         public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Group))]
-        public ICollection<GroupUser>? GroupUsers { get; } = new HashSet<GroupUser>();
+        public ICollection<GroupUser> GroupUsers { get; } = new HashSet<GroupUser>();
 
         [InverseProperty(nameof(Group))]
-        public ICollection<Learn>? Learns { get; } = new HashSet<Learn>();
+        public ICollection<Learn> Learns { get; } = new HashSet<Learn>();
+
+        public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Group>(entity =>
+            {
+                entity.Property(pr => pr.InviteCode)
+                    .HasDefaultValueSql("(newid())");
+                entity.Property(pr => pr.AdminCode)
+                    .HasDefaultValueSql("(newid())");
+            });
+
+            return modelBuilder;
+        }
     }
 }

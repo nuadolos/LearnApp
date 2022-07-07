@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("Attach")]
+    [Table("Attaches")]
     public partial class Attach : EntityBase
     {
         public string FileName { get; set; }
@@ -21,8 +21,7 @@ namespace LearnApp.DAL.Entities
 
         public int Rating { get; set; }
 
-
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime AttachmentDate { get; set; }
 
         public Guid LearnGuid { get; set; }
@@ -40,10 +39,11 @@ namespace LearnApp.DAL.Entities
                 entity.HasOne(e => e.Learn)
                     .WithMany(e => e.Attaches)
                     .HasForeignKey(fk => fk.LearnGuid);
-
                 entity.HasOne(e => e.User)
                     .WithMany(e => e.Attaches)
                     .HasForeignKey(fk => fk.UserGuid);
+                entity.Property(pr => pr.AttachmentDate)
+                    .HasDefaultValueSql("(getdate())");
             });
 
             return modelBuilder;

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("ShareNote")]
+    [Table("ShareNotes")]
     public class ShareNote : EntityBase
     {
         [ForeignKey(nameof(NoteGuid))]

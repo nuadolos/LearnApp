@@ -1,4 +1,5 @@
 ﻿using LearnApp.DAL.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("Follow")]
-    public class Follow : EntityBase
+    [Table("Followers")]
+    public class Follower : EntityBase
     {
         [ForeignKey(nameof(SubscribeUserGuid))]
         public Guid SubscribeUserGuid { get; set; }
@@ -20,10 +21,20 @@ namespace LearnApp.DAL.Entities
         [ForeignKey(nameof(TrackedUserGuid))]
         public Guid TrackedUserGuid { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime FollowDate { get; set; }
 
         public User SubscribeUser { get; set; }
         public User TrackedUser { get; set; }
+
+        public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Follower>(entity =>
+            {
+                entity.Property(pr => pr.FollowDate)
+                    .HasDefaultValueSql("(getdate())");
+            });
+
+            return modelBuilder;
+        }
     }
 }

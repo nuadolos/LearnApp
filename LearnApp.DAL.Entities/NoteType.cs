@@ -1,4 +1,5 @@
 ﻿using LearnApp.DAL.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,10 +12,12 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("NoteType")]
+    [Table("NoteTypes")]
+    [Index(nameof(Name), IsUnique = true)]
     public partial class NoteType : EntityBase
     {
-        [StringLength(20)]
+        [Required]
+        [StringLength(50)]
         public string Name { get; set; }
 
         [InverseProperty(nameof(NoteType))]

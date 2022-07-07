@@ -1,4 +1,5 @@
 ﻿using LearnApp.DAL.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,19 +11,18 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("Learn")]
+    [Table("Learns")]
     public partial class Learn : EntityBase
     {
-        [StringLength(100)]
+        [StringLength(150)]
         public string Title { get; set; } = null!;
 
-        [StringLength(600)]
         public string? Description { get; set; }
 
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime CreateDate { get; set; }
 
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime Deadline { get; set; }
 
         [ForeignKey(nameof(UserGuid))]
@@ -40,5 +40,16 @@ namespace LearnApp.DAL.Entities
 
         [InverseProperty(nameof(Learn))]
         public ICollection<Attach> Attaches { get; } = new HashSet<Attach>();
+
+        public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Learn>(entity =>
+            {
+                entity.Property(pr => pr.CreateDate)
+                    .HasDefaultValueSql("(getdate())");
+            });
+
+            return modelBuilder;
+        }
     }
 }

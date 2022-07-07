@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
+    [Table("Users")]
+    [Index(nameof(Login), nameof(Salt), IsUnique = true)]
     public partial class User : EntityBase
     {
         [StringLength(50)]
@@ -31,11 +33,19 @@ namespace LearnApp.DAL.Entities
         [StringLength(40)]
         public string Name { get; set; } = null!;
 
+        [StringLength(40)]
+        public string Middlename { get; set; } = null!;
+
         [StringLength(6)]
         public string? Code { get; set; }
         public DateTime? CodeTimeBlock { get; set; }
 
+        [ForeignKey(nameof(UserRoleGuid))]
+        public Guid UserRoleGuid { get; set; }
+
         #region Navigation props
+
+        public UserRole UserRole { get; set; } = null!;
 
         [InverseProperty(nameof(User))]
         public ICollection<Learn> Learns { get; set; } = new HashSet<Learn>();
@@ -55,11 +65,11 @@ namespace LearnApp.DAL.Entities
         [InverseProperty(nameof(User))]
         public ICollection<GroupUser> GroupUsers { get; set; } = new HashSet<GroupUser>();
 
-        [InverseProperty("SubscribeUsers")]
-        public ICollection<Follow> SubscribeUsers { get; set; } = new HashSet<Follow>();
+        [InverseProperty("SubscribeUser")]
+        public ICollection<Follower> SubscribeUsers { get; set; } = new HashSet<Follower>();
 
-        [InverseProperty("TrackedUsers")]
-        public ICollection<Follow> TrackedUsers { get; set; } = new HashSet<Follow>();
+        [InverseProperty("TrackedUser")]
+        public ICollection<Follower> TrackedUsers { get; set; } = new HashSet<Follower>();
 
         #endregion
     }

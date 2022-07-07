@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("GroupUser")]
+    [Table("GroupUsers")]
     public class GroupUser : EntityBase
     {
         [ForeignKey(nameof(GroupGuid))]

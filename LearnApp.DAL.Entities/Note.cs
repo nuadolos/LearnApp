@@ -1,4 +1,5 @@
 ﻿using LearnApp.DAL.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,34 +10,43 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL.Entities
 {
-    [Table("Note")]
+    [Table("Notes")]
     public partial class Note : EntityBase
     {
-        [StringLength(100)]
+        [StringLength(150)]
         public string Title { get; set; } = null!;
 
-        [StringLength(600)]
+        //[Column(TypeName = "nvarchar(MAX)")]
         public string? Description { get; set; }
 
-        [StringLength(1000)]
         public string Link { get; set; } = null!;
 
-        [Column(TypeName = "date")]
         public DateTime CreateDate { get; set; }
 
-        [ForeignKey(nameof(SourceLoreGuid))]
-        public Guid SourceLoreGuid { get; set; }
-
         public bool IsVisible { get; set; }
+
+        [ForeignKey(nameof(NoteTypeGuid))]
+        public Guid NoteTypeGuid { get; set; }
 
         [ForeignKey(nameof(UserGuid))]
         public Guid UserGuid { get; set; }
 
         public User User { get; set; } = null!;
 
-        public NoteType SourceLore { get; set; } = null!;
+        public NoteType NoteType { get; set; } = null!;
 
         [InverseProperty(nameof(Note))]
-        public ICollection<ShareNote>? ShareNotes { get; } = new HashSet<ShareNote>();
+        public ICollection<ShareNote> ShareNotes { get; } = new HashSet<ShareNote>();
+
+        public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Note>(entity =>
+            {
+                entity.Property(pr => pr.CreateDate)
+                    .HasDefaultValueSql("(getdate())");
+            });
+
+            return modelBuilder;
+        }
     }
 }

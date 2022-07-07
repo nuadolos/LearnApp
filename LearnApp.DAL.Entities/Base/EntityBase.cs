@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-#nullable disable
 
 namespace LearnApp.DAL.Entities.Base
 {
+    [Index(nameof(Guid), IsUnique = true)]
     public class EntityBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Guid { get; set; }
         [Timestamp]
-        public byte[] Timestamp { get; set; }
+        public byte[]? Timestamp { get; set; }
     }
 }
