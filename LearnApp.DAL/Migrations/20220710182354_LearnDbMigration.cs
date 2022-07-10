@@ -105,14 +105,12 @@ namespace LearnApp.DAL.Migrations
                         name: "FK_Followers_Users_SubscribeUserGuid",
                         column: x => x.SubscribeUserGuid,
                         principalTable: "Users",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Guid");
                     table.ForeignKey(
                         name: "FK_Followers_Users_TrackedUserGuid",
                         column: x => x.TrackedUserGuid,
                         principalTable: "Users",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Guid");
                 });
 
             migrationBuilder.CreateTable(
@@ -124,7 +122,7 @@ namespace LearnApp.DAL.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InviteCode = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
                     AdminCode = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
-                    CreateDate = table.Column<DateTime>(type: "date", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "date", nullable: false, defaultValueSql: "(getdate())"),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     GroupTypeGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -138,13 +136,13 @@ namespace LearnApp.DAL.Migrations
                         column: x => x.GroupTypeGuid,
                         principalTable: "GroupTypes",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Groups_Users_UserGuid",
                         column: x => x.UserGuid,
                         principalTable: "Users",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,7 +167,7 @@ namespace LearnApp.DAL.Migrations
                         column: x => x.NoteTypeGuid,
                         principalTable: "NoteTypes",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notes_Users_UserGuid",
                         column: x => x.UserGuid,
@@ -196,19 +194,18 @@ namespace LearnApp.DAL.Migrations
                         column: x => x.GroupRoleGuid,
                         principalTable: "GroupRoles",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GroupUsers_Groups_GroupGuid",
                         column: x => x.GroupGuid,
                         principalTable: "Groups",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GroupUsers_Users_UserGuid",
                         column: x => x.UserGuid,
                         principalTable: "Users",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Guid");
                 });
 
             migrationBuilder.CreateTable(
@@ -237,8 +234,7 @@ namespace LearnApp.DAL.Migrations
                         name: "FK_Learns_Users_UserGuid",
                         column: x => x.UserGuid,
                         principalTable: "Users",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Guid");
                 });
 
             migrationBuilder.CreateTable(
@@ -258,13 +254,12 @@ namespace LearnApp.DAL.Migrations
                         column: x => x.NoteGuid,
                         principalTable: "Notes",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ShareNotes_Users_UserGuid",
                         column: x => x.UserGuid,
                         principalTable: "Users",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Guid");
                 });
 
             migrationBuilder.CreateTable(
@@ -288,13 +283,12 @@ namespace LearnApp.DAL.Migrations
                         column: x => x.LearnGuid,
                         principalTable: "Learns",
                         principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Attaches_Users_UserGuid",
                         column: x => x.UserGuid,
                         principalTable: "Users",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Guid");
                 });
 
             migrationBuilder.CreateTable(

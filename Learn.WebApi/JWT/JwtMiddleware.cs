@@ -1,9 +1,10 @@
 ﻿using LearnApp.DAL.Repos.IRepos;
+using LearnApp.Helper.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-namespace LearnApp.WebApi.Helper
+namespace LearnApp.WebApi.JWT
 {
     public class JwtMiddleware
     {

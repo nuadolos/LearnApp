@@ -28,7 +28,7 @@ namespace LearnApp.WebApi.Controllers
             //Игнорирование поля Learn в объекте LearnDocuments
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<LearnDoc, LearnDoc>()
-                .ForMember(x => x.FileContent, opt => opt.Ignore())
+                .ForMember(x => x.FilePath, opt => opt.Ignore())
                 .ForMember(x => x.Learn, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
@@ -38,8 +38,8 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("Learn/{id}")]
-        public async Task<ActionResult<List<LearnDoc>>> GetDocumentsAsync([FromRoute] int id) =>
+        [HttpGet("{learnDocGuid}")]
+        public async Task<ActionResult<List<LearnDoc>>> GetDocumentsAsync(Guid learnDocGuid) =>
             _mapper.Map<List<LearnDoc>, List<LearnDoc>>(await _repo.GetDocumentsAsync(id));
 
         /// <summary>

@@ -48,6 +48,8 @@ namespace LearnApp.DAL.Entities
         {
             modelBuilder.Entity<Group>(entity =>
             {
+                entity.Property(pr => pr.CreateDate)
+                    .HasDefaultValueSql("(getdate())");
                 entity.Property(pr => pr.InviteCode)
                     .HasDefaultValueSql("(newid())");
                 entity.Property(pr => pr.AdminCode)

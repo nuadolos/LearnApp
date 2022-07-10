@@ -2,12 +2,12 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace LearnApp.WebApi.Utils
+namespace LearnApp.Helper.Services
 {
     /// <summary>
     /// Отвечает за сохранность и целостной пароля 
     /// </summary>
-    static public class PasswordSecurity
+    static public class SecurityService
     {
         /// <summary>
         /// Хеширует пароль и возвращает используюмую соль

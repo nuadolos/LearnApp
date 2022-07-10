@@ -2,8 +2,8 @@
 using LearnApp.DAL.Repos.Base;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Context;
-using LearnApp.DAL.Entities.ErrorModel;
 using LearnApp.DAL.Repos.IRepos;
+using LearnApp.DAL.Exceptions;
 
 namespace LearnApp.DAL.Repos
 {
@@ -18,12 +18,12 @@ namespace LearnApp.DAL.Repos
         public async Task<List<Group>> GetVisibleGroupsAsync() =>
             await Context.Group.Where(g => g.IsVisible == true).ToListAsync();
 
-        public async Task<List<Group>> GetUserGroupsAsync(Guid userGuid) =>
-             await Context.Group.Where(g => g.UserGuid == userGuid).ToListAsync();
-
-        public async Task<List<Group>> GetMemberGroupsAsync(Guid userGuid)
+        public async Task<List<Group>> GetUserGroupsAsync(Guid userGuid)
         {
-            List<Group> groups = new List<Group>();
+            List<Group> groups = await Context.Group
+                .Where(g => g.UserGuid == userGuid)
+                .OrderBy(g => g.CreateDate)
+                .ToListAsync();
 
             await Context.GroupUser
                 .Include(gu => gu.Group)
@@ -32,6 +32,12 @@ namespace LearnApp.DAL.Repos
 
             return groups;
         }
+
+        public async Task<Group?> GetGroupAsync(Guid groupGuid, Guid userGuid) =>
+            await Context.Group
+                .Include(g => g.GroupUsers
+                    .FirstOrDefault(gu => gu.UserGuid == userGuid))
+                .FirstOrDefaultAsync(g => g.Guid == groupGuid);
 
         public async Task<bool> IsCreatorAsync(Guid groupGuid, Guid userGuid) =>
             await Context.Group.FirstOrDefaultAsync(

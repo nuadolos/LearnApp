@@ -111,7 +111,9 @@ namespace LearnApp.DAL.Migrations
                         .HasDefaultValueSql("(newid())");
 
                     b.Property<DateTime>("CreateDate")
-                        .HasColumnType("date");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("date")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -519,13 +521,13 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.Learn", "Learn")
                         .WithMany("Attaches")
                         .HasForeignKey("LearnGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
                         .WithMany("Attaches")
                         .HasForeignKey("UserGuid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Learn");
@@ -538,13 +540,13 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.User", "SubscribeUser")
                         .WithMany("SubscribeUsers")
                         .HasForeignKey("SubscribeUserGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "TrackedUser")
                         .WithMany("TrackedUsers")
                         .HasForeignKey("TrackedUserGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("SubscribeUser");
@@ -557,13 +559,13 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.GroupType", "GroupType")
                         .WithMany("Groups")
                         .HasForeignKey("GroupTypeGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
                         .WithMany("Groups")
                         .HasForeignKey("UserGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GroupType");
@@ -576,19 +578,19 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.Group", "Group")
                         .WithMany("GroupUsers")
                         .HasForeignKey("GroupGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.GroupRole", "GroupRole")
                         .WithMany("GroupUsers")
                         .HasForeignKey("GroupRoleGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
                         .WithMany("GroupUsers")
                         .HasForeignKey("UserGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -609,7 +611,7 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
                         .WithMany("Learns")
                         .HasForeignKey("UserGuid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -633,7 +635,7 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.NoteType", "NoteType")
                         .WithMany("Notes")
                         .HasForeignKey("NoteTypeGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
@@ -652,13 +654,13 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.Note", "Note")
                         .WithMany("ShareNotes")
                         .HasForeignKey("NoteGuid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
                         .WithMany("ShareNotes")
                         .HasForeignKey("UserGuid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Note");

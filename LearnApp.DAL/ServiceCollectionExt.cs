@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LearnApp.DAL
 {
-    static public class ServiceCollection
+    static public class ServiceCollectionExt
     {
         public static void AddDALService(this IServiceCollection services, IConfiguration configuration)
         {

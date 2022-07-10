@@ -1,6 +1,6 @@
 ﻿using LearnApp.DAL.Context;
 using LearnApp.DAL.Entities.Base;
-using LearnApp.DAL.Entities.ErrorModel;
+using LearnApp.DAL.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -90,6 +90,8 @@ namespace LearnApp.DAL.Repos.Base
 
         protected async Task<int> SaveChangesAsync()
         {
+            // Изменить сообщение об ошибке
+            //     при добавление логов
             try
             {
                 return await _db.SaveChangesAsync();

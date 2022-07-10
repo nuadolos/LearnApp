@@ -1,6 +1,6 @@
 ﻿using LearnApp.DAL.Context;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Entities.ErrorModel;
+using LearnApp.DAL.Exceptions;
 using LearnApp.DAL.Repos.Base;
 using LearnApp.DAL.Repos.IRepos;
 using Microsoft.EntityFrameworkCore;

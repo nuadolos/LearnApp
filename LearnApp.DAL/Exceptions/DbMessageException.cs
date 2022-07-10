@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.DAL.Entities.ErrorModel
+namespace LearnApp.DAL.Exceptions
 {
     [Serializable]
     public class DbMessageException : Exception

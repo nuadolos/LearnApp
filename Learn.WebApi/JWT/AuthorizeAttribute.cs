@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace LearnApp.WebApi.Helper
+namespace LearnApp.WebApi.JWT
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
@@ -15,8 +15,9 @@ namespace LearnApp.WebApi.Helper
 
             if (user == null)
             {
-                context.Result = new JsonResult(new { message = "Unauthorized" }) {
-                    StatusCode = StatusCodes.Status401Unauthorized 
+                context.Result = new JsonResult(new { message = "Unauthorized" })
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized
                 };
 
                 return;

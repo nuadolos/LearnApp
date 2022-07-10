@@ -5,7 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace LearnApp.WebApi.Helper
+namespace LearnApp.WebApi.JWT
 {
     static public class JwtService
     {
@@ -48,7 +48,7 @@ namespace LearnApp.WebApi.Helper
                     context.Items["User"] = await repo.GetByIdAsync(userId);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }

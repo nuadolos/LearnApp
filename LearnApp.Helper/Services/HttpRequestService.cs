@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 
-namespace LearnApp.Helper
+namespace LearnApp.Helper.Services
 {
     /// <summary>
     /// Отправляет и получает HTTP-запросы через класс HttpClient
     /// </summary>
-    static public class HttpRequestClient
+    static public class HttpRequestService
     {
         /// <summary>
         /// Выполнение запроса на получение данных
@@ -27,9 +27,9 @@ namespace LearnApp.Helper
             }
             else
             {
-                var error = JsonConvert.DeserializeObject<ValidateError>(
+                var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (default, error.Message);
+                return (default, error);
             }
         }
 
@@ -53,9 +53,9 @@ namespace LearnApp.Helper
                 return (true, string.Empty);
             else
             {
-                var error = JsonConvert.DeserializeObject<ValidateError>(
+                var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (false, error.Message);
+                return (false, error);
             }
         }
 
@@ -79,9 +79,9 @@ namespace LearnApp.Helper
                 return (true, string.Empty);
             else
             {
-                var error = JsonConvert.DeserializeObject<ValidateError>(
+                var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (false, error.Message);
+                return (false, error);
             }
         }
 
@@ -105,9 +105,9 @@ namespace LearnApp.Helper
                 return (true, string.Empty);
             else
             {
-                var error = JsonConvert.DeserializeObject<ValidateError>(
+                var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (false, error.Message);
+                return (false, error);
             }
         }
 

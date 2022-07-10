@@ -1,21 +1,17 @@
-using Newtonsoft.Json.Serialization;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Features;
 using LearnApp.DAL.Context;
 using LearnApp.DAL.DataInitializer;
-using LearnApp.DAL.Repos;
-using LearnApp.WebApi.Helper;
 using LearnApp.Helper.EmailService;
-using LearnApp.DAL.Repos.IRepos;
 using LearnApp.DAL;
+using LearnApp.WebApi.JWT;
+using LearnApp.BL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddDALService(builder.Configuration);
+builder.Services.AddBLService();
 
 #region Добавление сервиса для отправки сообщений на эл. почту пользователя
 
@@ -64,7 +60,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    //Извлечение объекта LearnContext, UserManager и RoleManager из контейнера
+    //Извлечение объекта LearnContext из контейнера
     var context = services.GetRequiredService<LearnContext>();
 
     //Вызов инициализатора данных

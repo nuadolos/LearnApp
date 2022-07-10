@@ -2,8 +2,8 @@
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.Base;
 using LearnApp.DAL.Context;
-using LearnApp.DAL.Entities.ErrorModel;
 using LearnApp.DAL.Repos.IRepos;
+using LearnApp.DAL.Exceptions;
 
 namespace LearnApp.DAL.Repos
 {

@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
+using LearnApp.BL.Models;
+using LearnApp.BL.Services;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Entities.ErrorModel;
-using LearnApp.DAL.Entities.WebModel;
 using LearnApp.DAL.Repos.IRepos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -15,17 +13,17 @@ namespace LearnApp.WebApi.Controllers
     public class NoteController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly INoteRepo _repo;
+        private readonly NoteService _service;
 
-        public NoteController(INoteRepo repo)
+        public NoteController(NoteService service)
         {
-            _repo = repo;
+            _service = service;
 
             //Игнорирование ссылочных полей объекта Note
             var config = new MapperConfiguration(
                 cfg => cfg.CreateMap<Note, Note>()
-                .ForMember(x => x.SourceLore, opt => opt.Ignore())
-                .ForMember(x => x.ShareNote, opt => opt.Ignore())
+                .ForMember(x => x.NoteType, opt => opt.Ignore())
+                .ForMember(x => x.ShareNotes, opt => opt.Ignore())
                 .ForMember(x => x.User, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
@@ -33,100 +31,47 @@ namespace LearnApp.WebApi.Controllers
         /// <summary>
         /// Запрос на получение всех заметок конкретного пользователя
         /// </summary>
+        /// <param name="noteGuid"></param>
         /// <returns></returns>
-        [HttpGet("user")]
-        public async Task<IEnumerable<Note>> GetUserLearnsAsync(string id) =>
-            _mapper.Map<List<Note>, List<Note>>(await _repo.GetUserNotesAsync(id));
-
-        /// <summary>
-        /// Запрос на получение конкретной заметки
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="id"></param>
-        /// <param name="act"></param>
-        /// <returns></returns>
-        [HttpGet("{userId}/{id}/{act}")]
-        public async Task<IActionResult> GetNoteAsync(string userId, int id, string act)
-        {
-            var note = await _repo.GetRecordAsync(id);
-
-            if (note == null)
-                return NotFound(new ValidateError("Заметка не найдена"));
-
-            // Определяет, какое действие было вызвано
-            switch (act)
-            {
-                case "Details":
-                    {
-                        // Проверяет, чужой ли пользователь пытается запросить данные
-                        if (note.UserId != userId && !await _repo.SharedWithAsync(note.Id, userId))
-                            return BadRequest(new ValidateError("Вы не имеете доступ к данной заметке"));
-
-                        break;
-                    }
-                case "Edit":
-                    {
-                        // Проверяет, запрашивает ли автор заметки
-                        if (note.UserId != userId)
-                        {
-                            // Проверяет, имеет ли доступ к редактированию
-                            // данной заметки чужой пользователь
-                            if (!await _repo.CanChangeNoteAsync(note.Id, userId))
-                                return BadRequest(new ValidateError("Вы не имеете доступ к редактированию данной заметки"));
-                        }
-
-                        break;
-                    }
-                case "Delete":
-                    {
-                        // Проверяет, запрашивает ли автор заметку
-                        if (note.UserId != userId)
-                            return BadRequest(new ValidateError("Доступ к удалению данного материала имеет только автор или создатель группы"));
-
-                        break;
-                    }
-                default:
-                    return BadRequest(new ValidateError("Запрос не имеет действия"));
-            }
-
-            return Ok(_mapper.Map<Note, Note>(note));
-        }
+        [HttpGet("{noteGuid}")]
+        public async Task<IEnumerable<Note>> GetUserLearnsAsync(Guid noteGuid) =>
+            _mapper.Map<List<Note>, List<Note>>(await _service.GetUserNotesAsync(noteGuid));
 
         /// <summary>
         /// Запрос на добавление новой заметки
         /// </summary>
-        /// <param name="note"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateSourceAsync(Note note)
+        public async Task<IActionResult> CreateSourceAsync(RequestNoteModel model)
         {
             try
             {
-                await _repo.AddAsync(note);
+                return Ok(_mapper.Map<Note, Note>(await _service.CreateNoteAsync(model)));
             }
-            catch (DbMessageException ex)
+            catch (Exception ex)
             {
-                return BadRequest(new ValidateError(ex.Message));
+                // add logger test?
+                return BadRequest(ex.Message);
             }
-            
-            return Ok(_mapper.Map<Note, Note>(note));
         }
 
         /// <summary>
         /// Запрос на изменение заметки
         /// </summary>
-        /// <param name="note"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPut]
-        public async Task<IActionResult> UpdateLearnAsync(Note note)
+        [HttpPut("{noteGuid}")]
+        public async Task<IActionResult> UpdateLearnAsync(Guid noteGuid, RequestNoteModel model)
         {
             try
             {
-                await _repo.UpdateAsync(note);
+                await _service.UpdateNoteAsync(noteGuid, model);
             }
-            catch (DbMessageException ex)
+            catch (Exception ex)
             {
-                return BadRequest(new ValidateError(ex.Message));
+                // add logger test?
+                return BadRequest(ex.Message);
             }
 
             return NoContent();
@@ -135,14 +80,22 @@ namespace LearnApp.WebApi.Controllers
         /// <summary>
         /// Запрос на удаление заметки
         /// </summary>
-        /// <param name="note"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpDelete]
-        public async Task<IActionResult> RemoveSourceAsync(DeleteModel note)
+        public async Task<IActionResult> RemoveSourceAsync(RequestRemoveDataModel model)
         {
-            string result = await _repo.DeleteNoteAsync(note.Id, note.Timestamp);
+            try
+            {
+                await _service.RemoveNoteAsync(model);
+            }
+            catch (Exception ex)
+            {
+                // add logger test?
+                return BadRequest(ex.Message);
+            }
 
-            return result == string.Empty ? NoContent() : BadRequest(new ValidateError(result));
+            return NoContent();
         }
     }
 }

@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using LearnApp.DAL.Entities.IdentityModel;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Entities.ErrorModel;
-using LearnApp.WebApi.Utils;
-using LearnApp.WebApi.Helper;
 using LearnApp.Helper.EmailService;
 using LearnApp.DAL.Repos.IRepos;
+using LearnApp.BL.Services;
+using LearnApp.BL.Models;
+using LearnApp.WebApi.JWT;
 
 namespace LearnApp.WebApi.Controllers
 {
@@ -16,13 +15,13 @@ namespace LearnApp.WebApi.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IUserRepo _repo;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
+        private readonly AccountService _service;
 
-        public AccountController(IUserRepo repo, IConfiguration configuration, IEmailSender emailSender) 
+        public AccountController(AccountService service, IConfiguration configuration, IEmailSender emailSender) 
         {
-            _repo = repo;
+            _service = service;
             _emailSender = emailSender;
             _configuration = configuration;
         }
@@ -33,25 +32,16 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(RegistModel model)
+        public async Task<IActionResult> RegisterAsync(RequestRegisterModel model)
         {
-            User user = new User {
-                Id = Guid.NewGuid().ToString(),
-                Login = model.Login,
-                Surname = model.Surname,
-                Name = model.Name
-            };
-
-            user.PasswordHash = PasswordSecurity.PasswordHashing(model.Password, out string salt);
-            user.Salt = salt;
-
             try
             {
-                await _repo.AddAsync(user);
+                await _service.RegisterAsync(model);
             }
-            catch (DbMessageException ex)
+            catch (Exception ex)
             {
-                return BadRequest(new ValidateError(ex.Message));
+                // add logger
+                return BadRequest(ex.Message);
             }
 
             return Ok();
@@ -63,29 +53,22 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginAsync(RequestLoginModel model)
         {
-            var user = await _repo.GetByLoginAsync(model.Login);
-
-            if (user == null)
-                return BadRequest(new ValidateError("Пользователь не найден"));
-
-            // Проверка паролей
-            if (!PasswordSecurity.CheckPassword(user, model.Password))
-                return BadRequest(new ValidateError("Пароль введен неверно"));
+            var user = await _service.LoginAsync(model);
 
             // Генерация JWT-токена
             var token = _configuration.GenerateJwtToken(user);
 
             // Для возращения токена в cookie
-            Response.Cookies.Append("token", token, new CookieOptions
+            Response.Cookies.Append("access_token", token, new CookieOptions
             {
                 // Доступ к cookie недоступен пользователю,
                 // однако будет отправлен в запросе от него автоматически
                 HttpOnly = true
             });
 
-            return Ok(new { id = user.Id });
+            return Ok(new { id = user.Guid });
         }
 
         /// <summary>
@@ -93,17 +76,12 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> LogoutAsync()
         {
             // Удаление токена из cookie
             Response.Cookies.Delete("token");
 
             return await Task.FromResult(Ok());
         }
-
-        [HttpGet]
-        [Authorize(Role = "Владимир")]
-        public async Task<IEnumerable<User>> GetInfoAsync() => 
-            await _repo.GetAllAsync();
     }
 }

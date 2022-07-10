@@ -2,8 +2,8 @@
 using LearnApp.DAL.Repos.Base;
 using LearnApp.DAL.Context;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Entities.ErrorModel;
 using LearnApp.DAL.Repos.IRepos;
+using LearnApp.DAL.Exceptions;
 
 namespace LearnApp.DAL.Repos
 {
@@ -39,49 +39,8 @@ namespace LearnApp.DAL.Repos
             return noteUsers;
         }
 
-        public async Task<string> OpenAccessAsync(Guid noteGuid, Guid userGuid)
-        {
-            var shareNote = await Context.ShareNote.FirstOrDefaultAsync(
+        public async Task<ShareNote?> GetShareNoteAsync(Guid noteGuid, Guid userGuid) =>
+            await Context.ShareNote.FirstOrDefaultAsync(
                 sn => sn.NoteGuid == noteGuid && sn.UserGuid == userGuid);
-
-            if (shareNote != null)
-                return "Вы уже поделились заметкой с этим пользователем";
-
-            shareNote = new ShareNote {
-                NoteGuid = noteGuid,
-                UserGuid = userGuid
-            };
-
-            try
-            {
-                await AddAsync(shareNote);
-            }
-            catch (DbMessageException ex)
-            {
-                return ex.Message;
-            }
-
-            return string.Empty;
-        }
-
-        public async Task<string> BlockAccessAsync(Guid noteGuid, Guid userGuid)
-        {
-            var shareNote = await Context.ShareNote.FirstOrDefaultAsync(
-                sn => sn.NoteGuid == noteGuid && sn.UserGuid == userGuid);
-
-            if (shareNote == null)
-                return "Вы не делились заметкой с этим пользователем";
-
-            try
-            {
-                await DeleteAsync(shareNote);
-            }
-            catch (DbMessageException ex)
-            {
-                return ex.Message;
-            }
-
-            return string.Empty;
-        }
     }
 }
