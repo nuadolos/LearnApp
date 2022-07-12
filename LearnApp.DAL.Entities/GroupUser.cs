@@ -14,17 +14,16 @@ namespace LearnApp.DAL.Entities
     [Table("GroupUsers")]
     public class GroupUser : EntityBase
     {
-        [ForeignKey(nameof(GroupGuid))]
         public Guid GroupGuid { get; set; }
-
-        [ForeignKey(nameof(UserGuid))]
-        public Guid UserGuid { get; set; }
-
-        [ForeignKey(nameof(GroupRoleGuid))]
-        public Guid GroupRoleGuid { get; set; }
-
+        [ForeignKey(nameof(GroupGuid))]
         public Group Group { get; set; }
+
+        public Guid UserGuid { get; set; }
+        [ForeignKey(nameof(UserGuid))]
         public User User { get; set; }
+
+        public Guid GroupRoleGuid { get; set; }
+        [ForeignKey(nameof(GroupRoleGuid))]
         public GroupRole GroupRole { get; set; }
     }
 }

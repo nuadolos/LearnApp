@@ -39,7 +39,7 @@ namespace LearnApp.BL.Services
         public async Task<Group> CreateGroupAsync(RequestGroupModel model)
         {
             Group group = new() {
-                Name = model.Name,
+                Title = model.Name,
                 Description = model.Description,
                 IsVisible = model.IsVisible,
                 GroupTypeGuid = model.GroupTypeGuid,
@@ -68,7 +68,7 @@ namespace LearnApp.BL.Services
             if (group.UserGuid != model.UserGuid)
                 throw new Exception($"Пользователь {model.UserGuid} не является создатель группы {group.Guid}");
 
-            group.Name = model.Name;
+            group.Title = model.Name;
             group.Description = model.Description;
             group.IsVisible = model.IsVisible;
             group.GroupTypeGuid = model.GroupTypeGuid;

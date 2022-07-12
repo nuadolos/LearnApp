@@ -16,14 +16,17 @@ namespace LearnApp.DAL.Entities
     [Index(nameof(Login), nameof(Salt), IsUnique = true)]
     public partial class User : EntityBase
     {
+        [Unicode(false)]
         [StringLength(50)]
         public string Login { get; set; } = null!;
 
         [JsonIgnore]
+        [Unicode(false)]
         [StringLength(450)]
         public string PasswordHash { get; set; } = null!;
         
         [JsonIgnore]
+        [Unicode(false)]
         [StringLength(450)]
         public string Salt { get; set; } = null!;
         
@@ -36,15 +39,15 @@ namespace LearnApp.DAL.Entities
         [StringLength(40)]
         public string Middlename { get; set; } = null!;
 
+        [Unicode(false)]
         [StringLength(6)]
         public string? Code { get; set; }
+
+        [Column(TypeName = "datetime2(0)")]
         public DateTime? CodeTimeBlock { get; set; }
 
-        [ForeignKey(nameof(UserRoleGuid))]
         public Guid UserRoleGuid { get; set; }
-
-        #region Navigation props
-
+        [ForeignKey(nameof(UserRoleGuid))]
         public UserRole UserRole { get; set; } = null!;
 
         [InverseProperty(nameof(User))]
@@ -70,7 +73,5 @@ namespace LearnApp.DAL.Entities
 
         [InverseProperty("TrackedUser")]
         public ICollection<Follower> TrackedUsers { get; set; } = new HashSet<Follower>();
-
-        #endregion
     }
 }

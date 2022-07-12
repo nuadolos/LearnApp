@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LearnApp.DAL.Migrations
 {
-    public partial class LearnDbMigration : Migration
+    public partial class LearnsMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,14 +66,14 @@ namespace LearnApp.DAL.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Login = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Salt = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Login = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    PasswordHash = table.Column<string>(type: "varchar(450)", unicode: false, maxLength: 450, nullable: false),
+                    Salt = table.Column<string>(type: "varchar(450)", unicode: false, maxLength: 450, nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Middlename = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
-                    CodeTimeBlock = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Code = table.Column<string>(type: "varchar(6)", unicode: false, maxLength: 6, nullable: true),
+                    CodeTimeBlock = table.Column<DateTime>(type: "datetime2(0)", nullable: true),
                     UserRoleGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
@@ -95,7 +95,7 @@ namespace LearnApp.DAL.Migrations
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SubscribeUserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TrackedUserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FollowDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
+                    FollowDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false, defaultValueSql: "(getdate())"),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -118,7 +118,7 @@ namespace LearnApp.DAL.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InviteCode = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
                     AdminCode = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
@@ -152,8 +152,8 @@ namespace LearnApp.DAL.Migrations
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "(getdate())"),
+                    Link = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false, defaultValueSql: "(getdate())"),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     NoteTypeGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -215,10 +215,10 @@ namespace LearnApp.DAL.Migrations
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
-                    Deadline = table.Column<DateTime>(type: "datetime", nullable: false),
-                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false, defaultValueSql: "(getdate())"),
+                    Deadline = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
                     GroupGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -228,8 +228,7 @@ namespace LearnApp.DAL.Migrations
                         name: "FK_Learns_Groups_GroupGuid",
                         column: x => x.GroupGuid,
                         principalTable: "Groups",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Guid");
                     table.ForeignKey(
                         name: "FK_Learns_Users_UserGuid",
                         column: x => x.UserGuid,
@@ -267,10 +266,10 @@ namespace LearnApp.DAL.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    AttachmentDate = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "(getdate())"),
+                    FileName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rating = table.Column<byte>(type: "tinyint", nullable: true),
+                    AttachmentDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false, defaultValueSql: "(getdate())"),
                     LearnGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -296,8 +295,8 @@ namespace LearnApp.DAL.Migrations
                 columns: table => new
                 {
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FileName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LearnGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },

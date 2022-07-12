@@ -1,4 +1,5 @@
-﻿using LearnApp.DAL.Entities.Base;
+﻿using LearnApp.DAL.Entities;
+using LearnApp.DAL.Entities.Base;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,18 +21,18 @@ namespace LearnApp.DAL.Context
         public LearnContext(DbContextOptions options) : base(options)
         { }
 
-        public DbSet<Entities.User> User { get; set; }
-        public DbSet<Entities.NoteType> NoteType { get; set; }
-        public DbSet<Entities.Note> Note { get; set; }
-        public DbSet<Entities.ShareNote> ShareNote { get; set; }
-        public DbSet<Entities.Learn> Learn { get; set; }
-        public DbSet<Entities.Attach> Attaches { get; set; }
-        public DbSet<Entities.LearnDoc> LearnDocuments { get; set; }
-        public DbSet<Entities.Follower> Follow { get; set; }
-        public DbSet<Entities.Group> Group { get; set; }
-        public DbSet<Entities.GroupUser> GroupUser { get; set; }
-        public DbSet<Entities.GroupRole> GroupRole { get; set; }
-        public DbSet<Entities.GroupType> GroupType { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<NoteType> NoteType { get; set; }
+        public DbSet<Note> Note { get; set; }
+        public DbSet<ShareNote> ShareNote { get; set; }
+        public DbSet<Learn> Learn { get; set; }
+        public DbSet<Attach> Attaches { get; set; }
+        public DbSet<LearnDoc> LearnDocuments { get; set; }
+        public DbSet<Follower> Follow { get; set; }
+        public DbSet<Group> Group { get; set; }
+        public DbSet<GroupUser> GroupUser { get; set; }
+        public DbSet<GroupRole> GroupRole { get; set; }
+        public DbSet<GroupType> GroupType { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         { }
@@ -44,7 +45,7 @@ namespace LearnApp.DAL.Context
             modelBuilder = Entities.Learn.OnModelCreating(modelBuilder);
             modelBuilder = Entities.Note.OnModelCreating(modelBuilder);
 
-            #region ???
+            #region ForeignKey OnDelete NoAction
 
             modelBuilder.Entity<Entities.Follower>()
                 .HasOne(e => e.SubscribeUser)
@@ -66,45 +67,20 @@ namespace LearnApp.DAL.Context
                 .WithMany(e => e.Attaches)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<Entities.Attach>()
-            //    .HasOne(e => e.Learn)
-            //    .WithMany(e => e.Attaches)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
-            //modelBuilder.Entity<Entities.Note>()
-            //    .HasOne(e => e.NoteType)
-            //    .WithMany(e => e.Notes)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<Entities.ShareNote>()
                 .HasOne(e => e.User)
                 .WithMany(e => e.ShareNotes)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<Entities.Group>()
-            //    .HasOne(e => e.GroupType)
-            //    .WithMany(e => e.Groups)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<Entities.Group>()
-            //    .HasOne(e => e.User)
-            //    .WithMany(e => e.Groups)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Entities.Learn>()
+                .HasOne(e => e.Group)
+                .WithMany(e => e.Learns)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Entities.GroupUser>()
                 .HasOne(e => e.User)
                 .WithMany(e => e.GroupUsers)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            //modelBuilder.Entity<Entities.GroupUser>()
-            //    .HasOne(e => e.Group)
-            //    .WithMany(e => e.GroupUsers)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<Entities.GroupUser>()
-            //    .HasOne(e => e.GroupRole)
-            //    .WithMany(e => e.GroupUsers)
-            //    .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
         }

@@ -15,13 +15,15 @@ namespace LearnApp.DAL.Entities
     [Table("LearnDocs")]
     public class LearnDoc : EntityBase
     {
+        [Required]
+        [StringLength(150)]
         public string FileName { get; set; }
 
+        [Required]
         public string FilePath { get; set; }
 
-        [ForeignKey(nameof(LearnGuid))]
         public Guid LearnGuid { get; set; }
-
+        [ForeignKey(nameof(LearnGuid))]
         public Learn Learn { get; set; }
     }
 }

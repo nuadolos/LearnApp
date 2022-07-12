@@ -14,13 +14,12 @@ namespace LearnApp.DAL.Entities
     [Index(nameof(InviteCode), nameof(AdminCode), IsUnique = true)]
     public partial class Group : EntityBase
     {
-        [StringLength(100)]
-        public string Name { get; set; } = null!;
+        [StringLength(150)]
+        public string Title { get; set; } = null!;
 
         public string? Description { get; set; }
 
         public Guid InviteCode { get; set; }
-
         public Guid AdminCode { get; set; }
 
         [Column(TypeName = "date")]
@@ -28,14 +27,12 @@ namespace LearnApp.DAL.Entities
 
         public bool IsVisible { get; set; }
 
-        [ForeignKey(nameof(GroupTypeGuid))]
         public Guid GroupTypeGuid { get; set; }
-
-        [ForeignKey(nameof(UserGuid))]
-        public Guid UserGuid { get; set; }
-
+        [ForeignKey(nameof(GroupTypeGuid))]
         public GroupType GroupType { get; set; } = null!;
 
+        public Guid UserGuid { get; set; }
+        [ForeignKey(nameof(UserGuid))]
         public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Group))]

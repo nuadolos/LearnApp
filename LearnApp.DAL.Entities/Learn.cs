@@ -19,21 +19,19 @@ namespace LearnApp.DAL.Entities
 
         public string? Description { get; set; }
 
-        [Column(TypeName = "datetime")]
+        [Column(TypeName = "datetime2(0)")]
         public DateTime CreateDate { get; set; }
 
-        [Column(TypeName = "datetime")]
+        [Column(TypeName = "datetime2(0)")]
         public DateTime Deadline { get; set; }
 
-        [ForeignKey(nameof(UserGuid))]
-        public Guid UserGuid { get; set; }
-
-        [ForeignKey(nameof(GroupGuid))]
         public Guid GroupGuid { get; set; }
-
-        public User User { get; set; } = null!;
-
+        [ForeignKey(nameof(GroupGuid))]
         public Group Group { get; set; } = null!;
+
+        public Guid UserGuid { get; set; }
+        [ForeignKey(nameof(UserGuid))]
+        public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Learn))]
         public ICollection<LearnDoc> LearnDocs { get; } = new HashSet<LearnDoc>();

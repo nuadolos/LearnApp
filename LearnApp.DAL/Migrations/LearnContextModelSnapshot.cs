@@ -30,20 +30,23 @@ namespace LearnApp.DAL.Migrations
 
                     b.Property<DateTime>("AttachmentDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("LearnGuid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<byte?>("Rating")
+                        .HasColumnType("tinyint");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -73,7 +76,7 @@ namespace LearnApp.DAL.Migrations
 
                     b.Property<DateTime>("FollowDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<Guid>("SubscribeUserGuid")
@@ -129,15 +132,15 @@ namespace LearnApp.DAL.Migrations
                     b.Property<bool>("IsVisible")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<Guid>("UserGuid")
                         .HasColumnType("uniqueidentifier");
@@ -253,11 +256,11 @@ namespace LearnApp.DAL.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("Deadline")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -297,9 +300,12 @@ namespace LearnApp.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("LearnGuid")
@@ -328,7 +334,7 @@ namespace LearnApp.DAL.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime2(0)")
                         .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Description")
@@ -339,7 +345,8 @@ namespace LearnApp.DAL.Migrations
 
                     b.Property<string>("Link")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
 
                     b.Property<Guid>("NoteTypeGuid")
                         .HasColumnType("uniqueidentifier");
@@ -433,15 +440,17 @@ namespace LearnApp.DAL.Migrations
 
                     b.Property<string>("Code")
                         .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(6)");
 
                     b.Property<DateTime?>("CodeTimeBlock")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Middlename")
                         .IsRequired()
@@ -456,12 +465,14 @@ namespace LearnApp.DAL.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("Salt")
                         .IsRequired()
                         .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(450)");
 
                     b.Property<string>("Surname")
                         .IsRequired()
@@ -605,7 +616,7 @@ namespace LearnApp.DAL.Migrations
                     b.HasOne("LearnApp.DAL.Entities.Group", "Group")
                         .WithMany("Learns")
                         .HasForeignKey("GroupGuid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")

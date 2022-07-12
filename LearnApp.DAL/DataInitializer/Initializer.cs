@@ -126,21 +126,21 @@ namespace LearnApp.DAL.DataInitializer
             List<Group> groups = new List<Group>()
             {
                 new Group {
-                    Name = "TestGroup1",
+                    Title = "TestGroup1",
                     IsVisible = true,
                     GroupType = groupTypes[0],
                     User = users[3]
                 },
 
                 new Group {
-                    Name = "TestGroup2",
+                    Title = "TestGroup2",
                     IsVisible = true,
                     GroupType = groupTypes[1],
                     User = users[0]
                 },
 
                 new Group {
-                    Name = "TestGroup3",
+                    Title = "TestGroup3",
                     IsVisible = false,
                     GroupType = groupTypes[0],
                     User = users[2]

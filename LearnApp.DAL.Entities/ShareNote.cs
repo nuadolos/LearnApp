@@ -8,13 +8,12 @@ namespace LearnApp.DAL.Entities
     [Table("ShareNotes")]
     public class ShareNote : EntityBase
     {
-        [ForeignKey(nameof(NoteGuid))]
         public Guid NoteGuid { get; set; }
-
-        [ForeignKey(nameof(UserGuid))]
-        public Guid UserGuid { get; set; }
-
-        public User User { get; set; }
+        [ForeignKey(nameof(NoteGuid))]
         public Note Note { get; set; }
+
+        public Guid UserGuid { get; set; }
+        [ForeignKey(nameof(UserGuid))]
+        public User User { get; set; }
     }
 }

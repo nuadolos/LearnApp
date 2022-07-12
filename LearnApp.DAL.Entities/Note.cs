@@ -16,24 +16,23 @@ namespace LearnApp.DAL.Entities
         [StringLength(150)]
         public string Title { get; set; } = null!;
 
-        //[Column(TypeName = "nvarchar(MAX)")]
         public string? Description { get; set; }
 
+        [Unicode(false)]
         public string Link { get; set; } = null!;
 
+        [Column(TypeName = "datetime2(0)")]
         public DateTime CreateDate { get; set; }
 
         public bool IsVisible { get; set; }
 
-        [ForeignKey(nameof(NoteTypeGuid))]
         public Guid NoteTypeGuid { get; set; }
-
-        [ForeignKey(nameof(UserGuid))]
-        public Guid UserGuid { get; set; }
-
-        public User User { get; set; } = null!;
-
+        [ForeignKey(nameof(NoteTypeGuid))]
         public NoteType NoteType { get; set; } = null!;
+
+        public Guid UserGuid { get; set; }
+        [ForeignKey(nameof(UserGuid))]
+        public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Note))]
         public ICollection<ShareNote> ShareNotes { get; } = new HashSet<ShareNote>();

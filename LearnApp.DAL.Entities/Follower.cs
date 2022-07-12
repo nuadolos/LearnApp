@@ -15,16 +15,16 @@ namespace LearnApp.DAL.Entities
     [Table("Followers")]
     public class Follower : EntityBase
     {
-        [ForeignKey(nameof(SubscribeUserGuid))]
         public Guid SubscribeUserGuid { get; set; }
-
-        [ForeignKey(nameof(TrackedUserGuid))]
-        public Guid TrackedUserGuid { get; set; }
-
-        public DateTime FollowDate { get; set; }
-
+        [ForeignKey(nameof(SubscribeUserGuid))]
         public User SubscribeUser { get; set; }
+
+        public Guid TrackedUserGuid { get; set; }
+        [ForeignKey(nameof(TrackedUserGuid))]
         public User TrackedUser { get; set; }
+
+        [Column(TypeName = "datetime2(0)")]
+        public DateTime FollowDate { get; set; }
 
         public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
         {
