@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using LearnApp.BL.Models;
-using LearnApp.BL.Services;
+using LearnApp.BLL.Models;
+using LearnApp.BLL.Models.Create;
+using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.IRepos;
 using Microsoft.AspNetCore.Http;
@@ -76,7 +77,7 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateGroupAsync(RequestGroupModel model)
+        public async Task<IActionResult> CreateGroupAsync(RequestUpdateGroupModel model)
         {
             try
             {
@@ -97,7 +98,7 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{groupGuid}")]
-        public async Task<IActionResult> UpdateGroupAsync(Guid groupGuid, RequestGroupModel model)
+        public async Task<IActionResult> UpdateGroupAsync(Guid groupGuid, RequestUpdateGroupModel model)
         {
             try
             {

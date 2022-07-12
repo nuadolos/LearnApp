@@ -35,7 +35,7 @@ namespace LearnApp.DAL.Entities
         public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Note))]
-        public ICollection<ShareNote> ShareNotes { get; } = new HashSet<ShareNote>();
+        public ICollection<ShareNote> ShareNotes { get; set; } = new HashSet<ShareNote>();
 
         public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
         {

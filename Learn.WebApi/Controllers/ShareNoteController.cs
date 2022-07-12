@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LearnApp.BL.Services;
+using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.IRepos;
 using Microsoft.AspNetCore.Http;

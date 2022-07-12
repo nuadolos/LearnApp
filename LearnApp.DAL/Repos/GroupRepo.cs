@@ -33,7 +33,7 @@ namespace LearnApp.DAL.Repos
             return groups;
         }
 
-        public async Task<Group?> GetGroupAsync(Guid groupGuid, Guid userGuid) =>
+        public async Task<Group?> GetGroupByGuidAsync(Guid groupGuid, Guid userGuid) =>
             await Context.Group
                 .Include(g => g.GroupUsers
                     .FirstOrDefault(gu => gu.UserGuid == userGuid))

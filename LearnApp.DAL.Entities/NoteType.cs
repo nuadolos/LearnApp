@@ -21,6 +21,6 @@ namespace LearnApp.DAL.Entities
         public string Name { get; set; }
 
         [InverseProperty(nameof(NoteType))]
-        public ICollection<Note> Notes { get; } = new HashSet<Note>();
+        public ICollection<Note> Notes { get; set; } = new HashSet<Note>();
     }
 }

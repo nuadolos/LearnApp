@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL.Models
+namespace LearnApp.BLL.Models
 {
     public class RequestNoteModel
     {

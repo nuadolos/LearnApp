@@ -25,7 +25,7 @@ namespace LearnApp.WebApi.Controllers
                 cfg => cfg.CreateMap<Learn, Learn>()
                 .ForMember(x => x.User, opt => opt.Ignore())
                 .ForMember(x => x.Group, opt => opt.Ignore())
-                .ForMember(x => x.LearnDocuments, opt => opt.Ignore()));
+                .ForMember(x => x.LearnDocs, opt => opt.Ignore()));
             _mapper = config.CreateMapper();
         }
 
@@ -34,7 +34,7 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("Group/{groupId}")]
-        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync([FromRoute] int groupId) =>
+        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync(int groupId) =>
             _mapper.Map<List<Learn>, List<Learn>>(await _repo.GetGroupLearnsAsync(groupId));
 
         /// <summary>

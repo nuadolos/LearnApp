@@ -1,4 +1,4 @@
-﻿using LearnApp.BL.Models;
+﻿using LearnApp.BLL.Models;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Exceptions;
 using LearnApp.DAL.Repos.IRepos;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL.Services
+namespace LearnApp.BLL.Services
 {
     public class GroupService
     {
@@ -25,13 +25,13 @@ namespace LearnApp.BL.Services
 
         public async Task<Group> GetGroupAsync(Guid groupGuid, Guid userGuid)
         {
-            var group = await _repo.GetGroupAsync(groupGuid, userGuid);
+            var group = await _repo.GetGroupByGuidAsync(groupGuid, userGuid);
 
             if (group == null)
                 throw new Exception($"Группы {groupGuid} не существует");
 
             if (group.UserGuid != userGuid && !group.GroupUsers.Any())
-                throw new Exception($"Пользователь {userGuid} пытается запросить данные закрытой ему группе");
+                throw new Exception($"Пользователь {userGuid} пытается запросить данные группы, не имея к ней доступ");
 
             return group;
         }
@@ -39,7 +39,7 @@ namespace LearnApp.BL.Services
         public async Task<Group> CreateGroupAsync(RequestGroupModel model)
         {
             Group group = new() {
-                Title = model.Name,
+                Title = model.Title,
                 Description = model.Description,
                 IsVisible = model.IsVisible,
                 GroupTypeGuid = model.GroupTypeGuid,
@@ -68,10 +68,9 @@ namespace LearnApp.BL.Services
             if (group.UserGuid != model.UserGuid)
                 throw new Exception($"Пользователь {model.UserGuid} не является создатель группы {group.Guid}");
 
-            group.Title = model.Name;
+            group.Title = model.Title;
             group.Description = model.Description;
             group.IsVisible = model.IsVisible;
-            group.GroupTypeGuid = model.GroupTypeGuid;
 
             try
             {

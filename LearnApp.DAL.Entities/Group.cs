@@ -36,10 +36,10 @@ namespace LearnApp.DAL.Entities
         public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Group))]
-        public ICollection<GroupUser> GroupUsers { get; } = new HashSet<GroupUser>();
+        public ICollection<GroupUser> GroupUsers { get; set; } = new HashSet<GroupUser>();
 
         [InverseProperty(nameof(Group))]
-        public ICollection<Learn> Learns { get; } = new HashSet<Learn>();
+        public ICollection<Learn> Learns { get; set; } = new HashSet<Learn>();
 
         public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 #nullable disable
 
-namespace LearnApp.BL.Models
+namespace LearnApp.BLL.Models
 {
     public class RequestRemoveDataModel
     {
         public Guid Guid { get; set; }
         public Guid UserGuid { get; set; }
-        public byte[] Timestamp { get; set; }
     }
 }

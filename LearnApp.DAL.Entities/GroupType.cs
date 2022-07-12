@@ -21,6 +21,6 @@ namespace LearnApp.DAL.Entities
         public string Name { get; set; }
 
         [InverseProperty(nameof(GroupType))]
-        public ICollection<Group> Groups { get; } = new HashSet<Group>();
+        public ICollection<Group> Groups { get; set; } = new HashSet<Group>();
     }
 }

@@ -1,4 +1,4 @@
-﻿using LearnApp.BL.Models;
+﻿using LearnApp.BLL.Models;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Exceptions;
 using LearnApp.DAL.Repos.IRepos;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL.Services
+namespace LearnApp.BLL.Services
 {
     public class NoteService
     {
@@ -105,7 +105,7 @@ namespace LearnApp.BL.Services
 
             try
             {
-                await _repo.DeleteAsync(model.Guid, model.Timestamp);
+                await _repo.DeleteAsync(note);
             }
             catch (DbMessageException ex)
             {

@@ -5,9 +5,9 @@ using AutoMapper;
 using LearnApp.DAL.Entities;
 using LearnApp.Helper.EmailService;
 using LearnApp.DAL.Repos.IRepos;
-using LearnApp.BL.Services;
-using LearnApp.BL.Models;
+using LearnApp.BLL.Services;
 using LearnApp.WebApi.JWT;
+using LearnApp.BLL.Models;
 
 namespace LearnApp.WebApi.Controllers
 {

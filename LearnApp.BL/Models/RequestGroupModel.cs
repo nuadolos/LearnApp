@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL.Models
+namespace LearnApp.BLL.Models
 {
     public class RequestGroupModel
     {
-        public string Name { get; set; } = null!;
+        public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public bool IsVisible { get; set; }
         public Guid GroupTypeGuid { get; set; }

@@ -4,7 +4,7 @@ using LearnApp.DAL.DataInitializer;
 using LearnApp.Helper.EmailService;
 using LearnApp.DAL;
 using LearnApp.WebApi.JWT;
-using LearnApp.BL;
+using LearnApp.BLL;
 
 var builder = WebApplication.CreateBuilder(args);
 

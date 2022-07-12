@@ -1,4 +1,4 @@
-﻿using LearnApp.BL.Services;
+﻿using LearnApp.BLL.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL
+namespace LearnApp.BLL
 {
     static public class ServiceCollectionExt
     {

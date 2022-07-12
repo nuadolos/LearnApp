@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL.Services
+namespace LearnApp.BLL.Services
 {
     public class ShareNoteService
     {

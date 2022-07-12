@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using LearnApp.BL.Models;
-using LearnApp.BL.Services;
+using LearnApp.BLL.Models;
+using LearnApp.BLL.Models.Create;
+using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.IRepos;
 using Microsoft.AspNetCore.Mvc;

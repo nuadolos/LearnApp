@@ -18,14 +18,11 @@ namespace LearnApp.DAL.Repos
         public async Task<List<Learn>> GetGroupLearnsAsync(Guid groupGuid) =>
             await Context.Learn.Where(l => l.GroupGuid == groupGuid).ToListAsync();
 
-        public async Task<Group?> GetGroupAsync(Guid groupGuid) =>
-            await Context.Group.FirstOrDefaultAsync(g => g.Guid == groupGuid);
-
-        public async Task<GroupUser?> GetGroupUserAsync(Guid groupGuid, Guid userGuid) =>
-            await Context.GroupUser.FirstOrDefaultAsync(gu => gu.GroupGuid == groupGuid && gu.UserGuid == userGuid);
-
-        public async Task<Learn?> GetLearnAsync(Guid  learnGuid) =>
-            await Context.Learn.FirstOrDefaultAsync(l => l.Guid == learnGuid);
+        public async Task<List<Learn>> GetCreatorLearnsAsync(Guid userGuid) =>
+            await Context.Learn.Where(l => l.UserGuid == userGuid).ToListAsync();
+        public async Task<Learn?> GetLearnByGuidAsync(Guid  learnGuid) =>
+            await Context.Learn.Include(l => l.Group).ThenInclude(g => g.GroupUsers)
+                .FirstOrDefaultAsync(l => l.Guid == learnGuid);
 
         public async Task<bool> IsMemberGroupAsync(Guid groupGuid, Guid userGuid) =>
             await Context.GroupUser.FirstOrDefaultAsync(

@@ -21,6 +21,6 @@ namespace LearnApp.DAL.Entities
         public string Name { get; set; }
 
         [InverseProperty(nameof(GroupRole))]
-        public ICollection<GroupUser> GroupUsers { get; } = new HashSet<GroupUser>();
+        public ICollection<GroupUser> GroupUsers { get; set; } = new HashSet<GroupUser>();
     }
 }

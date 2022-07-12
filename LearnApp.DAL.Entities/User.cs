@@ -57,7 +57,7 @@ namespace LearnApp.DAL.Entities
         public ICollection<Group> Groups { get; set; } = new HashSet<Group>();
 
         [InverseProperty(nameof(User))]
-        public ICollection<Attach> Attaches { get; } = new HashSet<Attach>();
+        public ICollection<Attach> Attaches { get; set; } = new HashSet<Attach>();
 
         [InverseProperty(nameof(User))]
         public ICollection<Note> Notes { get; set; } = new HashSet<Note>();

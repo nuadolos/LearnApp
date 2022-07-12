@@ -1,4 +1,4 @@
-﻿using LearnApp.BL.Models;
+﻿using LearnApp.BLL.Models;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Exceptions;
 using LearnApp.DAL.Repos.IRepos;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BL.Services
+namespace LearnApp.BLL.Services
 {
     public class AccountService
     {

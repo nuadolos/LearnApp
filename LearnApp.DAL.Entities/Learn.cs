@@ -34,10 +34,10 @@ namespace LearnApp.DAL.Entities
         public User User { get; set; } = null!;
 
         [InverseProperty(nameof(Learn))]
-        public ICollection<LearnDoc> LearnDocs { get; } = new HashSet<LearnDoc>();
+        public ICollection<LearnDoc> LearnDocs { get; set; } = new HashSet<LearnDoc>();
 
         [InverseProperty(nameof(Learn))]
-        public ICollection<Attach> Attaches { get; } = new HashSet<Attach>();
+        public ICollection<Attach> Attaches { get; set; } = new HashSet<Attach>();
 
         public static ModelBuilder OnModelCreating(ModelBuilder modelBuilder)
         {

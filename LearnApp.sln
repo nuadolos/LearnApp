@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnMVC", "OldLearnApp\Lea
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{1AECEF22-F22B-424E-BD11-A91D83A8F194}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnApp.BL", "LearnApp.BL\LearnApp.BL.csproj", "{3DD031B8-9BEA-4F3D-BDCB-72FBC9F1D05C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnApp.BLL", "LearnApp.BL\LearnApp.BLL.csproj", "{3DD031B8-9BEA-4F3D-BDCB-72FBC9F1D05C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearnApp.DAL.Entities", "LearnApp.DAL.Entities\LearnApp.DAL.Entities.csproj", "{3F3BBB58-F9B3-471D-AF46-3E25D8E97360}"
 EndProject
