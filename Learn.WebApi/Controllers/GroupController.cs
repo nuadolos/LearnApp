@@ -77,7 +77,7 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateGroupAsync(RequestUpdateGroupModel model)
+        public async Task<IActionResult> CreateGroupAsync(RequestGroupModel model)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{groupGuid}")]
-        public async Task<IActionResult> UpdateGroupAsync(Guid groupGuid, RequestUpdateGroupModel model)
+        public async Task<IActionResult> UpdateGroupAsync(Guid groupGuid, RequestGroupModel model)
         {
             try
             {
