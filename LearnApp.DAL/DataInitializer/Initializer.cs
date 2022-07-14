@@ -223,7 +223,7 @@ namespace LearnApp.DAL.DataInitializer
                 new Follower { SubscribeUser = users[0], TrackedUser = users[4] }
             };
 
-            friends.ForEach(fr => context.Follow.Add(fr));
+            friends.ForEach(fr => context.Follower.Add(fr));
 
             context.SaveChanges();
         }

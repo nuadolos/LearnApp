@@ -23,14 +23,14 @@ namespace LearnApp.DAL.Repos
 
         public async Task<string> DeleteFullDataUserAsync(Guid userGuid)
         {
-            var subUser = Context.Follow.Where(f => f.SubscribeUserGuid == userGuid);
-            var trackUser = Context.Follow.Where(f => f.TrackedUserGuid == userGuid);
+            var subUser = Context.Follower.Where(f => f.SubscribeUserGuid == userGuid);
+            var trackUser = Context.Follower.Where(f => f.TrackedUserGuid == userGuid);
             var shareNote = Context.ShareNote.Where(sn => sn.UserGuid == userGuid);
             var attach = Context.Attaches.Where(at => at.UserGuid == userGuid);
             var groupUser = Context.GroupUser.Where(at => at.UserGuid == userGuid);
 
-            Context.Follow.RemoveRange(subUser);
-            Context.Follow.RemoveRange(trackUser);
+            Context.Follower.RemoveRange(subUser);
+            Context.Follower.RemoveRange(trackUser);
             Context.ShareNote.RemoveRange(shareNote);
             Context.Attaches.RemoveRange(attach);
             Context.GroupUser.RemoveRange(groupUser);

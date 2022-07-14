@@ -23,7 +23,7 @@ namespace LearnApp.DAL
             services.AddScoped<INoteTypeRepo, NoteTypeRepo>();
             services.AddScoped<IShareNoteRepo, ShareNoteRepo>();
             services.AddScoped<IGroupRepo, GroupRepo>();
-            services.AddScoped<IFollowRepo, FollowerRepo>();
+            services.AddScoped<IFollowerRepo, FollowerRepo>();
             services.AddScoped<INoteRepo, NoteRepo>();
             services.AddScoped<IGroupUserRepo, GroupUserRepo>();
             services.AddScoped<ILearnDocRepo, LearnDocRepo>();

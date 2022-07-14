@@ -28,7 +28,7 @@ namespace LearnApp.DAL.Context
         public DbSet<Learn> Learn { get; set; }
         public DbSet<Attach> Attaches { get; set; }
         public DbSet<LearnDoc> LearnDocuments { get; set; }
-        public DbSet<Follower> Follow { get; set; }
+        public DbSet<Follower> Follower { get; set; }
         public DbSet<Group> Group { get; set; }
         public DbSet<GroupUser> GroupUser { get; set; }
         public DbSet<GroupRole> GroupRole { get; set; }
