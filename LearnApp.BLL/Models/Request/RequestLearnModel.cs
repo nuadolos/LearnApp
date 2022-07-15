@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnApp.BLL.Models
+namespace LearnApp.BLL.Models.Request
 {
     public class RequestLearnModel
     {

@@ -1,4 +1,4 @@
-﻿using LearnApp.BLL.Models;
+﻿using LearnApp.BLL.Models.Request;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Exceptions;
 using LearnApp.DAL.Repos.IRepos;

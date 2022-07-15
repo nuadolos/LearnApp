@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using LearnApp.BLL.Models;
-using LearnApp.BLL.Models.Create;
+using LearnApp.BLL.Models.Request;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.IRepos;
@@ -9,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/note")]
+    [Route("api/[controller]")]
     [ApiController]
     public class NoteController : ControllerBase
     {

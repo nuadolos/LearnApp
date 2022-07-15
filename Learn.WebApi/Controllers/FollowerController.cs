@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/follower")]
+    [Route("api/[controller]")]
     [ApiController]
     public class FollowerController : ControllerBase
     {

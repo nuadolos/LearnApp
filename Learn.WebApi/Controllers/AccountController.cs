@@ -7,11 +7,11 @@ using LearnApp.Helper.EmailService;
 using LearnApp.DAL.Repos.IRepos;
 using LearnApp.BLL.Services;
 using LearnApp.WebApi.JWT;
-using LearnApp.BLL.Models;
+using LearnApp.BLL.Models.Request;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/account")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {

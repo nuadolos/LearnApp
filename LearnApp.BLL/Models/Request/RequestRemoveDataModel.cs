@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 #nullable disable
 
-namespace LearnApp.BLL.Models
+namespace LearnApp.BLL.Models.Request
 {
     public class RequestRemoveDataModel
     {

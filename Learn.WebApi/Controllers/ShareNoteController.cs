@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/sharenote")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ShareNoteController : ControllerBase
     {

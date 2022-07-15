@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Entities.ErrorModel;
 using LearnApp.DAL.Repos.IRepos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

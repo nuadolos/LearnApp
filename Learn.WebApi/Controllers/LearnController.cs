@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LearnApp.BLL.Models;
+using LearnApp.BLL.Models.Request;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.IRepos;
