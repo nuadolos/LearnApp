@@ -46,8 +46,8 @@ namespace LearnApp.DAL.Entities
         [Column(TypeName = "datetime2(0)")]
         public DateTime? CodeTimeBlock { get; set; }
 
-        public Guid UserRoleGuid { get; set; }
-        [ForeignKey(nameof(UserRoleGuid))]
+        public string UserRoleCode { get; set; } = null!;
+        [ForeignKey(nameof(UserRoleCode))]
         public UserRole UserRole { get; set; } = null!;
 
         [InverseProperty(nameof(User))]

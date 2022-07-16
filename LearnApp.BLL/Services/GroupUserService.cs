@@ -50,7 +50,7 @@ namespace LearnApp.BLL.Services
             var groupUser = new GroupUser {
                 GroupGuid = group.Guid,
                 UserGuid = userGuid,                           // todo: протестировать,
-                GroupRole = new GroupRole { Name = "Студент" } // сможет ли записаться guid в таком формате
+                GroupRole = new GroupRole { Code = "Студент" } // сможет ли записаться guid в таком формате
             };
 
             try
@@ -79,9 +79,9 @@ namespace LearnApp.BLL.Services
             {
                 GroupGuid = group.Guid,
                 UserGuid = userGuid,
-                GroupRole = group.GroupType.Name == "Общий" 
-                    ? new GroupRole { Name = "Студент" } 
-                    : new GroupRole { Name = "Общий" }
+                GroupRole = group.GroupType.Code == "Общий" 
+                    ? new GroupRole { Code = "Студент" } 
+                    : new GroupRole { Code = "Общий" }
             };
 
             try

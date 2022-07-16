@@ -39,7 +39,7 @@ namespace LearnApp.BLL.Services
                 Description = model.Description,
                 Link = model.Link,
                 IsVisible = model.IsVisible,
-                NoteTypeGuid = model.NoteTypeGuid,
+                NoteTypeCode = model.NoteTypeCode,
                 UserGuid = model.UserGuid
             };
 
@@ -75,7 +75,7 @@ namespace LearnApp.BLL.Services
             note.Description = model.Description;
             note.Link = model.Link;
             note.IsVisible = model.IsVisible;
-            note.NoteTypeGuid = model.NoteTypeGuid;
+            note.NoteTypeCode = model.NoteTypeCode;
 
             try
             {

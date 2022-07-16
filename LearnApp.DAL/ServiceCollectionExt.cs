@@ -20,7 +20,6 @@ namespace LearnApp.DAL
                 options.UseSqlServer(configuration.GetConnectionString("LearnConnection")));
 
             services.AddScoped<ILearnRepo, LearnRepo>();
-            services.AddScoped<INoteTypeRepo, NoteTypeRepo>();
             services.AddScoped<IShareNoteRepo, ShareNoteRepo>();
             services.AddScoped<IGroupRepo, GroupRepo>();
             services.AddScoped<IFollowerRepo, FollowerRepo>();

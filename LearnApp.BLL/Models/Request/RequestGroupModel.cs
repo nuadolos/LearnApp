@@ -11,7 +11,7 @@ namespace LearnApp.BLL.Models.Request
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public bool IsVisible { get; set; }
-        public Guid GroupTypeGuid { get; set; }
+        public string GroupTypeCode { get; set; } = null!;
         public Guid UserGuid { get; set; }
     }
 }

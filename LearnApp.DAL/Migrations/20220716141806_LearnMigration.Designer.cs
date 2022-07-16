@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnApp.DAL.Migrations
 {
     [DbContext(typeof(LearnContext))]
-    [Migration("20220712165117_LearnsMigration")]
-    partial class LearnsMigration
+    [Migration("20220716141806_LearnMigration")]
+    partial class LearnMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -123,8 +123,9 @@ namespace LearnApp.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("GroupTypeGuid")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("GroupTypeCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("InviteCode")
                         .ValueGeneratedOnAdd()
@@ -149,7 +150,7 @@ namespace LearnApp.DAL.Migrations
 
                     b.HasKey("Guid");
 
-                    b.HasIndex("GroupTypeGuid");
+                    b.HasIndex("GroupTypeCode");
 
                     b.HasIndex("Guid")
                         .IsUnique();
@@ -164,26 +165,17 @@ namespace LearnApp.DAL.Migrations
 
             modelBuilder.Entity("LearnApp.DAL.Entities.GroupRole", b =>
                 {
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Code")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
+                    b.HasKey("Code");
 
-                    b.HasKey("Guid");
-
-                    b.HasIndex("Guid")
-                        .IsUnique();
-
-                    b.HasIndex("Name")
+                    b.HasIndex("Code")
                         .IsUnique();
 
                     b.ToTable("GroupRoles");
@@ -191,26 +183,17 @@ namespace LearnApp.DAL.Migrations
 
             modelBuilder.Entity("LearnApp.DAL.Entities.GroupType", b =>
                 {
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Code")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
+                    b.HasKey("Code");
 
-                    b.HasKey("Guid");
-
-                    b.HasIndex("Guid")
-                        .IsUnique();
-
-                    b.HasIndex("Name")
+                    b.HasIndex("Code")
                         .IsUnique();
 
                     b.ToTable("GroupTypes");
@@ -225,8 +208,8 @@ namespace LearnApp.DAL.Migrations
                     b.Property<Guid>("GroupGuid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GroupRoleGuid")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("GroupRoleCode")
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -240,7 +223,7 @@ namespace LearnApp.DAL.Migrations
 
                     b.HasIndex("GroupGuid");
 
-                    b.HasIndex("GroupRoleGuid");
+                    b.HasIndex("GroupRoleCode");
 
                     b.HasIndex("Guid")
                         .IsUnique();
@@ -350,8 +333,9 @@ namespace LearnApp.DAL.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
-                    b.Property<Guid>("NoteTypeGuid")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("NoteTypeCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte[]>("Timestamp")
                         .IsConcurrencyToken()
@@ -371,7 +355,7 @@ namespace LearnApp.DAL.Migrations
                     b.HasIndex("Guid")
                         .IsUnique();
 
-                    b.HasIndex("NoteTypeGuid");
+                    b.HasIndex("NoteTypeCode");
 
                     b.HasIndex("UserGuid");
 
@@ -380,26 +364,17 @@ namespace LearnApp.DAL.Migrations
 
             modelBuilder.Entity("LearnApp.DAL.Entities.NoteType", b =>
                 {
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Code")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
+                    b.HasKey("Code");
 
-                    b.HasKey("Guid");
-
-                    b.HasIndex("Guid")
-                        .IsUnique();
-
-                    b.HasIndex("Name")
+                    b.HasIndex("Code")
                         .IsUnique();
 
                     b.ToTable("NoteTypes");
@@ -486,15 +461,16 @@ namespace LearnApp.DAL.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<Guid>("UserRoleGuid")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserRoleCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Guid");
 
                     b.HasIndex("Guid")
                         .IsUnique();
 
-                    b.HasIndex("UserRoleGuid");
+                    b.HasIndex("UserRoleCode");
 
                     b.HasIndex("Login", "Salt")
                         .IsUnique();
@@ -504,26 +480,17 @@ namespace LearnApp.DAL.Migrations
 
             modelBuilder.Entity("LearnApp.DAL.Entities.UserRole", b =>
                 {
-                    b.Property<Guid>("Guid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Code")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
+                    b.HasKey("Code");
 
-                    b.HasKey("Guid");
-
-                    b.HasIndex("Guid")
-                        .IsUnique();
-
-                    b.HasIndex("Name")
+                    b.HasIndex("Code")
                         .IsUnique();
 
                     b.ToTable("UserRoles");
@@ -571,7 +538,7 @@ namespace LearnApp.DAL.Migrations
                 {
                     b.HasOne("LearnApp.DAL.Entities.GroupType", "GroupType")
                         .WithMany("Groups")
-                        .HasForeignKey("GroupTypeGuid")
+                        .HasForeignKey("GroupTypeCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -596,9 +563,7 @@ namespace LearnApp.DAL.Migrations
 
                     b.HasOne("LearnApp.DAL.Entities.GroupRole", "GroupRole")
                         .WithMany("GroupUsers")
-                        .HasForeignKey("GroupRoleGuid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GroupRoleCode");
 
                     b.HasOne("LearnApp.DAL.Entities.User", "User")
                         .WithMany("GroupUsers")
@@ -647,7 +612,7 @@ namespace LearnApp.DAL.Migrations
                 {
                     b.HasOne("LearnApp.DAL.Entities.NoteType", "NoteType")
                         .WithMany("Notes")
-                        .HasForeignKey("NoteTypeGuid")
+                        .HasForeignKey("NoteTypeCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -685,7 +650,7 @@ namespace LearnApp.DAL.Migrations
                 {
                     b.HasOne("LearnApp.DAL.Entities.UserRole", "UserRole")
                         .WithMany("Users")
-                        .HasForeignKey("UserRoleGuid")
+                        .HasForeignKey("UserRoleCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

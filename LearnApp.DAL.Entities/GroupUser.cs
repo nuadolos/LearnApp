@@ -22,8 +22,8 @@ namespace LearnApp.DAL.Entities
         [ForeignKey(nameof(UserGuid))]
         public User User { get; set; }
 
-        public Guid GroupRoleGuid { get; set; }
-        [ForeignKey(nameof(GroupRoleGuid))]
+        public string GroupRoleCode { get; set; }
+        [ForeignKey(nameof(GroupRoleCode))]
         public GroupRole GroupRole { get; set; }
     }
 }

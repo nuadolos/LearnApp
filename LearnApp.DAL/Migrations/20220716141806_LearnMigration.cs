@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LearnApp.DAL.Migrations
 {
-    public partial class LearnsMigration : Migration
+    public partial class LearnMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,52 +13,48 @@ namespace LearnApp.DAL.Migrations
                 name: "GroupRoles",
                 columns: table => new
                 {
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupRoles", x => x.Guid);
+                    table.PrimaryKey("PK_GroupRoles", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
                 name: "GroupTypes",
                 columns: table => new
                 {
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupTypes", x => x.Guid);
+                    table.PrimaryKey("PK_GroupTypes", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
                 name: "NoteTypes",
                 columns: table => new
                 {
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NoteTypes", x => x.Guid);
+                    table.PrimaryKey("PK_NoteTypes", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
-                    Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    Code = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserRoles", x => x.Guid);
+                    table.PrimaryKey("PK_UserRoles", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,17 +70,17 @@ namespace LearnApp.DAL.Migrations
                     Middlename = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Code = table.Column<string>(type: "varchar(6)", unicode: false, maxLength: 6, nullable: true),
                     CodeTimeBlock = table.Column<DateTime>(type: "datetime2(0)", nullable: true),
-                    UserRoleGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserRoleCode = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Guid);
                     table.ForeignKey(
-                        name: "FK_Users_UserRoles_UserRoleGuid",
-                        column: x => x.UserRoleGuid,
+                        name: "FK_Users_UserRoles_UserRoleCode",
+                        column: x => x.UserRoleCode,
                         principalTable: "UserRoles",
-                        principalColumn: "Guid",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -124,7 +120,7 @@ namespace LearnApp.DAL.Migrations
                     AdminCode = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "(newid())"),
                     CreateDate = table.Column<DateTime>(type: "date", nullable: false, defaultValueSql: "(getdate())"),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    GroupTypeGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupTypeCode = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
@@ -132,10 +128,10 @@ namespace LearnApp.DAL.Migrations
                 {
                     table.PrimaryKey("PK_Groups", x => x.Guid);
                     table.ForeignKey(
-                        name: "FK_Groups_GroupTypes_GroupTypeGuid",
-                        column: x => x.GroupTypeGuid,
+                        name: "FK_Groups_GroupTypes_GroupTypeCode",
+                        column: x => x.GroupTypeCode,
                         principalTable: "GroupTypes",
-                        principalColumn: "Guid",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Groups_Users_UserGuid",
@@ -155,7 +151,7 @@ namespace LearnApp.DAL.Migrations
                     Link = table.Column<string>(type: "varchar(max)", unicode: false, nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false, defaultValueSql: "(getdate())"),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
-                    NoteTypeGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NoteTypeCode = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
@@ -163,10 +159,10 @@ namespace LearnApp.DAL.Migrations
                 {
                     table.PrimaryKey("PK_Notes", x => x.Guid);
                     table.ForeignKey(
-                        name: "FK_Notes_NoteTypes_NoteTypeGuid",
-                        column: x => x.NoteTypeGuid,
+                        name: "FK_Notes_NoteTypes_NoteTypeCode",
+                        column: x => x.NoteTypeCode,
                         principalTable: "NoteTypes",
-                        principalColumn: "Guid",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notes_Users_UserGuid",
@@ -183,18 +179,17 @@ namespace LearnApp.DAL.Migrations
                     Guid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GroupGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GroupRoleGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupRoleCode = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     Timestamp = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupUsers", x => x.Guid);
                     table.ForeignKey(
-                        name: "FK_GroupUsers_GroupRoles_GroupRoleGuid",
-                        column: x => x.GroupRoleGuid,
+                        name: "FK_GroupUsers_GroupRoles_GroupRoleCode",
+                        column: x => x.GroupRoleCode,
                         principalTable: "GroupRoles",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Code");
                     table.ForeignKey(
                         name: "FK_GroupUsers_Groups_GroupGuid",
                         column: x => x.GroupGuid,
@@ -344,21 +339,15 @@ namespace LearnApp.DAL.Migrations
                 column: "TrackedUserGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupRoles_Guid",
+                name: "IX_GroupRoles_Code",
                 table: "GroupRoles",
-                column: "Guid",
+                column: "Code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupRoles_Name",
-                table: "GroupRoles",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Groups_GroupTypeGuid",
+                name: "IX_Groups_GroupTypeCode",
                 table: "Groups",
-                column: "GroupTypeGuid");
+                column: "GroupTypeCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_Guid",
@@ -378,15 +367,9 @@ namespace LearnApp.DAL.Migrations
                 column: "UserGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupTypes_Guid",
+                name: "IX_GroupTypes_Code",
                 table: "GroupTypes",
-                column: "Guid",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupTypes_Name",
-                table: "GroupTypes",
-                column: "Name",
+                column: "Code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -395,9 +378,9 @@ namespace LearnApp.DAL.Migrations
                 column: "GroupGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupUsers_GroupRoleGuid",
+                name: "IX_GroupUsers_GroupRoleCode",
                 table: "GroupUsers",
-                column: "GroupRoleGuid");
+                column: "GroupRoleCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupUsers_Guid",
@@ -444,9 +427,9 @@ namespace LearnApp.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notes_NoteTypeGuid",
+                name: "IX_Notes_NoteTypeCode",
                 table: "Notes",
-                column: "NoteTypeGuid");
+                column: "NoteTypeCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_UserGuid",
@@ -454,15 +437,9 @@ namespace LearnApp.DAL.Migrations
                 column: "UserGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NoteTypes_Guid",
+                name: "IX_NoteTypes_Code",
                 table: "NoteTypes",
-                column: "Guid",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NoteTypes_Name",
-                table: "NoteTypes",
-                column: "Name",
+                column: "Code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -482,15 +459,9 @@ namespace LearnApp.DAL.Migrations
                 column: "UserGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_Guid",
+                name: "IX_UserRoles_Code",
                 table: "UserRoles",
-                column: "Guid",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_Name",
-                table: "UserRoles",
-                column: "Name",
+                column: "Code",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -506,9 +477,9 @@ namespace LearnApp.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_UserRoleGuid",
+                name: "IX_Users_UserRoleCode",
                 table: "Users",
-                column: "UserRoleGuid");
+                column: "UserRoleCode");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

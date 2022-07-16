@@ -27,8 +27,8 @@ namespace LearnApp.DAL.Entities
 
         public bool IsVisible { get; set; }
 
-        public Guid GroupTypeGuid { get; set; }
-        [ForeignKey(nameof(GroupTypeGuid))]
+        public string GroupTypeCode { get; set; } = null!;
+        [ForeignKey(nameof(GroupTypeCode))]
         public GroupType GroupType { get; set; } = null!;
 
         public Guid UserGuid { get; set; }

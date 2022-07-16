@@ -65,8 +65,8 @@ namespace LearnApp.DAL.DataInitializer
 
             List<NoteType> noteTypes = new List<NoteType>()
             {
-                new NoteType() { Name = "Книга"},
-                new NoteType() { Name = "Уроки"}
+                new NoteType() { Code = "BOOK"},
+                new NoteType() { Code = "LESSONS"}
             };
 
             noteTypes.ForEach(noteType => context.NoteType.Add(noteType));
@@ -74,17 +74,17 @@ namespace LearnApp.DAL.DataInitializer
 
             List<GroupType> groupTypes = new List<GroupType>()
             {
-                new GroupType { Name = "Равноправный" },
-                new GroupType { Name = "Класс" }
+                new GroupType { Code = "EQUAL" },
+                new GroupType { Code = "CLASS" }
             };
 
             groupTypes.ForEach(gropType => context.GroupType.Add(gropType));
 
             List<GroupRole> groupRoles = new List<GroupRole>()
             {
-                new GroupRole { Name = "Студент" },
-                new GroupRole { Name = "Преподаватель" },
-                new GroupRole { Name = "Общий" }
+                new GroupRole { Code = "STUDENT" },
+                new GroupRole { Code = "TEACHER" },
+                new GroupRole { Code = "GENERAL" }
             };
 
             groupRoles.ForEach(gropRole => context.GroupRole.Add(gropRole));

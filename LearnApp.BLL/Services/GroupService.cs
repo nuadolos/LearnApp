@@ -42,7 +42,7 @@ namespace LearnApp.BLL.Services
                 Title = model.Title,
                 Description = model.Description,
                 IsVisible = model.IsVisible,
-                GroupTypeGuid = model.GroupTypeGuid,
+                GroupTypeCode = model.GroupTypeCode,
                 UserGuid = model.UserGuid
             };
 

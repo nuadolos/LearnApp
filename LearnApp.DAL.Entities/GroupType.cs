@@ -8,17 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#nullable disable
-
 namespace LearnApp.DAL.Entities
 {
     [Table("GroupTypes")]
-    [Index(nameof(Name), IsUnique = true)]
-    public class GroupType : EntityBase
+    [Index(nameof(Code), IsUnique = true)]
+    public class GroupType
     {
-        [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
+        [Key]
+        [StringLength(100)]
+        public string Code { get; set; } = null!;
+
+        [StringLength(200)]
+        public string? Description { get; set; }
 
         [InverseProperty(nameof(GroupType))]
         public ICollection<Group> Groups { get; set; } = new HashSet<Group>();

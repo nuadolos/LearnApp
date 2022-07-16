@@ -12,7 +12,7 @@ namespace LearnApp.BLL.Models.Request
         public string? Description { get; set; }
         public string Link { get; set; } = null!;
         public bool IsVisible { get; set; }
-        public Guid NoteTypeGuid { get; set; }
+        public string NoteTypeCode { get; set; } = null!;
         public Guid UserGuid { get; set; }
     }
 }
