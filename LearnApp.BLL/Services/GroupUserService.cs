@@ -17,6 +17,12 @@ namespace LearnApp.BLL.Services
         public GroupUserService(IGroupUserRepo repo) =>
             _repo = repo;
 
+        /// <summary>
+        /// Возвращает список категорий и 
+        /// пользователей, относящиеся к ней, конкретной группы
+        /// </summary>
+        /// <param name="groupGuid"></param>
+        /// <returns></returns>
         public async Task<List<ResponseGroupUserModel>> GetGroupUsersAsync(Guid groupGuid)
         {
             List<ResponseGroupUserModel> model = new List<ResponseGroupUserModel>();
@@ -37,6 +43,14 @@ namespace LearnApp.BLL.Services
             return model;
         }
 
+        /// <summary>
+        /// Открывает доступ к конкретной группе,
+        /// имея ее пригласительный код
+        /// </summary>
+        /// <param name="inviteGuid"></param>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task JoinGroupByInviteCodeAsync(Guid inviteGuid, Guid userGuid)
         {
             var group = await _repo.GetGroupByInviteCodeAsync(inviteGuid);
@@ -49,9 +63,13 @@ namespace LearnApp.BLL.Services
 
             var groupUser = new GroupUser {
                 GroupGuid = group.Guid,
-                UserGuid = userGuid,                           // todo: протестировать,
-                GroupRole = new GroupRole { Code = "Студент" } // сможет ли записаться guid в таком формате
+                UserGuid = userGuid
             };
+
+            if (group.GroupTypeCode == "CLASS")
+                groupUser.GroupRoleCode = group.InviteCode == inviteGuid ? "STUDENT" : "TEACHER";
+            else
+                groupUser.GroupRoleCode = "GENERAL";
 
             try
             {
@@ -64,6 +82,13 @@ namespace LearnApp.BLL.Services
             }
         }
 
+        /// <summary>
+        /// Открывает доступ к конкретной открытой группе
+        /// </summary>
+        /// <param name="groupGuid"></param>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task JoinGroupByGuidAsync(Guid groupGuid, Guid userGuid)
         {
             var group = await _repo.GetGroupByGuidAsync(groupGuid);
@@ -74,15 +99,16 @@ namespace LearnApp.BLL.Services
             if (group.GroupUsers.Any(gu => gu.UserGuid == userGuid) || group.UserGuid == userGuid)
                 throw new Exception($"Пользователь {userGuid} уже имеет доступ к группе {group.Guid}");
 
-            // todo: протестировать, сможет ли записаться guid в таком формате
             var groupUser = new GroupUser
             {
                 GroupGuid = group.Guid,
-                UserGuid = userGuid,
-                GroupRole = group.GroupType.Code == "Общий" 
-                    ? new GroupRole { Code = "Студент" } 
-                    : new GroupRole { Code = "Общий" }
+                UserGuid = userGuid
             };
+
+            if (group.GroupTypeCode == "CLASS")
+                groupUser.GroupRoleCode = "STUDENT";
+            else
+                groupUser.GroupRoleCode = "GENERAL";
 
             try
             {
@@ -95,6 +121,14 @@ namespace LearnApp.BLL.Services
             }
         }
 
+        /// <summary>
+        /// Убирает доступ к конкретной группе 
+        /// после целенаправленного выхода пользователя
+        /// </summary>
+        /// <param name="groupGuid"></param>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task LeaveGroupAsync(Guid groupGuid, Guid userGuid)
         {
             var groupUser = await _repo.GetGroupUserAsync(groupGuid, userGuid);

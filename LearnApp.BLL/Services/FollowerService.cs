@@ -16,12 +16,31 @@ namespace LearnApp.BLL.Services
         public FollowerService(IFollowerRepo repo) =>
             _repo = repo;
 
+        /// <summary>
+        /// Возвращает список пользователей,
+        /// на которых подписан конкретный пользователь
+        /// </summary>
+        /// <param name="subUserGuid"></param>
+        /// <returns></returns>
         public async Task<List<User>> GetFollowingAsync(Guid subUserGuid) =>
             await _repo.GetFollowingAsync(subUserGuid);
 
+        /// <summary>
+        /// Возвращает список пользователей,
+        /// которые подписаны на конкретного пользователя
+        /// </summary>
+        /// <param name="trackUserGuid"></param>
+        /// <returns></returns>
         public async Task<List<User>> GetFollowersAsync(Guid trackUserGuid) =>
             await _repo.GetFollowersAsync(trackUserGuid);
 
+        /// <summary>
+        /// Оформляет подписку на конкретного пользователя
+        /// </summary>
+        /// <param name="subUserGuid"></param>
+        /// <param name="trackUserGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task FollowAsync(Guid subUserGuid, Guid trackUserGuid)
         {
             var follower = new Follower {
@@ -40,6 +59,13 @@ namespace LearnApp.BLL.Services
             }
         }
 
+        /// <summary>
+        /// Отменяет подписку на конкретного пользователя
+        /// </summary>
+        /// <param name="subUserGuid"></param>
+        /// <param name="trackUserGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task UnfollowAsync(Guid subUserGuid, Guid trackUserGuid)
         {
             var follower = await _repo.GetFollowerAsync(subUserGuid, trackUserGuid);

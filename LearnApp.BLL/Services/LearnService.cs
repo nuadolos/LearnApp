@@ -16,14 +16,36 @@ namespace LearnApp.BLL.Services
         public LearnService(ILearnRepo repo) =>
             _repo = repo;
 
+        /// <summary>
+        /// Возвращает список заданий,
+        /// расположенные в конкретной группе
+        /// </summary>
+        /// <param name="groupGuid"></param>
+        /// <returns></returns>
         public async Task<List<Learn>> GetGroupLearnsAsync(Guid groupGuid) =>
             await _repo.GetGroupLearnsAsync(groupGuid);
 
+        /// <summary>
+        /// Возвращает список заданий, 
+        /// созданные конкретным пользователем
+        /// </summary>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
         public async Task<List<Learn>> GetCreatorLearnsAsync(Guid userGuid) =>
-            await _repo.GetCreatorLearnsAsync(userGuid);
+            await _repo.GetCreatorLearnsAsync(userGuid); // todo: на карточке задания показать, к какой группе он относится 
 
+        /// <summary>
+        /// Возвращает конкретное задание пользователю, 
+        /// который имеет к ней доступ 
+        /// </summary>
+        /// <param name="learnGuid"></param>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<Learn> GetGroupLearnAsync(Guid learnGuid, Guid userGuid)
         {
+            // todo: проверить, какой метод будет оптимизирован лучше
+            //       GetLearnByGuidAsync - LearnRepo или GetGroupByGuidAsync - GroupRepo
             var learn = await _repo.GetLearnByGuidAsync(learnGuid);
 
             if (learn == null)
@@ -35,6 +57,12 @@ namespace LearnApp.BLL.Services
             return learn;
         }
 
+        /// <summary>
+        /// Создает задание конкретного пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<Learn> CreateLearnAsync(RequestLearnModel model)
         {
             var learn = new Learn {
@@ -57,6 +85,13 @@ namespace LearnApp.BLL.Services
             return learn;
         }
 
+        /// <summary>
+        /// Обновляет свойства задания, которые изменил пользователь
+        /// </summary>
+        /// <param name="learnGuid"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task UpdateLearnAsync(Guid learnGuid, RequestLearnModel model)
         {
             var learn = await _repo.GetLearnByGuidAsync(learnGuid);
@@ -82,6 +117,12 @@ namespace LearnApp.BLL.Services
             }
         }
 
+        /// <summary>
+        /// Удаляет задание пользователем, создавший ее
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task DeleteLearnAsync(RequestRemoveDataModel model)
         {
             var learn = await _repo.GetLearnByGuidAsync(model.Guid);

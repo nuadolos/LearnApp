@@ -17,12 +17,30 @@ namespace LearnApp.BLL.Services
         public GroupService(IGroupRepo repo) =>
             _repo = repo;
 
+        /// <summary>
+        /// Возвращает список открытых групп
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<Group>> GetVisibleGroupsAsync() =>
             await _repo.GetVisibleGroupsAsync();
 
+        /// <summary>
+        /// Возвращает список групп конкретного пользователя,
+        /// в которых он состоит с разными ролями
+        /// </summary>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
         public async Task<List<Group>> GetUserGroupsAsync(Guid userGuid) =>
             await _repo.GetUserGroupsAsync(userGuid);
 
+        /// <summary>
+        /// Возвращает конкретную группу пользователю,
+        /// который состоит в ней
+        /// </summary>
+        /// <param name="groupGuid"></param>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<Group> GetGroupAsync(Guid groupGuid, Guid userGuid)
         {
             var group = await _repo.GetGroupByGuidAsync(groupGuid, userGuid);
@@ -36,6 +54,12 @@ namespace LearnApp.BLL.Services
             return group;
         }
 
+        /// <summary>
+        /// Создает группу конкретного пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<Group> CreateGroupAsync(RequestGroupModel model)
         {
             Group group = new() {
@@ -58,6 +82,13 @@ namespace LearnApp.BLL.Services
             return group;
         }
 
+        /// <summary>
+        /// Обновляет свойства групп, которые изменил пользователь
+        /// </summary>
+        /// <param name="groupGuid"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task UpdateGroupAsync(Guid groupGuid, RequestGroupModel model)
         {
             var group = await _repo.GetRecordAsync(groupGuid);
@@ -82,6 +113,12 @@ namespace LearnApp.BLL.Services
             }
         }
 
+        /// <summary>
+        /// Удаляет группу пользователя, создавший ее
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task RemoveGroupAsync(RequestRemoveDataModel model)
         {
             var group = await _repo.GetRecordAsync(model.Guid);
