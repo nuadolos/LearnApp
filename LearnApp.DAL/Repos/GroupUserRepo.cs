@@ -10,9 +10,6 @@ namespace LearnApp.DAL.Repos
 {
     public class GroupUserRepo : BaseRepo<GroupUser>, IGroupUserRepo
     {
-        public GroupUserRepo() : base()
-        { }
-
         public GroupUserRepo(LearnContext context) : base(context)
         { }
 

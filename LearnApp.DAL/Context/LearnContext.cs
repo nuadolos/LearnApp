@@ -15,13 +15,11 @@ namespace LearnApp.DAL.Context
 {
     public class LearnContext : DbContext
     {
-        public LearnContext()
-        { }
-
         public LearnContext(DbContextOptions options) : base(options)
         { }
 
         public DbSet<User> User { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
         public DbSet<NoteType> NoteType { get; set; }
         public DbSet<Note> Note { get; set; }
         public DbSet<ShareNote> ShareNote { get; set; }

@@ -9,9 +9,6 @@ namespace LearnApp.DAL.Repos
 {
     public class FollowerRepo : BaseRepo<Follower>, IFollowerRepo
     {
-        public FollowerRepo() : base()
-        { }
-
         public FollowerRepo(LearnContext context) : base(context)
         { }
 

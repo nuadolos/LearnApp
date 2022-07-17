@@ -13,9 +13,6 @@ namespace LearnApp.DAL.Repos
 {
     public class AttachRepo : BaseRepo<Attach>, IAttachRepo
     {
-        public AttachRepo() : base()
-        { }
-
         public AttachRepo(LearnContext context) : base(context)
         { }
 

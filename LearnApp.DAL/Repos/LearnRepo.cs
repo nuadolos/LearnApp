@@ -9,9 +9,6 @@ namespace LearnApp.DAL.Repos
 {
     public class LearnRepo : BaseRepo<Learn>, ILearnRepo
     {
-        public LearnRepo() : base()
-        { }
-
         public LearnRepo(LearnContext context) : base(context)
         { }
 

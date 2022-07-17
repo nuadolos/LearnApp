@@ -19,9 +19,6 @@ namespace LearnApp.DAL.Repos.Base
 
         protected LearnContext Context => _db;
 
-        public BaseRepo() : this(new LearnContext())
-        { }
-
         public BaseRepo(LearnContext context)
         {
             _db = context;

@@ -17,51 +17,17 @@ namespace LearnApp.DAL.DataInitializer
     {
         public static async Task InitializeData(LearnContext context)
         {
-            List<User> users = new List<User>()
+            List<UserRole> roles = new List<UserRole> 
             {
-                new User() {
-                    Login = "2nuadolos1@gmail.com",
-                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
-                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
-                    Surname = "Иванов",
-                    Name = "Владимир",
-                    Middlename = "Владимирович"
+                new UserRole {
+                    Code = "ADMIN"
                 },
-                new User() {
-                    Login = "tester@gmail.com",
-                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
-                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
-                    Surname = "Иванов",
-                    Name = "Андрей",
-                    Middlename = "Владимирович"
-                },
-                new User() {
-                    Login = "zxc@gmail.com",
-                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
-                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
-                    Surname = "Решимова",
-                    Name = "Анна",
-                    Middlename = "Владимировна"
-                },
-                new User() {
-                    Login = "qwerty@gmail.com",
-                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
-                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
-                    Surname = "Бананова",
-                    Name = "Виктория",
-                    Middlename = "Владимировна"
-                },
-                new User() {
-                    Login = "wasd@gmail.com",
-                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
-                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
-                    Surname = "Борисов",
-                    Name = "Николай",
-                    Middlename = "Владимирович"
+                new UserRole {
+                    Code = "COMMON"
                 }
             };
 
-            users.ForEach(u => context.User.Add(u));
+            roles.ForEach(role => context.UserRole.Add(role));
 
             List<NoteType> noteTypes = new List<NoteType>()
             {
@@ -70,7 +36,6 @@ namespace LearnApp.DAL.DataInitializer
             };
 
             noteTypes.ForEach(noteType => context.NoteType.Add(noteType));
-            context.SaveChanges();
 
             List<GroupType> groupTypes = new List<GroupType>()
             {
@@ -88,7 +53,60 @@ namespace LearnApp.DAL.DataInitializer
             };
 
             groupRoles.ForEach(gropRole => context.GroupRole.Add(gropRole));
-           
+
+            await context.SaveChangesAsync();
+
+            List<User> users = new List<User>()
+            {
+                new User() {
+                    Login = "2nuadolos1@gmail.com",
+                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
+                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
+                    Surname = "Иванов",
+                    Name = "Владимир",
+                    Middlename = "Владимирович",
+                    UserRoleCode = roles[0].Code
+                },
+                new User() {
+                    Login = "tester@gmail.com",
+                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
+                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
+                    Surname = "Иванов",
+                    Name = "Андрей",
+                    Middlename = "Владимирович",
+                    UserRoleCode = roles[1].Code
+                },
+                new User() {
+                    Login = "zxc@gmail.com",
+                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
+                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
+                    Surname = "Решимова",
+                    Name = "Анна",
+                    Middlename = "Владимировна",
+                    UserRoleCode = roles[0].Code
+                },
+                new User() {
+                    Login = "qwerty@gmail.com",
+                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
+                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
+                    Surname = "Бананова",
+                    Name = "Виктория",
+                    Middlename = "Владимировна",
+                    UserRoleCode = roles[1].Code
+                },
+                new User() {
+                    Login = "wasd@gmail.com",
+                    PasswordHash = "gNJLVahSBiE0Oh7Svxm89qSMINHD9z1I/UI92iziKYA=",
+                    Salt = "fI+87R5gigoxRVVwwfdsVA==",
+                    Surname = "Борисов",
+                    Name = "Николай",
+                    Middlename = "Владимирович",
+                    UserRoleCode = roles[1].Code
+                }
+            };
+
+            users.ForEach(u => context.User.Add(u));
+
             await context.SaveChangesAsync();
 
             List<Note> notes = new List<Note>
@@ -147,7 +165,7 @@ namespace LearnApp.DAL.DataInitializer
                 }
             };
 
-            context.Group.AddRange(groups);
+            await context.Group.AddRangeAsync(groups);
 
             await context.SaveChangesAsync();
 

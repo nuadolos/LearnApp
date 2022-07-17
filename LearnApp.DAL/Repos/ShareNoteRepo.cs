@@ -9,9 +9,6 @@ namespace LearnApp.DAL.Repos
 {
     public class ShareNoteRepo : BaseRepo<ShareNote>, IShareNoteRepo
     {
-        public ShareNoteRepo() : base()
-        { }
-
         public ShareNoteRepo(LearnContext context) : base(context)
         { }
 
