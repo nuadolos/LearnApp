@@ -15,7 +15,7 @@ namespace LearnApp.WebApi.JWT
             var key = Encoding.ASCII.GetBytes(configuration["Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("guid", user.Guid.ToString()) }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
@@ -43,9 +43,9 @@ namespace LearnApp.WebApi.JWT
 
                 if (validatedToken is JwtSecurityToken jwtToken)
                 {
-                    var userId = jwtToken.Claims.First(x => x.Type == "id").Value;
+                    var userGuid = jwtToken.Claims.First(x => x.Type == "guid").Value;
 
-                    context.Items["User"] = await repo.GetByIdAsync(userId);
+                    context.Items["User"] = await repo.GetByGuidAsync(Guid.Parse(userGuid));
                 }
             }
             catch (Exception ex)

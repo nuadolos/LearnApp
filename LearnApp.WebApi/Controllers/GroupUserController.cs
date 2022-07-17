@@ -2,15 +2,11 @@
 using LearnApp.BLL.Models.Response;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Repos.IRepos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class GroupUserController : ControllerBase
     {
@@ -34,7 +30,8 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="groupGuid"></param>
         /// <returns></returns>
         [HttpGet("{groupGuid}")]
-        public async Task<IEnumerable<ResponseGroupUserModel>> GetGroupUsersAsync(Guid groupGuid) =>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ResponseGroupUserModel>))]
+        public async Task<IEnumerable<ResponseGroupUserModel>> GetGroupUsers(Guid groupGuid) =>
             await _service.GetGroupUsersAsync(groupGuid); // todo: протестировать без мапера
 
         /// <summary>
@@ -44,8 +41,10 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="inviteGuid"></param>
         /// <param name="userGuid"></param>
         /// <returns></returns>
-        [HttpPost("Invite/{inviteGuid}/{userGuid}")]
-        public async Task<IActionResult> InviteGroupUserAsync(Guid inviteGuid, Guid userGuid)
+        [HttpPost("{inviteGuid}/{userGuid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Invite(Guid inviteGuid, Guid userGuid)
         {
             try
             {
@@ -57,7 +56,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
@@ -67,8 +66,10 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="groupGuid"></param>
         /// <param name="userGuid"></param>
         /// <returns></returns>
-        [HttpPost("Join/{groupGuid}/{userGuid}")]
-        public async Task<IActionResult> JoinGroupUserAsync(Guid groupGuid, Guid userGuid)
+        [HttpPost("{groupGuid}/{userGuid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Join(Guid groupGuid, Guid userGuid)
         {
             try
             {
@@ -80,7 +81,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
@@ -90,7 +91,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="userGuid"></param>
         /// <returns></returns>
         [HttpDelete("{groupGuid}/{userGuid}")]
-        public async Task<IActionResult> RemoveGroupUserAsync(Guid groupGuid, Guid userGuid)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Leave(Guid groupGuid, Guid userGuid)
         {
             try
             {
@@ -102,7 +105,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
     }
 }

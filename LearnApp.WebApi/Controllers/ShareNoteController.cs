@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Repos.IRepos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ShareNoteController : ControllerBase
     {
@@ -21,13 +17,13 @@ namespace LearnApp.WebApi.Controllers
         {
             _service = service;
 
-            //Игнорирование поля ShareLearn в объекте Note
+            //Игнорирование ссылочных полей в объекте Note
             var learnConfig = new MapperConfiguration(
                 cfg => cfg.CreateMap<Note, Note>()
                 .ForMember(x => x.ShareNotes, opt => opt.Ignore()));
             _mapperNote = learnConfig.CreateMapper();
 
-            //Игнорирование поля ShareLearn в объекте User
+            //Игнорирование ссылочных полей в объекте User
             var userConfig = new MapperConfiguration(
                 cfg => cfg.CreateMap<User, User>()
                 .ForMember(x => x.ShareNotes, opt => opt.Ignore()));
@@ -40,8 +36,9 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <param name="userGuid"></param>
         /// <returns></returns>
-        [HttpGet("user/{userGuid}")]
-        public async Task<IEnumerable<Note>> GetNotesAsync(Guid userGuid) =>
+        [HttpGet("{userGuid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+        public async Task<IEnumerable<Note>> GetNotes(Guid userGuid) =>
             _mapperNote.Map<List<Note>, List<Note>>(await _service.GetShareAccessNotes(userGuid));
 
         /// <summary>
@@ -50,8 +47,9 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <param name="noteGuid"></param>
         /// <returns></returns>
-        [HttpGet("note/{noteGuid}")]
-        public async Task<IEnumerable<User>> GetUsersAsync(Guid noteGuid) =>
+        [HttpGet("{noteGuid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+        public async Task<IEnumerable<User>> GetUsers(Guid noteGuid) =>
              _mapperUser.Map<List<User>, List<User>>(await _service.GetShareNoteUsersAsync(noteGuid));
 
         /// <summary>
@@ -61,7 +59,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="userGuid"></param>
         /// <returns></returns>
         [HttpPost("{noteGuid}/{userGuid}")]
-        public async Task<IActionResult> CreateShareAsync(Guid noteGuid, Guid userGuid)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateShare(Guid noteGuid, Guid userGuid)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
@@ -83,7 +83,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="userGuid"></param>
         /// <returns></returns>
         [HttpDelete("{noteGuid}/{userGuid}")]
-        public async Task<IActionResult> RemoveShareAsync(Guid noteGuid, Guid userGuid)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RemoveShare(Guid noteGuid, Guid userGuid)
         {
             try
             {
@@ -95,7 +97,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
     }
 }

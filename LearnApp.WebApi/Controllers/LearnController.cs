@@ -2,14 +2,11 @@
 using LearnApp.BLL.Models.Request;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Repos.IRepos;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LearnController : ControllerBase
     {
@@ -35,7 +32,8 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="groupGuid"></param>
         /// <returns></returns>
         [HttpGet("{groupGuid}")]
-        public async Task<IEnumerable<Learn>> GetGroupLearnsAsync(Guid groupGuid) =>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Learn>))]
+        public async Task<IEnumerable<Learn>> GetGroupLearns(Guid groupGuid) =>
             _mapper.Map<List<Learn>, List<Learn>>(await _service.GetGroupLearnsAsync(groupGuid));
 
         /// <summary>
@@ -44,7 +42,8 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="userGuid"></param>
         /// <returns></returns>
         [HttpGet("{userGuid}")]
-        public async Task<IEnumerable<Learn>> GetCreatorLearnsAsync(Guid userGuid) =>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Learn>))]
+        public async Task<IEnumerable<Learn>> GetCreatorLearns(Guid userGuid) =>
             _mapper.Map<List<Learn>, List<Learn>>(await _service.GetCreatorLearnsAsync(userGuid));
 
         /// <summary>
@@ -54,7 +53,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="userGuid"></param>
         /// <returns></returns>
         [HttpGet("{learnGuid}/{userGuid}")]
-        public async Task<ActionResult<Learn>> GetGroupLearnAsync(Guid learnGuid, Guid userGuid)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Learn))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetGroupLearn(Guid learnGuid, Guid userGuid)
         {
             try
             {
@@ -74,7 +75,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateLearnAsync(RequestLearnModel model)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Learn))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateLearn(RequestLearnModel model)
         {
             try
             {
@@ -95,7 +98,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{userGuid}")]
-        public async Task<IActionResult> UpdateLearnAsync(Guid userGuid, RequestLearnModel model)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateLearn(Guid userGuid, RequestLearnModel model)
         {
             try
             {
@@ -115,8 +120,10 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveLearnAsync(RequestRemoveDataModel model)
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RemoveLearn(RequestRemoveDataModel model)
         {
             try
             {

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace LearnApp.WebApi.Validate
 {
     /// <summary>
-    /// Класс проверки пароля, реализующий интерфейс IPasswordValidator<User>
+    /// Класс проверки пароля
     /// </summary>
     public class CustomPasswordValidator : IPasswordValidator<User>
     {

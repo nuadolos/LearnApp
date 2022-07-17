@@ -2,13 +2,11 @@
 using LearnApp.BLL.Models.Request;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Repos.IRepos;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class NoteController : ControllerBase
     {
@@ -34,7 +32,8 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="noteGuid"></param>
         /// <returns></returns>
         [HttpGet("{noteGuid}")]
-        public async Task<IEnumerable<Note>> GetUserLearnsAsync(Guid noteGuid) =>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Note>))]
+        public async Task<IEnumerable<Note>> GetUserNotes(Guid noteGuid) =>
             _mapper.Map<List<Note>, List<Note>>(await _service.GetUserNotesAsync(noteGuid));
 
         /// <summary>
@@ -43,7 +42,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateSourceAsync(RequestNoteModel model)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateNote(RequestNoteModel model)
         {
             try
             {
@@ -59,10 +60,13 @@ namespace LearnApp.WebApi.Controllers
         /// <summary>
         /// Запрос на изменение заметки
         /// </summary>
+        /// <param name="noteGuid"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut("{noteGuid}")]
-        public async Task<IActionResult> UpdateLearnAsync(Guid noteGuid, RequestNoteModel model)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateNote(Guid noteGuid, RequestNoteModel model)
         {
             try
             {
@@ -83,7 +87,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpDelete]
-        public async Task<IActionResult> RemoveSourceAsync(RequestRemoveDataModel model)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RemoveNote(RequestRemoveDataModel model)
         {
             try
             {

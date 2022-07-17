@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using LearnApp.BLL.Services;
 using LearnApp.DAL.Entities;
-using LearnApp.DAL.Repos.IRepos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnApp.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class FollowerController : ControllerBase
     {
@@ -30,8 +29,9 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <param name="subUserGuid"></param>
         /// <returns></returns>
-        [HttpGet("following/{subUserGuid}")]
-        public async Task<IEnumerable<User>> GetFollowingAsync(Guid subUserGuid) =>
+        [HttpGet("{subUserGuid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+        public async Task<IEnumerable<User>> GetFollowing(Guid subUserGuid) =>
             _mapper.Map<List<User>, List<User>>(await _service.GetFollowingAsync(subUserGuid));
 
         /// <summary>
@@ -39,8 +39,9 @@ namespace LearnApp.WebApi.Controllers
         /// </summary>
         /// <param name="trackUserGuid"></param>
         /// <returns></returns>
-        [HttpGet("followers/{trackUserGuid}")]
-        public async Task<IEnumerable<User>> GetFollowersAsync(Guid trackUserGuid) =>
+        [HttpGet("{trackUserGuid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+        public async Task<IEnumerable<User>> GetFollowers(Guid trackUserGuid) =>
             _mapper.Map<List<User>, List<User>>(await _service.GetFollowersAsync(trackUserGuid));
 
         /// <summary>
@@ -50,7 +51,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="trackUserGuid"></param>
         /// <returns></returns>
         [HttpPost("{subUserGuid}/{trackUserGuid}")]
-        public async Task<IActionResult> FollowAsync(Guid subUserGuid, Guid trackUserGuid)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Follow(Guid subUserGuid, Guid trackUserGuid)
         {
             try
             {
@@ -62,7 +65,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
 
         /// <summary>
@@ -72,7 +75,9 @@ namespace LearnApp.WebApi.Controllers
         /// <param name="trackUserGuid"></param>
         /// <returns></returns>
         [HttpDelete("{subUserGuid}/{trackUserGuid}")]
-        public async Task<IActionResult> UnfollowAsync(Guid subUserGuid, Guid trackUserGuid)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Unfollow(Guid subUserGuid, Guid trackUserGuid)
         {
             try
             {
@@ -84,7 +89,7 @@ namespace LearnApp.WebApi.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return NoContent();
         }
     }
 }

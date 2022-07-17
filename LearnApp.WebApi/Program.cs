@@ -5,6 +5,8 @@ using LearnApp.Helper.EmailService;
 using LearnApp.DAL;
 using LearnApp.WebApi.JWT;
 using LearnApp.BLL;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +31,30 @@ builder.Services.Configure<FormOptions>(o =>
 #endregion
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Данные и описание Api
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = $"{Assembly.GetExecutingAssembly().GetName().Name}",
+        Description = "Web Api для приложений LearnApp",
+        Contact = new OpenApiContact
+        {
+            Name = "nuadolos",
+            Url = new Uri("https://vk.com/nuadolos")
+        }
+    });
+
+    // Включение комментариев в интерфейс Swagger
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, xmlFilename)));
+});
 
 builder.Services.AddCors();
+
+// Добавляет к маршрутизации опцию URL в нижнем регистре
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
 
