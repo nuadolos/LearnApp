@@ -31,7 +31,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{subUserGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
-        public async Task<IEnumerable<User>> GetFollowing(Guid subUserGuid) =>
+        public async Task<ActionResult<IEnumerable<User>>> GetFollowing(Guid subUserGuid) =>
             _mapper.Map<List<User>, List<User>>(await _service.GetFollowingAsync(subUserGuid));
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{trackUserGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
-        public async Task<IEnumerable<User>> GetFollowers(Guid trackUserGuid) =>
+        public async Task<ActionResult<IEnumerable<User>>> GetFollowers(Guid trackUserGuid) =>
             _mapper.Map<List<User>, List<User>>(await _service.GetFollowersAsync(trackUserGuid));
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost("{subUserGuid}/{trackUserGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Follow(Guid subUserGuid, Guid trackUserGuid)
+        public async Task<ActionResult> Follow(Guid subUserGuid, Guid trackUserGuid)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpDelete("{subUserGuid}/{trackUserGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Unfollow(Guid subUserGuid, Guid trackUserGuid)
+        public async Task<ActionResult> Unfollow(Guid subUserGuid, Guid trackUserGuid)
         {
             try
             {

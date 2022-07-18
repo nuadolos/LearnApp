@@ -33,7 +33,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Group>))]
-        public async Task<IEnumerable<Group>> GetVisibleGroups() =>
+        public async Task<ActionResult<IEnumerable<Group>>> GetVisibleGroups() =>
             _mapper.Map<List<Group>, List<Group>>(await _service.GetVisibleGroupsAsync());
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{userGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Group>))]
-        public async Task<IEnumerable<Group>> GetUserGroups(Guid userGuid) =>
+        public async Task<ActionResult<IEnumerable<Group>>> GetUserGroups(Guid userGuid) =>
             _mapper.Map<List<Group>, List<Group>>(await _service.GetUserGroupsAsync(userGuid));
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpGet("{groupGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetGroup(Guid groupGuid, Guid userGuid)
+        public async Task<ActionResult<Group>> GetGroup(Guid groupGuid, Guid userGuid)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateGroup(RequestGroupModel model)
+        public async Task<ActionResult<Group>> CreateGroup(RequestGroupModel model)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPut("{groupGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateGroup(Guid groupGuid, RequestGroupModel model)
+        public async Task<ActionResult> UpdateGroup(Guid groupGuid, RequestGroupModel model)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveGroup(RequestRemoveDataModel model)
+        public async Task<ActionResult> RemoveGroup(RequestRemoveDataModel model)
         {
             try
             {

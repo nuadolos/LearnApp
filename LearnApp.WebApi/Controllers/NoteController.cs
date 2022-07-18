@@ -33,7 +33,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{noteGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Note>))]
-        public async Task<IEnumerable<Note>> GetUserNotes(Guid noteGuid) =>
+        public async Task<ActionResult<IEnumerable<Note>>> GetUserNotes(Guid noteGuid) =>
             _mapper.Map<List<Note>, List<Note>>(await _service.GetUserNotesAsync(noteGuid));
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateNote(RequestNoteModel model)
+        public async Task<ActionResult<Note>> CreateNote(RequestNoteModel model)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPut("{noteGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateNote(Guid noteGuid, RequestNoteModel model)
+        public async Task<ActionResult> UpdateNote(Guid noteGuid, RequestNoteModel model)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveNote(RequestRemoveDataModel model)
+        public async Task<ActionResult> RemoveNote(RequestRemoveDataModel model)
         {
             try
             {

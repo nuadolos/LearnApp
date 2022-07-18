@@ -38,7 +38,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{userGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
-        public async Task<IEnumerable<Note>> GetNotes(Guid userGuid) =>
+        public async Task<ActionResult<IEnumerable<Note>>> GetNotes(Guid userGuid) =>
             _mapperNote.Map<List<Note>, List<Note>>(await _service.GetShareAccessNotes(userGuid));
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{noteGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
-        public async Task<IEnumerable<User>> GetUsers(Guid noteGuid) =>
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers(Guid noteGuid) =>
              _mapperUser.Map<List<User>, List<User>>(await _service.GetShareNoteUsersAsync(noteGuid));
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost("{noteGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateShare(Guid noteGuid, Guid userGuid)
+        public async Task<ActionResult> CreateShare(Guid noteGuid, Guid userGuid)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpDelete("{noteGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveShare(Guid noteGuid, Guid userGuid)
+        public async Task<ActionResult> RemoveShare(Guid noteGuid, Guid userGuid)
         {
             try
             {

@@ -33,7 +33,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{groupGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Learn>))]
-        public async Task<IEnumerable<Learn>> GetGroupLearns(Guid groupGuid) =>
+        public async Task<ActionResult<IEnumerable<Learn>>> GetGroupLearns(Guid groupGuid) =>
             _mapper.Map<List<Learn>, List<Learn>>(await _service.GetGroupLearnsAsync(groupGuid));
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{userGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Learn>))]
-        public async Task<IEnumerable<Learn>> GetCreatorLearns(Guid userGuid) =>
+        public async Task<ActionResult<IEnumerable<Learn>>> GetCreatorLearns(Guid userGuid) =>
             _mapper.Map<List<Learn>, List<Learn>>(await _service.GetCreatorLearnsAsync(userGuid));
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpGet("{learnGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Learn))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetGroupLearn(Guid learnGuid, Guid userGuid)
+        public async Task<ActionResult<Learn>> GetGroupLearn(Guid learnGuid, Guid userGuid)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Learn))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateLearn(RequestLearnModel model)
+        public async Task<ActionResult<Learn>> CreateLearn(RequestLearnModel model)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPut("{userGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateLearn(Guid userGuid, RequestLearnModel model)
+        public async Task<ActionResult> UpdateLearn(Guid userGuid, RequestLearnModel model)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RemoveLearn(RequestRemoveDataModel model)
+        public async Task<ActionResult> RemoveLearn(RequestRemoveDataModel model)
         {
             try
             {

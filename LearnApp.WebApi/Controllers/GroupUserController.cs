@@ -31,7 +31,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpGet("{groupGuid}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ResponseGroupUserModel>))]
-        public async Task<IEnumerable<ResponseGroupUserModel>> GetGroupUsers(Guid groupGuid) =>
+        public async Task<ActionResult<IEnumerable<ResponseGroupUserModel>>> GetGroupUsers(Guid groupGuid) =>
             await _service.GetGroupUsersAsync(groupGuid); // todo: протестировать без мапера
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost("{inviteGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Invite(Guid inviteGuid, Guid userGuid)
+        public async Task<ActionResult> Invite(Guid inviteGuid, Guid userGuid)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost("{groupGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Join(Guid groupGuid, Guid userGuid)
+        public async Task<ActionResult> Join(Guid groupGuid, Guid userGuid)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpDelete("{groupGuid}/{userGuid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Leave(Guid groupGuid, Guid userGuid)
+        public async Task<ActionResult> Leave(Guid groupGuid, Guid userGuid)
         {
             try
             {

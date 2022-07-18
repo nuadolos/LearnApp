@@ -31,7 +31,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register(RequestRegisterModel model)
+        public async Task<ActionResult> Register(RequestRegisterModel model)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace LearnApp.WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login(RequestLoginModel model)
+        public async Task<ActionResult> Login(RequestLoginModel model)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> Logout()
+        public async Task<ActionResult> Logout()
         {
             // Удаление токена из cookie
             Response.Cookies.Delete("token");
