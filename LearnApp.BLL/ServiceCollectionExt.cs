@@ -10,9 +10,15 @@ namespace LearnApp.BLL
 {
     static public class ServiceCollectionExt
     {
-        public static void AddBLService(this IServiceCollection services)
+        public static void AddBLLService(this IServiceCollection services)
         {
-            services.AddTransient<AccountService>();
+            services.AddScoped<AccountService>();
+            services.AddScoped<FollowerService>();
+            services.AddScoped<GroupService>();
+            services.AddScoped<GroupUserService>();
+            services.AddScoped<LearnService>();
+            services.AddScoped<NoteService>();
+            services.AddScoped<ShareNoteService>();
         }
     }
 }

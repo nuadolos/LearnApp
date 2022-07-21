@@ -28,7 +28,6 @@ namespace LearnApp.DAL.Repos
                     Login = gu.User.Login,
                     Surname = gu.User.Surname,
                     Name = gu.User.Name,
-                    Middlename = gu.User.Middlename,
                     GroupRoleName = gu.GroupRole.Code
                 })
                 .ToListAsync();

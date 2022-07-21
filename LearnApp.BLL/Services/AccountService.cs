@@ -32,7 +32,8 @@ namespace LearnApp.BLL.Services
             {
                 Login = model.Login,
                 Surname = model.Surname,
-                Name = model.Name
+                Name = model.Name,
+                UserRoleCode = "COMMON"
             };
 
             user.PasswordHash = SecurityService.PasswordHashing(model.Password, out string salt);

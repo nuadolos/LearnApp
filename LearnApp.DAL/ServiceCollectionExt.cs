@@ -16,7 +16,7 @@ namespace LearnApp.DAL
     {
         public static void AddDALService(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContextPool<LearnContext>(options => 
+            services.AddDbContext<LearnContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("LearnConnection")));
 
             services.AddScoped<ILearnRepo, LearnRepo>();

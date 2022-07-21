@@ -15,7 +15,7 @@ namespace LearnApp.DAL.DataInitializer
     /// </summary>
     static public class Initializer
     {
-        public static async Task InitializeData(LearnContext context)
+        public static async Task FillDbWithTestData(LearnContext context)
         {
             List<UserRole> roles = new List<UserRole> 
             {
@@ -64,7 +64,6 @@ namespace LearnApp.DAL.DataInitializer
                     Salt = "fI+87R5gigoxRVVwwfdsVA==",
                     Surname = "Иванов",
                     Name = "Владимир",
-                    Middlename = "Владимирович",
                     UserRoleCode = roles[0].Code
                 },
                 new User() {
@@ -73,7 +72,6 @@ namespace LearnApp.DAL.DataInitializer
                     Salt = "fI+87R5gigoxRVVwwfdsVA==",
                     Surname = "Иванов",
                     Name = "Андрей",
-                    Middlename = "Владимирович",
                     UserRoleCode = roles[1].Code
                 },
                 new User() {
@@ -82,7 +80,6 @@ namespace LearnApp.DAL.DataInitializer
                     Salt = "fI+87R5gigoxRVVwwfdsVA==",
                     Surname = "Решимова",
                     Name = "Анна",
-                    Middlename = "Владимировна",
                     UserRoleCode = roles[0].Code
                 },
                 new User() {
@@ -91,7 +88,6 @@ namespace LearnApp.DAL.DataInitializer
                     Salt = "fI+87R5gigoxRVVwwfdsVA==",
                     Surname = "Бананова",
                     Name = "Виктория",
-                    Middlename = "Владимировна",
                     UserRoleCode = roles[1].Code
                 },
                 new User() {
@@ -100,7 +96,6 @@ namespace LearnApp.DAL.DataInitializer
                     Salt = "fI+87R5gigoxRVVwwfdsVA==",
                     Surname = "Борисов",
                     Name = "Николай",
-                    Middlename = "Владимирович",
                     UserRoleCode = roles[1].Code
                 }
             };

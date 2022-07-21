@@ -36,9 +36,6 @@ namespace LearnApp.DAL.Entities
         [StringLength(40)]
         public string Name { get; set; } = null!;
 
-        [StringLength(40)]
-        public string Middlename { get; set; } = null!;
-
         [Unicode(false)]
         [StringLength(6)]
         public string? Code { get; set; }
