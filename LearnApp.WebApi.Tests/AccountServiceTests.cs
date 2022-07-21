@@ -32,12 +32,59 @@ namespace LearnApp.WebApi.Tests
                 Password = faker.Internet.Password(),
                 Surname = faker.Name.LastName(),
                 Name = faker.Name.FirstName(),
-                Middlename = string.Empty
             });
 
             var user = context.User.LastOrDefault();
             Assert.NotNull(user);
             Assert.Equal(user!.Login, fakeEmail);
+        }
+
+        [Fact]
+        public async void LoginToAccountIfUserIsAlreadyRegistered()
+        {
+            var app = new SystemUnderTestBuilder<Program>()
+                .WithInMemoryDb<LearnContext>()
+                .Build();
+            var faker = new Faker("ru");
+
+            var context = app.Services.GetRequiredService<LearnContext>();
+            await Initializer.FillDbWithTestData(context);
+
+            var existUser = context.User.First();
+
+            var service = app.Services.GetRequiredService<AccountService>();
+            (var result, var error) = await service.LoginAsync(new RequestLoginModel
+            {
+                Login = existUser.Login,
+                Password = "123"
+            });
+
+            Assert.NotNull(result);
+            Assert.Empty(error);
+        }
+
+        [Fact]
+        public async void FailLoginToAccountIfUserIsAlreadyRegistered()
+        {
+            var app = new SystemUnderTestBuilder<Program>()
+                .WithInMemoryDb<LearnContext>()
+                .Build();
+            var faker = new Faker("ru");
+
+            var context = app.Services.GetRequiredService<LearnContext>();
+            await Initializer.FillDbWithTestData(context);
+
+            var existUser = context.User.First();
+
+            var service = app.Services.GetRequiredService<AccountService>();
+            (var result, var error) = await service.LoginAsync(new RequestLoginModel
+            {
+                Login = existUser.Login,
+                Password = "failed"
+            });
+
+            Assert.Null(result);
+            Assert.NotEmpty(error);
         }
     }
 }

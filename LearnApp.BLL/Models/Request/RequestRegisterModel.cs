@@ -14,6 +14,5 @@ namespace LearnApp.BLL.Models.Request
         public string Password { get; set; }
         public string Surname { get; set; }
         public string Name { get; set; }
-        public string Middlename { get; set; }
     }
 }

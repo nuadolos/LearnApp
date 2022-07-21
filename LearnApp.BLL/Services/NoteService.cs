@@ -61,15 +61,15 @@ namespace LearnApp.BLL.Services
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task UpdateNoteAsync(Guid noteGuid, RequestNoteModel model)
+        public async Task<string> UpdateNoteAsync(Guid noteGuid, RequestNoteModel model)
         {
             var note = await _repo.GetRecordAsync(noteGuid);
 
             if (note == null)
-                throw new Exception($"Заметки {noteGuid} не существует");
+                return $"Заметки {noteGuid} не существует";
 
             if (note.UserGuid != model.UserGuid)
-                throw new Exception($"Пользователь {model.UserGuid} не является создателем заметки {note.Guid}");
+                return $"Пользователь {model.UserGuid} не является создателем заметки {note.Guid}";
 
             note.Title = model.Title;
             note.Description = model.Description;
@@ -85,6 +85,8 @@ namespace LearnApp.BLL.Services
             {
                 throw new Exception($"При сохранении заметки у пользователя {model.UserGuid} возникла ошибка: {ex.Message}", ex);
             }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -93,15 +95,15 @@ namespace LearnApp.BLL.Services
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task RemoveNoteAsync(RequestRemoveDataModel model)
+        public async Task<string> RemoveNoteAsync(RequestRemoveDataModel model)
         {
             var note = await _repo.GetRecordAsync(model.Guid);
 
             if (note == null)
-                throw new Exception($"Заметки {model.Guid} не существует");
+                return $"Заметки {model.Guid} не существует";
 
             if (note.UserGuid != model.UserGuid)
-                throw new Exception($"Пользователь {model.UserGuid} не является создателем заметки {note.Guid}");
+                return $"Пользователь {model.UserGuid} не является создателем заметки {note.Guid}";
 
             try
             {
@@ -111,6 +113,8 @@ namespace LearnApp.BLL.Services
             {
                 throw new Exception($"При удалении заметки у пользователя {model.UserGuid} возникла ошибка: {ex.Message}", ex);
             }
+
+            return string.Empty;
         }
     }
 }

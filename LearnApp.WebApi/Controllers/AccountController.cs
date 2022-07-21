@@ -56,10 +56,13 @@ namespace LearnApp.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Login(RequestLoginModel model)
         {
+            (var user, string error) = await _service.LoginAsync(model);
+
+            if (user is null || !string.IsNullOrEmpty(error))
+                return BadRequest(new { message = error });
+
             try
             {
-                var user = await _service.LoginAsync(model);
-
                 // Генерация JWT-токена
                 var token = _configuration.GenerateJwtToken(user);
 
@@ -70,13 +73,13 @@ namespace LearnApp.WebApi.Controllers
                     // однако будет отправлен в запросе от него автоматически
                     HttpOnly = true
                 });
-
-                return Ok(new { id = user.Guid });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
+
+            return Ok(new { id = user.Guid });
         }
 
         /// <summary>

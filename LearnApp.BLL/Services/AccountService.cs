@@ -55,17 +55,17 @@ namespace LearnApp.BLL.Services
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<User> LoginAsync(RequestLoginModel model)
+        public async Task<(User? user, string error)> LoginAsync(RequestLoginModel model)
         {
             var user = await _repo.GetByLoginAsync(model.Login);
 
             if (user == null)
-                throw new Exception("Пользователь не найден");
+                return (user: null, error: "Пользователь не найден");
 
             if (!SecurityService.CheckPassword(user, model.Password))
-                throw new Exception("Логин или пароль указаны некорректно");
+                return (user: null, error: "Логин или пароль указаны некорректно");
 
-            return user;
+            return (user, error: string.Empty);
         }
     }
 }

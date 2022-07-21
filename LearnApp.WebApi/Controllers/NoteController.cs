@@ -70,7 +70,13 @@ namespace LearnApp.WebApi.Controllers
         {
             try
             {
-                await _service.UpdateNoteAsync(noteGuid, model);
+                string error = await _service.UpdateNoteAsync(noteGuid, model);
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    // add log warning
+                    return BadRequest(error);
+                }
             }
             catch (Exception ex)
             {
@@ -93,7 +99,13 @@ namespace LearnApp.WebApi.Controllers
         {
             try
             {
-                await _service.RemoveNoteAsync(model);
+                string error = await _service.RemoveNoteAsync(model);
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    // add log warning
+                    return BadRequest(error);
+                }
             }
             catch (Exception ex)
             {
