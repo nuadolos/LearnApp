@@ -8,6 +8,7 @@ using LearnApp.WebApi.JWT;
 using LearnApp.BLL;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using LearnApp.Helper.Logging;
 
 namespace LearnApp.WebApi;
 
@@ -28,9 +29,10 @@ public class Program
         #endregion
 
         var builder = WebApplication.CreateBuilder();
-        
-        builder.Services.AddControllers();
 
+        builder.AddLoggingProvider();
+        builder.Services.AddControllers();
+        
         builder.Services.AddDALService(builder.Configuration);
         builder.Services.AddBLLService();
 
@@ -107,8 +109,10 @@ public class Program
         );
 
         app.UseMiddleware<JwtMiddleware>();
+        app.UseLoggingMiddleware();
 
         app.MapControllers();
+        app.MapGet("/health-check", (Action)delegate { });
 
         app.Run();
     }
