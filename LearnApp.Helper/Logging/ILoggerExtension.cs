@@ -18,7 +18,7 @@ namespace LearnApp.Helper.Logging
             LogContext.PushProperty("Method", memberName);
             LogContext.PushProperty("SourceFilePath", sourceFilePath);
             LogContext.PushProperty("SourceLineNumber", sourceLineNumber);
-            logger.LogDebug(message, messageParams!);
+            logger.LogDebug(message, messageParams ?? Array.Empty<object>());
         }
 
         public static void LogInformationWithContext(this ILogger logger, string message,
@@ -28,7 +28,7 @@ namespace LearnApp.Helper.Logging
             LogContext.PushProperty("Method", memberName);
             LogContext.PushProperty("SourceFilePath", sourceFilePath);
             LogContext.PushProperty("SourceLineNumber", sourceLineNumber);
-            logger.LogInformation(message, messageParams!);
+            logger.LogInformation(message, messageParams ?? Array.Empty<object>());
         }
 
         public static void LogWarningWithContext(this ILogger logger, string message,
@@ -38,7 +38,7 @@ namespace LearnApp.Helper.Logging
             LogContext.PushProperty("Method", memberName);
             LogContext.PushProperty("SourceFilePath", sourceFilePath);
             LogContext.PushProperty("SourceLineNumber", sourceLineNumber);
-            logger.LogWarning(message, messageParams!);
+            logger.LogWarning(message, messageParams ?? Array.Empty<object>());
         }
 
         public static void LogErrorWithContext(this ILogger logger, Exception exception, string message,
@@ -48,7 +48,7 @@ namespace LearnApp.Helper.Logging
             LogContext.PushProperty("Method", memberName);
             LogContext.PushProperty("SourceFilePath", sourceFilePath);
             LogContext.PushProperty("SourceLineNumber", sourceLineNumber);
-            logger.LogError(exception, message, messageParams!);
+            logger.LogError(exception, message, messageParams ?? Array.Empty<object>());
         }
     }
 }
