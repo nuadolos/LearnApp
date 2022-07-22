@@ -9,6 +9,7 @@ namespace LearnApp.WebApi.Attributes
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         public string? Role { get; set; } = null;
+        // todo: add func policy in service?
         public string? Policy { get; set; } = null;
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -23,6 +24,7 @@ namespace LearnApp.WebApi.Attributes
             
             if (Role is not null)
             {
+                // todo: describe error message
                 if (Role != user.UserRoleCode)
                     context.Result = new JsonResult(new { message = "Ресурс заблокирован" }) { StatusCode = StatusCodes.Status423Locked };
                 return;

@@ -10,6 +10,7 @@ namespace LearnApp.WebApi.Services
 {
     public class JwtService
     {
+        // todo: add summary comments
         private readonly IUserRepo _repo;
         private readonly IConfiguration _config;
         private readonly ILogger<JwtService> _logger;
@@ -28,6 +29,7 @@ namespace LearnApp.WebApi.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("guid", userGuid.ToString()) }),
+                // todo: decrease live token to one hour?
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
@@ -42,6 +44,7 @@ namespace LearnApp.WebApi.Services
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
 
+                // todo: change secret key to AsseblyName?
                 var key = Encoding.ASCII.GetBytes(_config["Secret"]);
 
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -55,6 +58,7 @@ namespace LearnApp.WebApi.Services
 
                 if (validatedToken is JwtSecurityToken jwtToken)
                 {
+                    // todo: check to null
                     var userGuid = jwtToken.Claims.First(claim => claim.Type == "guid").Value;
 
                     context.Items["User"] = await _repo.GetByGuidAsync(Guid.Parse(userGuid));

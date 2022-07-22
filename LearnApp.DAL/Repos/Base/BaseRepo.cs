@@ -87,8 +87,7 @@ namespace LearnApp.DAL.Repos.Base
 
         protected async Task<int> SaveChangesAsync()
         {
-            // Изменить сообщение об ошибке
-            //     при добавление логов
+            // todo: change exception messages
             try
             {
                 return await _db.SaveChangesAsync();

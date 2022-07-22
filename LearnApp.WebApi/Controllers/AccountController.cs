@@ -41,7 +41,7 @@ namespace LearnApp.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                // add logger
+                // todo: add log warning or error
                 return BadRequest(ex.Message);
             }
 
@@ -60,16 +60,14 @@ namespace LearnApp.WebApi.Controllers
         {
             (var user, string error) = await _accountService.LoginAsync(model);
 
+            // todo: add log debug for test login
             if (user is null || !string.IsNullOrEmpty(error))
                 return BadRequest(new { message = error });
 
             var token = _jwtService.GenerateJwtToken(user.Guid);
 
-            // Для возращения токена в cookie
             Response.Cookies.Append("access_token", token, new CookieOptions
             {
-                // Доступ к cookie недоступен пользователю,
-                // однако будет отправлен в запросе от него автоматически
                 HttpOnly = true
             });
 
@@ -82,9 +80,9 @@ namespace LearnApp.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize]
         public async Task<ActionResult> Logout()
         {
-            // Удаление токена из cookie
             Response.Cookies.Delete("access_token");
 
             return await Task.FromResult(NoContent());

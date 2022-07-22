@@ -15,6 +15,7 @@ namespace LearnApp.WebApi;
 
 public class Program
 {
+    // todo: tidy up the file Program.cs
     public static void Main(string[] args)
     {
         #region Для xUnit тестов
@@ -57,9 +58,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            // Данные и описание Api
             options.SwaggerDoc("v1", new OpenApiInfo
             {
+                // todo: add jwt bearer token authorization
                 Version = "v1",
                 Title = $"{Assembly.GetExecutingAssembly().GetName().Name}",
                 Description = "Web Api для приложений LearnApp",
@@ -70,14 +71,12 @@ public class Program
                 }
             });
 
-            // Включение комментариев в интерфейс Swagger
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, xmlFilename)));
         });
 
         builder.Services.AddCors();
 
-        // Добавляет к маршрутизации опцию URL в нижнем регистре
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
         var app = builder.Build();
