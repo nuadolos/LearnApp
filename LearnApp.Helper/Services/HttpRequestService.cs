@@ -29,7 +29,7 @@ namespace LearnApp.Helper.Services
             {
                 var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (default, error);
+                return (default, error!);
             }
         }
 
@@ -55,7 +55,7 @@ namespace LearnApp.Helper.Services
             {
                 var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (false, error);
+                return (false, error!);
             }
         }
 
@@ -81,7 +81,7 @@ namespace LearnApp.Helper.Services
             {
                 var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (false, error);
+                return (false, error!);
             }
         }
 
@@ -107,7 +107,7 @@ namespace LearnApp.Helper.Services
             {
                 var error = JsonConvert.DeserializeObject<string>(
                     await response.Content.ReadAsStringAsync());
-                return (false, error);
+                return (false, error!);
             }
         }
 
