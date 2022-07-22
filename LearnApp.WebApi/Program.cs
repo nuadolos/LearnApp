@@ -4,11 +4,12 @@ using LearnApp.DAL.Context;
 using LearnApp.DAL.DataInitializer;
 using LearnApp.Helper.EmailService;
 using LearnApp.DAL;
-using LearnApp.WebApi.JWT;
 using LearnApp.BLL;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using LearnApp.Helper.Logging;
+using LearnApp.WebApi.Middleware;
+using LearnApp.WebApi.Services;
 
 namespace LearnApp.WebApi;
 
@@ -35,6 +36,8 @@ public class Program
         
         builder.Services.AddDALService(builder.Configuration);
         builder.Services.AddBLLService();
+
+        builder.Services.AddScoped<JwtService>();
 
         #region Добавление сервиса для отправки сообщений на эл. почту пользователя
 

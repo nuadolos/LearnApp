@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LearnApp.Helper.EmailService;
 using LearnApp.BLL.Services;
-using LearnApp.WebApi.JWT;
 using LearnApp.BLL.Models.Request;
+using LearnApp.WebApi.Services;
+using LearnApp.Helper.Logging;
+using LearnApp.WebApi.Attributes;
 
 namespace LearnApp.WebApi.Controllers
 {
@@ -10,15 +12,15 @@ namespace LearnApp.WebApi.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly IEmailSender _emailSender;
-        private readonly AccountService _service;
+        private readonly AccountService _accountService;
+        private readonly JwtService _jwtService;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(AccountService service, IConfiguration configuration, IEmailSender emailSender) 
+        public AccountController(AccountService accountService, JwtService jwtService, ILogger<AccountController> logger)
         {
-            _service = service;
-            _emailSender = emailSender;
-            _configuration = configuration;
+            _accountService = accountService;
+            _jwtService = jwtService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace LearnApp.WebApi.Controllers
         {
             try
             {
-                await _service.RegisterAsync(model);
+                await _accountService.RegisterAsync(model);
             }
             catch (Exception ex)
             {
@@ -56,28 +58,20 @@ namespace LearnApp.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Login(RequestLoginModel model)
         {
-            (var user, string error) = await _service.LoginAsync(model);
+            (var user, string error) = await _accountService.LoginAsync(model);
 
             if (user is null || !string.IsNullOrEmpty(error))
                 return BadRequest(new { message = error });
 
-            try
-            {
-                // Генерация JWT-токена
-                var token = _configuration.GenerateJwtToken(user);
+            var token = _jwtService.GenerateJwtToken(user.Guid);
 
-                // Для возращения токена в cookie
-                Response.Cookies.Append("access_token", token, new CookieOptions
-                {
-                    // Доступ к cookie недоступен пользователю,
-                    // однако будет отправлен в запросе от него автоматически
-                    HttpOnly = true
-                });
-            }
-            catch (Exception ex)
+            // Для возращения токена в cookie
+            Response.Cookies.Append("access_token", token, new CookieOptions
             {
-                return BadRequest(new { message = ex.Message });
-            }
+                // Доступ к cookie недоступен пользователю,
+                // однако будет отправлен в запросе от него автоматически
+                HttpOnly = true
+            });
 
             return Ok(new { id = user.Guid });
         }
@@ -91,7 +85,7 @@ namespace LearnApp.WebApi.Controllers
         public async Task<ActionResult> Logout()
         {
             // Удаление токена из cookie
-            Response.Cookies.Delete("token");
+            Response.Cookies.Delete("access_token");
 
             return await Task.FromResult(NoContent());
         }

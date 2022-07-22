@@ -1,21 +1,33 @@
 ﻿using LearnApp.DAL.Entities;
 using LearnApp.DAL.Repos.IRepos;
+using LearnApp.Helper.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace LearnApp.WebApi.JWT
+namespace LearnApp.WebApi.Services
 {
-    static public class JwtService
+    public class JwtService
     {
-        public static string GenerateJwtToken(this IConfiguration configuration, User user)
+        private readonly IUserRepo _repo;
+        private readonly IConfiguration _config;
+        private readonly ILogger<JwtService> _logger;
+
+        public JwtService(IUserRepo repo, IConfiguration config, ILogger<JwtService> logger)
+        {
+            _repo = repo;
+            _config = config;
+            _logger = logger;
+        }
+
+        public string GenerateJwtToken(Guid userGuid)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["Secret"]);
+            var key = Encoding.ASCII.GetBytes(_config["Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("guid", user.Guid.ToString()) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("guid", userGuid.ToString()) }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
@@ -24,13 +36,13 @@ namespace LearnApp.WebApi.JWT
             return tokenHandler.WriteToken(token);
         }
 
-        public static async Task VerifyAsync(this IConfiguration configuration, HttpContext context, IUserRepo repo, string token)
+        public async Task VerifyAsync(HttpContext context, string token)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
 
-                var key = Encoding.ASCII.GetBytes(configuration["Secret"]);
+                var key = Encoding.ASCII.GetBytes(_config["Secret"]);
 
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
@@ -43,14 +55,15 @@ namespace LearnApp.WebApi.JWT
 
                 if (validatedToken is JwtSecurityToken jwtToken)
                 {
-                    var userGuid = jwtToken.Claims.First(x => x.Type == "guid").Value;
+                    var userGuid = jwtToken.Claims.First(claim => claim.Type == "guid").Value;
 
-                    context.Items["User"] = await repo.GetByGuidAsync(Guid.Parse(userGuid));
+                    context.Items["User"] = await _repo.GetByGuidAsync(Guid.Parse(userGuid));
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                // todo: think about refreshing the access token
+                _logger.LogErrorWithContext(ex, "Access token {token} is not validated", new object[] { token });   
             }
         }
     }
